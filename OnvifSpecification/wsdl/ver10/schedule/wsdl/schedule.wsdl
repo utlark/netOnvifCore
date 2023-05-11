@@ -1380,4 +1380,5 @@ CERTAIN WRITTEN POLICIES OF THE CORPORATION.
 			</wsdl:output>
 		</wsdl:operation>
 	</wsdl:binding>
+	<wsdl:service name="schedule"/>
 </wsdl:definitions>

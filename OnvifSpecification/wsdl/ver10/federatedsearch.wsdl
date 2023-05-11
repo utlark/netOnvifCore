@@ -341,4 +341,5 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 	<!--===============================-->
 	<!--===============================-->
 	<!--===============================-->
+	<wsdl:service name="federatedsearch"/>
 </wsdl:definitions>

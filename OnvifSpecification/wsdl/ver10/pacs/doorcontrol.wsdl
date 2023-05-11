@@ -1789,4 +1789,5 @@ CERTAIN WRITTEN POLICIES OF THE CORPORATION.
 		</wsdl:operation>
 		<!--===============================-->
 	</wsdl:binding>
+	<wsdl:service name="doorcontrol"/>
 </wsdl:definitions>

@@ -1447,4 +1447,5 @@ If no stop argument for pan, tilt or zoom is set, the device will stop all ongoi
             </wsdl:output> 
         </wsdl:operation> 
 	</wsdl:binding>
+	<wsdl:service name="ptz"/>
 </wsdl:definitions>

@@ -3681,4 +3681,5 @@ image will be updated automatically and independent from calls to GetSnapshotUri
 		</wsdl:operation>
 		<!--==============OSD Operation End=================-->
 	</wsdl:binding>
+	<wsdl:service name="media"/>
 </wsdl:definitions>

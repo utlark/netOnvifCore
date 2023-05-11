@@ -3309,4 +3309,5 @@
 	<!--==========================================-->
 	<!-- End Cert-based client auth messages      -->
 	<!--==========================================-->
+	<wsdl:service name="security"/>
 </wsdl:definitions>

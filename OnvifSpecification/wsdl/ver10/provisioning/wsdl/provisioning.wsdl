@@ -585,4 +585,5 @@
 			</wsdl:output>
 		</wsdl:operation>
 	</wsdl:binding>
+	<wsdl:service name="provisioning"/>
 </wsdl:definitions>

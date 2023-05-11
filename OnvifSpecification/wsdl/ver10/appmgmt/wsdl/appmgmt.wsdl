@@ -499,4 +499,5 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
             </wsdl:output>
         </wsdl:operation>
     </wsdl:binding>
+    <wsdl:service name="appmgmt"/>
 </wsdl:definitions>

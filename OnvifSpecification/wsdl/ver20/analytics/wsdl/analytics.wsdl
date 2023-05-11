@@ -754,4 +754,5 @@
 			</wsdl:output>
 		</wsdl:operation>
 	</wsdl:binding>
+	<wsdl:service name="analytics"/>
 </wsdl:definitions>

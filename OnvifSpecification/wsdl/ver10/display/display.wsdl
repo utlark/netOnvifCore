@@ -380,4 +380,5 @@ not be established.</wsdl:documentation>
 			</wsdl:output>
 		</wsdl:operation>
 	</wsdl:binding>
+	<wsdl:service name="display"/>
 </wsdl:definitions>

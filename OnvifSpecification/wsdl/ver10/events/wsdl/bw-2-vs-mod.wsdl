@@ -446,4 +446,5 @@ This document and the information contained herein is provided on an "AS IS" bas
                       message="wsntw:ResumeFailedFault" />        
       </wsdl:operation>        
    </wsdl:portType>
+   <wsdl:service name="bw-2-vs-mod"/>
 </wsdl:definitions>
