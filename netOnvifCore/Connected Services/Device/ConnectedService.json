@@ -1,0 +1,15 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "2.0.3",
+  "ExtendedData": {
+    "inputs": [
+      "../../../OnvifSpecification/wsdl/ver10/device/wsdl/devicemgmt.wsdl"
+    ],
+    "namespaceMappings": [
+      "*, netOnvifCore.DeviceManagement"
+    ],
+    "outputFile": "Device",
+    "targetFramework": "net7.0",
+    "typeReuseMode": "All"
+  }
+}
