@@ -8,12 +8,12 @@ namespace netOnvifCore.Security;
 public class SoapSecurityHeader : MessageHeader, IDisposable
 {
     private readonly string _created;
-    private readonly string _password;
-    private readonly string _username;
-
-    private byte[]? _nonce;
 
     private readonly RandomNumberGenerator _numberGenerator = RandomNumberGenerator.Create();
+    private readonly string                _password;
+    private readonly string                _username;
+
+    private byte[]? _nonce;
 
     public SoapSecurityHeader(string username, string password, TimeSpan timeShift)
     {
