@@ -8,11 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\netOnvifCore\netOnvifCore.csproj"/>
+        <ProjectReference Include="..\netOnvifCore\netOnvifCore.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="OnvifDiscovery" Version="1.2.2"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="OnvifDiscovery" Version="1.2.2" />
     </ItemGroup>
 
 </Project>
