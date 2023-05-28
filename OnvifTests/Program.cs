@@ -1,15 +1,45 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml;
 using netOnvifCore;
-using netOnvifCore.DeviceManagement;
+using netOnvifCore.AccessControl;
+using netOnvifCore.AccessRules;
+using netOnvifCore.ActionEngine;
+using netOnvifCore.Analytics;
+using netOnvifCore.ApplicationManagement;
+using netOnvifCore.AuthenticationBehavior;
+using netOnvifCore.Credential;
+using netOnvifCore.DeviceIO;
+using netOnvifCore.Display;
+using netOnvifCore.DoorControl;
+using netOnvifCore.Event;
+using netOnvifCore.Imaging;
 using netOnvifCore.Media;
+using netOnvifCore.Media2;
+using netOnvifCore.Provisioning;
+using netOnvifCore.Ptz;
+using netOnvifCore.Receiver;
+using netOnvifCore.Recording;
+using netOnvifCore.Replay;
+using netOnvifCore.Schedule;
+using netOnvifCore.Search;
+using netOnvifCore.Security;
+using netOnvifCore.Thermal;
+using netOnvifCore.Uplink;
 using Newtonsoft.Json;
 using OnvifDiscovery;
+using BinaryData = netOnvifCore.DeviceManagement.BinaryData;
+using CapabilityCategory = netOnvifCore.DeviceManagement.CapabilityCategory;
+using DeviceClient = netOnvifCore.DeviceManagement.DeviceClient;
 using Formatting = Newtonsoft.Json.Formatting;
+using GetDeviceInformationRequest = netOnvifCore.DeviceManagement.GetDeviceInformationRequest;
+using GetEndpointReferenceRequest = netOnvifCore.DeviceManagement.GetEndpointReferenceRequest;
+using GetSystemUrisRequest = netOnvifCore.DeviceManagement.GetSystemUrisRequest;
+using SystemLogType = netOnvifCore.DeviceManagement.SystemLogType;
 
 namespace OnvifTests;
 
@@ -48,49 +78,571 @@ public static class Program
         await File.WriteAllTextAsync($"./{directory}/{fileName}.json", JsonConvert.SerializeObject(obj, Formatting.Indented));
     }
 
+    [SuppressMessage("ReSharper", "RedundantNameQualifier")]
     private static async Task AllGetMethods()
     {
-        var deviceGetMethods = typeof(DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+        await Serialize(typeof(PACSPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Where(m => m.Name.StartsWith("Get"))
             .Select(x => x.Name)
-            .OrderBy(x => x);
-        await Serialize(deviceGetMethods, $"{MethodsPath}/Device", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PACSPortClient)}", "getMethods");
 
-        var mediaGetMethods = typeof(MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+        await Serialize(typeof(AccessRulesPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Where(m => m.Name.StartsWith("Get"))
             .Select(x => x.Name)
-            .OrderBy(x => x);
-        await Serialize(mediaGetMethods, $"{MethodsPath}/Media", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AccessRulesPortClient)}", "getMethods");
+
+        await Serialize(typeof(ActionEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ActionEnginePortClient)}", "getMethods");
+
+        await Serialize(typeof(AnalyticsEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AnalyticsEnginePortClient)}", "getMethods");
+
+        await Serialize(typeof(RuleEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(RuleEnginePortClient)}", "getMethods");
+
+        await Serialize(typeof(AppManagementClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AppManagementClient)}", "getMethods");
+
+        await Serialize(typeof(AuthenticationBehaviorPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AuthenticationBehaviorPortClient)}", "getMethods");
+
+        await Serialize(typeof(CredentialPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(CredentialPortClient)}", "getMethods");
+
+        await Serialize(typeof(netOnvifCore.DeviceIO.DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(netOnvifCore.DeviceIO.DeviceClient)}IO", "getMethods");
+
+        await Serialize(typeof(DeviceIOPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceIOPortClient)}", "getMethods");
+
+        await Serialize(typeof(netOnvifCore.DeviceManagement.DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceClient)}", "getMethods");
+
+        await Serialize(typeof(DisplayPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DisplayPortClient)}", "getMethods");
+
+        await Serialize(typeof(DoorControlPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DoorControlPortClient)}", "getMethods");
+
+        await Serialize(typeof(CreatePullPointClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(CreatePullPointClient)}", "getMethods");
+
+        await Serialize(typeof(EventPortTypeClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(EventPortTypeClient)}", "getMethods");
+
+        await Serialize(typeof(NotificationConsumerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationConsumerClient)}", "getMethods");
+
+        await Serialize(typeof(NotificationProducerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationProducerClient)}", "getMethods");
+
+        await Serialize(typeof(PausableSubscriptionManagerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PausableSubscriptionManagerClient)}", "getMethods");
+
+        await Serialize(typeof(PullPointClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointClient)}", "getMethods");
+
+        await Serialize(typeof(PullPointSubscriptionClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointSubscriptionClient)}", "getMethods");
+
+        await Serialize(typeof(SubscriptionManagerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(SubscriptionManagerClient)}", "getMethods");
+
+        await Serialize(typeof(ImagingPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ImagingPortClient)}", "getMethods");
+
+        await Serialize(typeof(netOnvifCore.Media.MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(MediaClient)}", "getMethods");
+
+        await Serialize(typeof(Media2Client).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(Media2Client)}", "getMethods");
+
+        await Serialize(typeof(ProvisioningServiceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ProvisioningServiceClient)}", "getMethods");
+
+        await Serialize(typeof(PTZClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PTZClient)}", "getMethods");
+
+        await Serialize(typeof(ReceiverPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReceiverPortClient)}", "getMethods");
+
+        await Serialize(typeof(RecordingPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(RecordingPortClient)}", "getMethods");
+
+        await Serialize(typeof(ReplayPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReplayPortClient)}", "getMethods");
+
+        await Serialize(typeof(SchedulePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(SchedulePortClient)}", "getMethods");
+
+        await Serialize(typeof(SearchPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(SearchPortClient)}", "getMethods");
+
+        await Serialize(typeof(AdvancedSecurityServiceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AdvancedSecurityServiceClient)}", "getMethods");
+
+        await Serialize(typeof(Dot1XClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(Dot1XClient)}", "getMethods");
+
+        await Serialize(typeof(KeystoreClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(KeystoreClient)}", "getMethods");
+
+        await Serialize(typeof(TLSServerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(TLSServerClient)}", "getMethods");
+
+        await Serialize(typeof(ThermalPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ThermalPortClient)}", "getMethods");
+
+        await Serialize(typeof(UplinkPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Get"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(UplinkPortClient)}", "getMethods");
     }
 
+    [SuppressMessage("ReSharper", "RedundantNameQualifier")]
     private static async Task AllSetMethods()
     {
-        var deviceGetMethods = typeof(DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+        await Serialize(typeof(PACSPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Where(m => m.Name.StartsWith("Set"))
             .Select(x => x.Name)
-            .OrderBy(x => x);
-        await Serialize(deviceGetMethods, $"{MethodsPath}/Device", "setMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PACSPortClient)}", "setMethods");
 
-        var mediaGetMethods = typeof(MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+        await Serialize(typeof(AccessRulesPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Where(m => m.Name.StartsWith("Set"))
             .Select(x => x.Name)
-            .OrderBy(x => x);
-        await Serialize(mediaGetMethods, $"{MethodsPath}/Media", "setMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AccessRulesPortClient)}", "setMethods");
+
+        await Serialize(typeof(ActionEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ActionEnginePortClient)}", "setMethods");
+
+        await Serialize(typeof(AnalyticsEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AnalyticsEnginePortClient)}", "setMethods");
+
+        await Serialize(typeof(RuleEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(RuleEnginePortClient)}", "setMethods");
+
+        await Serialize(typeof(AppManagementClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AppManagementClient)}", "setMethods");
+
+        await Serialize(typeof(AuthenticationBehaviorPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AuthenticationBehaviorPortClient)}", "setMethods");
+
+        await Serialize(typeof(CredentialPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(CredentialPortClient)}", "setMethods");
+
+        await Serialize(typeof(netOnvifCore.DeviceIO.DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(netOnvifCore.DeviceIO.DeviceClient)}IO", "setMethods");
+
+        await Serialize(typeof(DeviceIOPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceIOPortClient)}", "setMethods");
+
+        await Serialize(typeof(netOnvifCore.DeviceManagement.DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceClient)}", "setMethods");
+
+        await Serialize(typeof(DisplayPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DisplayPortClient)}", "setMethods");
+
+        await Serialize(typeof(DoorControlPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DoorControlPortClient)}", "setMethods");
+
+        await Serialize(typeof(CreatePullPointClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(CreatePullPointClient)}", "setMethods");
+
+        await Serialize(typeof(EventPortTypeClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(EventPortTypeClient)}", "setMethods");
+
+        await Serialize(typeof(NotificationConsumerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationConsumerClient)}", "setMethods");
+
+        await Serialize(typeof(NotificationProducerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationProducerClient)}", "setMethods");
+
+        await Serialize(typeof(PausableSubscriptionManagerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PausableSubscriptionManagerClient)}", "setMethods");
+
+        await Serialize(typeof(PullPointClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointClient)}", "setMethods");
+
+        await Serialize(typeof(PullPointSubscriptionClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointSubscriptionClient)}", "setMethods");
+
+        await Serialize(typeof(SubscriptionManagerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(SubscriptionManagerClient)}", "setMethods");
+
+        await Serialize(typeof(ImagingPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ImagingPortClient)}", "setMethods");
+
+        await Serialize(typeof(netOnvifCore.Media.MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(MediaClient)}", "setMethods");
+
+        await Serialize(typeof(Media2Client).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(Media2Client)}", "setMethods");
+
+        await Serialize(typeof(ProvisioningServiceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ProvisioningServiceClient)}", "setMethods");
+
+        await Serialize(typeof(PTZClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PTZClient)}", "setMethods");
+
+        await Serialize(typeof(ReceiverPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReceiverPortClient)}", "setMethods");
+
+        await Serialize(typeof(RecordingPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(RecordingPortClient)}", "setMethods");
+
+        await Serialize(typeof(ReplayPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReplayPortClient)}", "setMethods");
+
+        await Serialize(typeof(SchedulePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(SchedulePortClient)}", "setMethods");
+
+        await Serialize(typeof(SearchPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(SearchPortClient)}", "setMethods");
+
+        await Serialize(typeof(AdvancedSecurityServiceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AdvancedSecurityServiceClient)}", "setMethods");
+
+        await Serialize(typeof(Dot1XClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(Dot1XClient)}", "setMethods");
+
+        await Serialize(typeof(KeystoreClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(KeystoreClient)}", "setMethods");
+
+        await Serialize(typeof(TLSServerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(TLSServerClient)}", "setMethods");
+
+        await Serialize(typeof(ThermalPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ThermalPortClient)}", "setMethods");
+
+        await Serialize(typeof(UplinkPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(UplinkPortClient)}", "setMethods");
     }
 
+    [SuppressMessage("ReSharper", "RedundantNameQualifier")]
     private static async Task AllOtherMethods()
     {
-        var deviceGetMethods = typeof(DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+        await Serialize(typeof(PACSPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
             .Select(x => x.Name)
-            .OrderBy(x => x);
-        await Serialize(deviceGetMethods, $"{MethodsPath}/Device", "otherMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PACSPortClient)}", "otherMethods");
 
-        var mediaGetMethods = typeof(MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+        await Serialize(typeof(AccessRulesPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
             .Select(x => x.Name)
-            .OrderBy(x => x);
-        await Serialize(mediaGetMethods, $"{MethodsPath}/Media", "otherMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AccessRulesPortClient)}", "otherMethods");
+
+        await Serialize(typeof(ActionEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ActionEnginePortClient)}", "otherMethods");
+
+        await Serialize(typeof(AnalyticsEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AnalyticsEnginePortClient)}", "otherMethods");
+
+        await Serialize(typeof(RuleEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(RuleEnginePortClient)}", "otherMethods");
+
+        await Serialize(typeof(AppManagementClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AppManagementClient)}", "otherMethods");
+
+        await Serialize(typeof(AuthenticationBehaviorPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AuthenticationBehaviorPortClient)}", "otherMethods");
+
+        await Serialize(typeof(CredentialPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(CredentialPortClient)}", "otherMethods");
+
+        await Serialize(typeof(netOnvifCore.DeviceIO.DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(netOnvifCore.DeviceIO.DeviceClient)}IO", "otherMethods");
+
+        await Serialize(typeof(DeviceIOPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceIOPortClient)}", "otherMethods");
+
+        await Serialize(typeof(netOnvifCore.DeviceManagement.DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceClient)}", "otherMethods");
+
+        await Serialize(typeof(DisplayPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DisplayPortClient)}", "otherMethods");
+
+        await Serialize(typeof(DoorControlPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DoorControlPortClient)}", "otherMethods");
+
+        await Serialize(typeof(CreatePullPointClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(CreatePullPointClient)}", "otherMethods");
+
+        await Serialize(typeof(EventPortTypeClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(EventPortTypeClient)}", "otherMethods");
+
+        await Serialize(typeof(NotificationConsumerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationConsumerClient)}", "otherMethods");
+
+        await Serialize(typeof(NotificationProducerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationProducerClient)}", "otherMethods");
+
+        await Serialize(typeof(PausableSubscriptionManagerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PausableSubscriptionManagerClient)}", "otherMethods");
+
+        await Serialize(typeof(PullPointClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointClient)}", "otherMethods");
+
+        await Serialize(typeof(PullPointSubscriptionClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointSubscriptionClient)}", "otherMethods");
+
+        await Serialize(typeof(SubscriptionManagerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(SubscriptionManagerClient)}", "otherMethods");
+
+        await Serialize(typeof(ImagingPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ImagingPortClient)}", "otherMethods");
+
+        await Serialize(typeof(netOnvifCore.Media.MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(MediaClient)}", "otherMethods");
+
+        await Serialize(typeof(Media2Client).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(Media2Client)}", "otherMethods");
+
+        await Serialize(typeof(ProvisioningServiceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ProvisioningServiceClient)}", "otherMethods");
+
+        await Serialize(typeof(PTZClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PTZClient)}", "otherMethods");
+
+        await Serialize(typeof(ReceiverPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReceiverPortClient)}", "otherMethods");
+
+        await Serialize(typeof(RecordingPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(RecordingPortClient)}", "otherMethods");
+
+        await Serialize(typeof(ReplayPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReplayPortClient)}", "otherMethods");
+
+        await Serialize(typeof(SchedulePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(SchedulePortClient)}", "otherMethods");
+
+        await Serialize(typeof(SearchPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(SearchPortClient)}", "otherMethods");
+
+        await Serialize(typeof(AdvancedSecurityServiceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AdvancedSecurityServiceClient)}", "otherMethods");
+
+        await Serialize(typeof(Dot1XClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(Dot1XClient)}", "otherMethods");
+
+        await Serialize(typeof(KeystoreClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(KeystoreClient)}", "otherMethods");
+
+        await Serialize(typeof(TLSServerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(TLSServerClient)}", "otherMethods");
+
+        await Serialize(typeof(ThermalPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ThermalPortClient)}", "otherMethods");
+
+        await Serialize(typeof(UplinkPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
+            .Select(x => x.Name)
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(UplinkPortClient)}", "otherMethods");
     }
 
     private static async Task AllDeviceGetMethods(DeviceClient device)
@@ -123,9 +675,7 @@ public static class Program
         var certificatesStatus = device.GetCertificatesStatusAsync().Result;
         await Serialize(certificatesStatus, $"{DevicePath}", "certificatesStatus");
         foreach (var conf in certificatesStatus.CertificateStatus)
-        {
-            await Serialize(conf, $"{DevicePath}/certificatesStatus", $"{conf.CertificateID}");  
-        }
+            await Serialize(conf, $"{DevicePath}/certificatesStatus", $"{conf.CertificateID}");
 
         var clientCertificateMode = device.GetClientCertificateModeAsync().Result;
         await Serialize(clientCertificateMode, $"{DevicePath}", "clientCertificateMode");
@@ -157,7 +707,7 @@ public static class Program
 
         var dpAddresses = device.GetDPAddressesAsync().Result;
         await Serialize(dpAddresses, $"{DevicePath}", "dpAddresses");
-        foreach (var conf in dpAddresses.DPAddress) 
+        foreach (var conf in dpAddresses.DPAddress)
             await Serialize(conf, $"{DevicePath}/dpAddresses", $"{conf.DNSname}");
 
         var dynamicDns = device.GetDynamicDNSAsync().Result;
@@ -179,14 +729,14 @@ public static class Program
 
         var networkInterfaces = device.GetNetworkInterfacesAsync().Result;
         await Serialize(networkInterfaces, $"{DevicePath}", "networkInterfaces");
-        foreach (var conf in networkInterfaces.NetworkInterfaces) 
+        foreach (var conf in networkInterfaces.NetworkInterfaces)
             await Serialize(conf, $"{DevicePath}/networkInterfaces", $"{conf.token}");
 
         var networkProtocols = device.GetNetworkProtocolsAsync().Result;
         await Serialize(networkProtocols, $"{DevicePath}", "networkProtocols");
-        foreach (var conf in networkProtocols.NetworkProtocols) 
+        foreach (var conf in networkProtocols.NetworkProtocols)
             await Serialize(conf, $"{DevicePath}/networkProtocols", $"{conf.Name}");
-        
+
         var ntp = device.GetNTPAsync().Result;
         await Serialize(ntp, $"{DevicePath}", "ntp");
 
@@ -196,7 +746,7 @@ public static class Program
 
         var relayOutputs = device.GetRelayOutputsAsync().Result;
         await Serialize(relayOutputs, $"{DevicePath}", "relayOutputs");
-        foreach (var conf in relayOutputs.RelayOutputs) 
+        foreach (var conf in relayOutputs.RelayOutputs)
             await Serialize(conf, $"{DevicePath}/relayOutputs", $"{conf.token}");
 
         var remoteDiscoveryMode = device.GetRemoteDiscoveryModeAsync().Result;
@@ -207,7 +757,7 @@ public static class Program
 
         var scopes = device.GetScopesAsync().Result;
         await Serialize(scopes, $"{DevicePath}", "scopes");
-        foreach (var conf in scopes.Scopes) 
+        foreach (var conf in scopes.Scopes)
             await Serialize(conf, $"{DevicePath}/scopes", $"{conf.ScopeItem.Split('/').Last()}");
 
         var serviceCapabilities = device.GetServiceCapabilitiesAsync().Result;
@@ -215,7 +765,7 @@ public static class Program
 
         var services = device.GetServicesAsync(true).Result;
         await Serialize(services, $"{DevicePath}", "services");
-        foreach (var conf in services.Service) 
+        foreach (var conf in services.Service)
             await Serialize(conf, $"{DevicePath}/services", $"{conf.Namespace.Split('/')[^1]}");
 
         // ошибка var storageConfigurations = device.GetStorageConfigurationsAsync().Result;
@@ -227,9 +777,7 @@ public static class Program
         var systemBackup = device.GetSystemBackupAsync().Result;
         await Serialize(systemBackup, $"{DevicePath}", "systemBackup");
         foreach (var conf in systemBackup.BackupFiles)
-        {
             await Serialize(systemBackup, $"{DevicePath}/systemBackup", $"{conf.Name}");
-        }
 
         var systemDateAndTime = device.GetSystemDateAndTimeAsync().Result;
         await Serialize(systemDateAndTime, $"{DevicePath}", "systemDateAndTime");
@@ -245,12 +793,12 @@ public static class Program
 
         var systemUris = device.GetSystemUrisAsync(new GetSystemUrisRequest()).Result;
         await Serialize(systemUris, $"{DevicePath}", "systemUris");
-        foreach (var conf in systemUris.SystemLogUris) 
+        foreach (var conf in systemUris.SystemLogUris)
             await Serialize(conf, $"{DevicePath}/systemUris", $"{conf.Uri}");
 
         var users = device.GetUsersAsync().Result;
         await Serialize(users, $"{DevicePath}", "users");
-        foreach (var conf in users.User) 
+        foreach (var conf in users.User)
             await Serialize(conf, $"{DevicePath}/users", $"{conf.Username}");
 
         var wsdlUrl = device.GetWsdlUrlAsync().Result;
@@ -261,7 +809,7 @@ public static class Program
     {
         var profiles = media.GetProfilesAsync().Result;
         await Serialize(profiles, $"{MediaPath}", "profiles");
-        foreach (var conf in profiles.Profiles) 
+        foreach (var conf in profiles.Profiles)
             await Serialize(conf, $"{MediaPath}/profiles", $"{conf.token}");
 
         var audioDecoderConfigurations = media.GetAudioDecoderConfigurationsAsync().Result;
@@ -288,13 +836,13 @@ public static class Program
                 var audioEncoderConfigurationOptions = media.GetAudioEncoderConfigurationOptionsAsync(conf.token, prof.token).Result;
                 await Serialize(audioEncoderConfigurationOptions, $"{MediaPath}/audioEncoderConfigurations/audioEncoderConfigurationOptions", $"{prof.Name}");
                 foreach (var opt in audioEncoderConfigurationOptions.Options)
-                    await Serialize(opt, $"{MediaPath}/audioEncoderConfigurations/audioEncoderConfigurationOptions/Options                                                                  ", $"{opt.Encoding}");
+                    await Serialize(opt, $"{MediaPath}/audioEncoderConfigurations/audioEncoderConfigurationOptions/Options", $"{opt.Encoding}");
             }
         }
 
         var audioOutputs = media.GetAudioOutputsAsync().Result;
         await Serialize(audioOutputs, $"{MediaPath}", "audioOutputs");
-        foreach (var conf in audioOutputs.AudioOutputs) 
+        foreach (var conf in audioOutputs.AudioOutputs)
             await Serialize(conf, $"{MediaPath}/audioOutputs", $"{conf.token}");
 
         var audioOutputConfigurations = media.GetAudioOutputConfigurationsAsync().Result;
@@ -312,7 +860,7 @@ public static class Program
 
         var audioSources = media.GetAudioSourcesAsync().Result;
         await Serialize(audioSources, $"{MediaPath}", "audioSources");
-        foreach (var conf in audioSources.AudioSources) 
+        foreach (var conf in audioSources.AudioSources)
             await Serialize(conf, $"{MediaPath}/audioSources", $"{conf.token}");
 
         var audioSourceConfigurations = media.GetAudioSourceConfigurationsAsync().Result;
@@ -434,7 +982,7 @@ public static class Program
         {
             var videoSourceModes = media.GetVideoSourceModesAsync(conf.token).Result;
             await Serialize(videoSourceModes, $"{MediaPath}/videoSources", $"{videoSourceModes}");
-            foreach (var mode in videoSourceModes.VideoSourceModes) 
+            foreach (var mode in videoSourceModes.VideoSourceModes)
                 await Serialize(mode, $"{MediaPath}/videoSources/videoSourceModes", $"{mode.token}");
         }
     }
