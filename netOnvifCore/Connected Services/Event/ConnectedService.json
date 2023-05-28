@@ -1,0 +1,15 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "2.0.3",
+  "ExtendedData": {
+    "inputs": [
+      "../../../OnvifSpecification/wsdl/ver10/events/wsdl/event.wsdl"
+    ],
+    "namespaceMappings": [
+      "*, netOnvifCore.Event"
+    ],
+    "outputFile": "Event",
+    "targetFramework": "net7.0",
+    "typeReuseMode": "All"
+  }
+}
