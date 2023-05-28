@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -78,7 +77,6 @@ public static class Program
         await File.WriteAllTextAsync($"./{directory}/{fileName}.json", JsonConvert.SerializeObject(obj, Formatting.Indented));
     }
 
-    [SuppressMessage("ReSharper", "RedundantNameQualifier")]
     private static async Task AllGetMethods()
     {
         await Serialize(typeof(PACSPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
@@ -131,7 +129,7 @@ public static class Program
             .Select(x => x.Name)
             .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceIOPortClient)}", "getMethods");
 
-        await Serialize(typeof(netOnvifCore.DeviceManagement.DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+        await Serialize(typeof(DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Where(m => m.Name.StartsWith("Get"))
             .Select(x => x.Name)
             .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceClient)}", "getMethods");
@@ -191,7 +189,7 @@ public static class Program
             .Select(x => x.Name)
             .OrderBy(x => x), $"{MethodsPath}/{nameof(ImagingPortClient)}", "getMethods");
 
-        await Serialize(typeof(netOnvifCore.Media.MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+        await Serialize(typeof(MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Where(m => m.Name.StartsWith("Get"))
             .Select(x => x.Name)
             .OrderBy(x => x), $"{MethodsPath}/{nameof(MediaClient)}", "getMethods");
@@ -267,7 +265,6 @@ public static class Program
             .OrderBy(x => x), $"{MethodsPath}/{nameof(UplinkPortClient)}", "getMethods");
     }
 
-    [SuppressMessage("ReSharper", "RedundantNameQualifier")]
     private static async Task AllSetMethods()
     {
         await Serialize(typeof(PACSPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
@@ -320,7 +317,7 @@ public static class Program
             .Select(x => x.Name)
             .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceIOPortClient)}", "setMethods");
 
-        await Serialize(typeof(netOnvifCore.DeviceManagement.DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+        await Serialize(typeof(DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Where(m => m.Name.StartsWith("Set"))
             .Select(x => x.Name)
             .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceClient)}", "setMethods");
@@ -380,7 +377,7 @@ public static class Program
             .Select(x => x.Name)
             .OrderBy(x => x), $"{MethodsPath}/{nameof(ImagingPortClient)}", "setMethods");
 
-        await Serialize(typeof(netOnvifCore.Media.MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+        await Serialize(typeof(MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Where(m => m.Name.StartsWith("Set"))
             .Select(x => x.Name)
             .OrderBy(x => x), $"{MethodsPath}/{nameof(MediaClient)}", "setMethods");
@@ -456,7 +453,6 @@ public static class Program
             .OrderBy(x => x), $"{MethodsPath}/{nameof(UplinkPortClient)}", "setMethods");
     }
 
-    [SuppressMessage("ReSharper", "RedundantNameQualifier")]
     private static async Task AllOtherMethods()
     {
         await Serialize(typeof(PACSPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
@@ -509,7 +505,7 @@ public static class Program
             .Select(x => x.Name)
             .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceIOPortClient)}", "otherMethods");
 
-        await Serialize(typeof(netOnvifCore.DeviceManagement.DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+        await Serialize(typeof(DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
             .Select(x => x.Name)
             .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceClient)}", "otherMethods");
@@ -569,7 +565,7 @@ public static class Program
             .Select(x => x.Name)
             .OrderBy(x => x), $"{MethodsPath}/{nameof(ImagingPortClient)}", "otherMethods");
 
-        await Serialize(typeof(netOnvifCore.Media.MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+        await Serialize(typeof(MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
             .Select(x => x.Name)
             .OrderBy(x => x), $"{MethodsPath}/{nameof(MediaClient)}", "otherMethods");
