@@ -4,6 +4,7 @@ using netOnvifCore.DeviceManagement;
 using netOnvifCore.Imaging;
 using netOnvifCore.Media;
 using netOnvifCore.Media2;
+using netOnvifCore.Ptz;
 using netOnvifCore.Security;
 using DateTime = System.DateTime;
 
@@ -73,6 +74,21 @@ public static class OnvifClientFactory
         return media;
     }
 
+    public static async Task<PTZClient> CreatePtzClientAsync(DeviceClient deviceClient)
+    {
+        var capabilities = await deviceClient.GetCapabilitiesAsync(new[] { CapabilityCategory.Media });
+        var media = new PTZClient(CreateBinding(), new EndpointAddress(new Uri(capabilities.Capabilities.Media.XAddr)));
+
+        media.ChannelFactory.Endpoint.EndpointBehaviors.Clear();
+        foreach (var endpointEndpointBehavior in deviceClient.ChannelFactory.Endpoint.EndpointBehaviors)
+            media.ChannelFactory.Endpoint.EndpointBehaviors.Add(endpointEndpointBehavior);
+
+        // Connectivity Test
+        await media.OpenAsync();
+
+        return media;
+    }
+
     public static async Task<MediaClient> CreateMediaClientAsync(string deviceIp, string username, string password) => 
         await CreateMediaClientAsync(await CreateDeviceClientAsync(deviceIp, username, password));
 
@@ -81,6 +97,9 @@ public static class OnvifClientFactory
 
     public static async Task<ImagingPortClient> CreateImagingClientAsync(string deviceIp, string username, string password) => 
         await CreateImagingClientAsync(await CreateDeviceClientAsync(deviceIp, username, password));
+
+    public static async Task<PTZClient> CreatePtzClientAsync(string deviceIp, string username, string password) => 
+        await CreatePtzClientAsync(await CreateDeviceClientAsync(deviceIp, username, password));
 
     private static Binding CreateBinding()
     {
