@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Xml;
 using netOnvifCore;
 using netOnvifCore.AccessControl;
 using netOnvifCore.AccessRules;
@@ -33,6 +34,7 @@ using Newtonsoft.Json;
 using OnvifDiscovery;
 using CapabilityCategory = netOnvifCore.DeviceManagement.CapabilityCategory;
 using DeviceClient = netOnvifCore.DeviceManagement.DeviceClient;
+using Formatting = Newtonsoft.Json.Formatting;
 using GetDeviceInformationRequest = netOnvifCore.DeviceManagement.GetDeviceInformationRequest;
 using GetEndpointReferenceRequest = netOnvifCore.DeviceManagement.GetEndpointReferenceRequest;
 using StreamSetup = netOnvifCore.Media.StreamSetup;
@@ -48,6 +50,9 @@ public static class Program
     private const string DevicePath = $"{BasePath}/Device/Get";
     private const string MethodsPath = $"{BasePath}/Methods";
     private const string MediaPath = $"{BasePath}/Media/Get";
+    private const string Media2Path = $"{BasePath}/Media2/Get";
+    private const string ImagingPath = $"{BasePath}/Imaging/Get";
+    private const string PtzPath = $"{BasePath}/Ptz/Get";
 
     private static readonly List<(string Ip, (string Login, string Password) User)> Cameras = new()
     {
@@ -59,7 +64,7 @@ public static class Program
 
     public static async Task Main()
     {
-        var camera = Cameras[0];
+        var camera = Cameras[3];
         await new Discovery().Discover(1, device => camera = Cameras.First(x => x.Ip == device.Address));
         Console.WriteLine($"Address: {camera.Ip}");
 
@@ -70,12 +75,18 @@ public static class Program
 
             var device = OnvifClientFactory.CreateDeviceClientAsync(camera.Ip, camera.User.Login, camera.User.Password).Result;
             var media = await OnvifClientFactory.CreateMediaClientAsync(device);
+            var media2 = await OnvifClientFactory.CreateMedia2ClientAsync(device);
+            var imaging = await OnvifClientFactory.CreateImagingClientAsync(device);
+            var ptz = await OnvifClientFactory.CreatePtzClientAsync(device);
 
             await AllGetMethods();
             await AllSetMethods();
             await AllOtherMethods();
             await AllDeviceGetMethods(device);
             await AllMediaGetMethods(media);
+            await AllMedia2GetMethods(media, media2);
+            await AllImagingGetMethods(media, imaging);
+            await AllPtzGetMethods(media, ptz);
         }
     }
 
@@ -820,12 +831,15 @@ public static class Program
         await Serialize(audioDecoderConfigurations, $"{MediaPath}", "audioDecoderConfigurations");
         foreach (var conf in audioDecoderConfigurations.Configurations)
         {
+            await Serialize(conf, $"{MediaPath}/audioDecoderConfigurations", $"{conf.Name}");
+
             var audioDecoderConfiguration = media.GetAudioDecoderConfigurationAsync(conf.token).Result;
-            await Serialize(audioDecoderConfiguration, $"{MediaPath}/audioDecoderConfigurations", $"{audioDecoderConfiguration.Name}");
+            await Serialize(audioDecoderConfiguration, $"{MediaPath}/audioDecoderConfigurations/{conf.Name}", "audioDecoderConfiguration");
+
             foreach (var prof in profiles.Profiles)
             {
                 var audioDecoderConfigurationOptions = media.GetAudioDecoderConfigurationOptionsAsync(conf.token, prof.token).Result;
-                await Serialize(audioDecoderConfigurationOptions, $"{MediaPath}/audioDecoderConfigurations/AudioDecoderConfigurationOptions", $"{prof.Name}");
+                await Serialize(audioDecoderConfigurationOptions, $"{MediaPath}/audioDecoderConfigurations/{conf.Name}/audioDecoderConfigurationOptions/{prof.Name}", "audioDecoderConfigurationOptions");
             }
         }
 
@@ -833,14 +847,17 @@ public static class Program
         await Serialize(audioEncoderConfigurations, $"{MediaPath}", "audioEncoderConfigurations");
         foreach (var conf in audioEncoderConfigurations.Configurations)
         {
+            await Serialize(conf, $"{MediaPath}/audioEncoderConfigurations", $"{conf.Name}");
+
             var audioEncoderConfiguration = media.GetAudioEncoderConfigurationAsync(conf.token).Result;
-            await Serialize(audioEncoderConfiguration, $"{MediaPath}/audioEncoderConfigurations", $"{audioEncoderConfiguration.Name}");
+            await Serialize(audioEncoderConfiguration, $"{MediaPath}/audioEncoderConfigurations/{conf.Name}", "audioEncoderConfiguration");
+
             foreach (var prof in profiles.Profiles)
             {
                 var audioEncoderConfigurationOptions = media.GetAudioEncoderConfigurationOptionsAsync(conf.token, prof.token).Result;
-                await Serialize(audioEncoderConfigurationOptions, $"{MediaPath}/audioEncoderConfigurations/audioEncoderConfigurationOptions", $"{prof.Name}");
+                await Serialize(audioEncoderConfigurationOptions, $"{MediaPath}/audioEncoderConfigurations/{conf.Name}/audioEncoderConfigurationOptions/{prof.Name}", "audioEncoderConfigurationOptions");
                 foreach (var opt in audioEncoderConfigurationOptions.Options)
-                    await Serialize(opt, $"{MediaPath}/audioEncoderConfigurations/audioEncoderConfigurationOptions/Options", $"{opt.Encoding}");
+                    await Serialize(opt, $"{MediaPath}/audioEncoderConfigurations/{conf.Name}/audioEncoderConfigurationOptions/{prof.Name}/audioEncoderConfigurationOptions", $"{opt.Encoding}");
             }
         }
 
@@ -853,12 +870,15 @@ public static class Program
         await Serialize(audioOutputConfigurations, $"{MediaPath}", "audioOutputConfigurations");
         foreach (var conf in audioOutputConfigurations.Configurations)
         {
+            await Serialize(conf, $"{MediaPath}/audioOutputConfigurations", $"{conf.Name}");
+
             var audioOutputConfiguration = media.GetAudioOutputConfigurationAsync(conf.token).Result;
-            await Serialize(audioOutputConfiguration, $"{MediaPath}/audioOutputConfiguration", $"{audioOutputConfiguration.Name}");
+            await Serialize(audioOutputConfiguration, $"{MediaPath}/audioOutputConfiguration/{conf.Name}", "audioOutputConfiguration");
+
             foreach (var prof in profiles.Profiles)
             {
                 var audioOutputConfigurationOptions = media.GetAudioOutputConfigurationOptionsAsync(conf.token, prof.token).Result;
-                await Serialize(audioOutputConfigurationOptions, $"{MediaPath}/audioOutputConfiguration/audioOutputConfigurationOptions", $"{prof.Name}");
+                await Serialize(audioOutputConfigurationOptions, $"{MediaPath}/audioOutputConfiguration/{conf.Name}/audioOutputConfigurationOptions/{prof.Name}", "audioOutputConfigurationOptions");
             }
         }
 
@@ -871,97 +891,113 @@ public static class Program
         await Serialize(audioSourceConfigurations, $"{MediaPath}", "audioSourceConfigurations");
         foreach (var conf in audioSourceConfigurations.Configurations)
         {
+            await Serialize(conf, $"{MediaPath}/audioSourceConfigurations", $"{conf.Name}");
+
             var audioSourceConfiguration = media.GetAudioSourceConfigurationAsync(conf.token).Result;
-            await Serialize(audioSourceConfiguration, $"{MediaPath}/audioSourceConfigurations", $"{audioSourceConfiguration.Name}");
+            await Serialize(audioSourceConfiguration, $"{MediaPath}/audioSourceConfigurations/{conf.Name}", "audioSourceConfiguration");
+
             foreach (var prof in profiles.Profiles)
             {
                 var audioSourceConfigurationOptions = media.GetAudioSourceConfigurationOptionsAsync(conf.token, prof.token).Result;
-                await Serialize(audioSourceConfigurationOptions, $"{MediaPath}/audioSourceConfigurations/audioSourceConfigurationOptions", $"{prof.Name}");
+                await Serialize(audioSourceConfigurationOptions, $"{MediaPath}/audioSourceConfigurations/{conf.Name}/audioSourceConfigurationOptions/{prof.Name}", "audioSourceConfigurationOptions");
             }
         }
-
-        foreach (var prof in profiles.Profiles)
-        {
-            var compatibleAudioDecoderConfigurations = media.GetCompatibleAudioDecoderConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleAudioDecoderConfigurations, $"{MediaPath}/compatibleAudioDecoderConfigurations", $"{prof.Name}");
-            foreach (var conf in compatibleAudioDecoderConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/compatibleAudioDecoderConfigurations/{prof.Name}", $"{conf.Name}");
-
-            var compatibleAudioEncoderConfigurations = media.GetCompatibleAudioEncoderConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleAudioEncoderConfigurations, $"{MediaPath}/compatibleAudioEncoderConfigurations", $"{prof.Name}");
-            foreach (var conf in compatibleAudioEncoderConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/compatibleAudioEncoderConfigurations/{prof.Name}", $"{conf.Name}");
-
-            var compatibleAudioOutputConfigurations = media.GetCompatibleAudioOutputConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleAudioOutputConfigurations, $"{MediaPath}/compatibleAudioOutputConfigurations", $"{prof.Name}");
-            foreach (var conf in compatibleAudioOutputConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/compatibleAudioOutputConfigurations/{prof.Name}", $"{conf.Name}");
-
-            var compatibleAudioSourceConfigurations = media.GetCompatibleAudioSourceConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleAudioSourceConfigurations, $"{MediaPath}/compatibleAudioSourceConfigurations", $"{prof.Name}");
-            foreach (var conf in compatibleAudioSourceConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/compatibleAudioSourceConfigurations/{prof.Name}", $"{conf.Name}");
-
-            var compatibleMetadataConfigurations = media.GetCompatibleMetadataConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleMetadataConfigurations, $"{MediaPath}/compatibleMetadataConfigurations", $"{prof.Name}");
-            foreach (var conf in compatibleMetadataConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/compatibleMetadataConfigurations/{prof.Name}", $"{conf.Name}");
-
-            // MicroDigital не поддерживает var compatibleVideoAnalyticsConfigurations = media.GetCompatibleVideoAnalyticsConfigurationsAsync(prof.token).Result;
-
-            var compatibleVideoEncoderConfigurations = media.GetCompatibleVideoEncoderConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleVideoEncoderConfigurations, $"{MediaPath}/compatibleVideoEncoderConfigurations", $"{prof.Name}");
-            foreach (var conf in compatibleVideoEncoderConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/compatibleVideoEncoderConfigurations/{prof.Name}", $"{conf.Name}");
-
-            var compatibleVideoSourceConfigurations = media.GetCompatibleVideoSourceConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleVideoSourceConfigurations, $"{MediaPath}/compatibleVideoSourceConfigurations", $"{prof.Name}");
-            foreach (var conf in compatibleVideoSourceConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/compatibleVideoSourceConfigurations/{prof.Name}", $"{conf.Name}");
-
-            var profile = media.GetProfileAsync(prof.token).Result;
-            await Serialize(profile, $"{MediaPath}/profile", $"{prof.Name}");
-
-            var snapshotUri = media.GetSnapshotUriAsync(prof.token).Result;
-            await Serialize(snapshotUri, $"{MediaPath}/snapshotUri", $"{prof.Name}");
-        }
-
-        // MicroDigital не поддерживает var metadataConfigurations = media.GetMetadataConfigurationsAsync().Result;
-        // foreach (var conf in metadataConfigurations.Configurations)
-        // {
-        //     var metadataConfiguration = media.GetMetadataConfigurationAsync(conf.token).Result;
-        //     foreach (var prof in profiles.Profiles)
-        //     {
-        //         var metadataConfigurationOptions = media.GetMetadataConfigurationOptionsAsync(conf.token, prof.token).Result;
-        //     }
-        // }
-
-        var serviceCapabilities = media.GetServiceCapabilitiesAsync().Result;
-        await Serialize(serviceCapabilities, $"{MediaPath}", "serviceCapabilities");
 
         var streamSetup = new StreamSetup { Stream = StreamType.RTPUnicast, Transport = new Transport { Protocol = TransportProtocol.UDP, Tunnel = null } };
         foreach (var prof in profiles.Profiles)
         {
+            var compatibleAudioDecoderConfigurations = media.GetCompatibleAudioDecoderConfigurationsAsync(prof.token).Result;
+            await Serialize(compatibleAudioDecoderConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleAudioDecoderConfigurations");
+            foreach (var conf in compatibleAudioDecoderConfigurations.Configurations)
+                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleAudioDecoderConfigurations", $"{conf.Name}");
+
+            var compatibleAudioEncoderConfigurations = media.GetCompatibleAudioEncoderConfigurationsAsync(prof.token).Result;
+            await Serialize(compatibleAudioEncoderConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleAudioEncoderConfigurations");
+            foreach (var conf in compatibleAudioEncoderConfigurations.Configurations)
+                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleAudioEncoderConfigurations", $"{conf.Name}");
+
+            var compatibleAudioOutputConfigurations = media.GetCompatibleAudioOutputConfigurationsAsync(prof.token).Result;
+            await Serialize(compatibleAudioOutputConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleAudioOutputConfigurations");
+            foreach (var conf in compatibleAudioOutputConfigurations.Configurations)
+                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleAudioOutputConfigurations", $"{conf.Name}");
+
+            var compatibleAudioSourceConfigurations = media.GetCompatibleAudioSourceConfigurationsAsync(prof.token).Result;
+            await Serialize(compatibleAudioSourceConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleAudioSourceConfigurations");
+            foreach (var conf in compatibleAudioSourceConfigurations.Configurations)
+                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleAudioSourceConfigurations", $"{conf.Name}");
+
+            var compatibleMetadataConfigurations = media.GetCompatibleMetadataConfigurationsAsync(prof.token).Result;
+            await Serialize(compatibleMetadataConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleMetadataConfigurations");
+            foreach (var conf in compatibleMetadataConfigurations.Configurations)
+                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleMetadataConfigurations", $"{conf.Name}");
+
+            var compatibleVideoAnalyticsConfigurations = media.GetCompatibleVideoAnalyticsConfigurationsAsync(prof.token).Result;
+            await Serialize(compatibleVideoAnalyticsConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleVideoAnalyticsConfigurations");
+            foreach (var conf in compatibleVideoAnalyticsConfigurations.Configurations)
+                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleVideoAnalyticsConfigurations", $"{conf.Name}");
+
+            var compatibleVideoEncoderConfigurations = media.GetCompatibleVideoEncoderConfigurationsAsync(prof.token).Result;
+            await Serialize(compatibleVideoEncoderConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleVideoEncoderConfigurations");
+            foreach (var conf in compatibleVideoEncoderConfigurations.Configurations)
+                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleVideoEncoderConfigurations", $"{conf.Name}");
+
+            var compatibleVideoSourceConfigurations = media.GetCompatibleVideoSourceConfigurationsAsync(prof.token).Result;
+            await Serialize(compatibleVideoSourceConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleVideoSourceConfigurations");
+            foreach (var conf in compatibleVideoSourceConfigurations.Configurations)
+                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleVideoSourceConfigurations", $"{conf.Name}");
+
+            var profile = media.GetProfileAsync(prof.token).Result;
+            await Serialize(profile, $"{MediaPath}/profiles/{prof.Name}", "profile");
+
+            var snapshotUri = media.GetSnapshotUriAsync(prof.token).Result;
+            await Serialize(snapshotUri, $"{MediaPath}/profiles/{prof.Name}", "snapshotUri");
+
             var streamUri = media.GetStreamUriAsync(streamSetup, prof.token).Result;
-            await Serialize(streamUri, $"{MediaPath}/streamUri", $"{prof.Name}");
+            await Serialize(streamUri, $"{MediaPath}/profiles/{prof.Name}", "streamUri");
         }
 
-        // MicroDigital не поддерживает var videoAnalyticsConfigurations = media.GetVideoAnalyticsConfigurationsAsync().Result;
-        // foreach (var conf in videoAnalyticsConfigurations.Configurations)
-        // {
-        //     var videoAnalyticsConfiguration = media.GetVideoAnalyticsConfigurationAsync(conf.token).Result;
-        // }
+        var metadataConfigurations = media.GetMetadataConfigurationsAsync().Result;
+        await Serialize(metadataConfigurations, $"{MediaPath}", "metadataConfigurations");
+        foreach (var conf in metadataConfigurations.Configurations)
+        {
+            await Serialize(conf, $"{MediaPath}/metadataConfigurations", $"{conf.Name}");
+
+            var metadataConfiguration = media.GetMetadataConfigurationAsync(conf.token).Result;
+            await Serialize(metadataConfiguration, $"{MediaPath}/metadataConfigurations/{conf.Name}", "metadataConfiguration");
+
+            foreach (var prof in profiles.Profiles)
+            {
+                var metadataConfigurationOptions = media.GetMetadataConfigurationOptionsAsync(conf.token, prof.token).Result;
+                await Serialize(metadataConfigurationOptions, $"{MediaPath}/metadataConfigurations/{conf.Name}/metadataConfigurationOptions/{prof.Name}", "metadataConfigurationOptions");
+            }
+        }
+
+        var serviceCapabilities = media.GetServiceCapabilitiesAsync().Result;
+        await Serialize(serviceCapabilities, $"{MediaPath}", "serviceCapabilities");
+
+        var videoAnalyticsConfigurations = media.GetVideoAnalyticsConfigurationsAsync().Result;
+        await Serialize(videoAnalyticsConfigurations, $"{MediaPath}", "videoAnalyticsConfigurations");
+        foreach (var conf in videoAnalyticsConfigurations.Configurations)
+        {
+            await Serialize(conf, $"{MediaPath}/videoAnalyticsConfigurations", $"{conf.Name}");
+
+            var videoAnalyticsConfiguration = media.GetVideoAnalyticsConfigurationAsync(conf.token).Result;
+            await Serialize(videoAnalyticsConfiguration, $"{MediaPath}/videoAnalyticsConfigurations/{conf.Name}", "videoAnalyticsConfiguration");
+        }
 
         var videoEncoderConfigurations = media.GetVideoEncoderConfigurationsAsync().Result;
         await Serialize(videoEncoderConfigurations, $"{MediaPath}", "videoEncoderConfigurations");
         foreach (var conf in videoEncoderConfigurations.Configurations)
         {
+            await Serialize(conf, $"{MediaPath}/videoEncoderConfigurations", $"{conf.Name}");
+
             var videoEncoderConfiguration = media.GetVideoEncoderConfigurationAsync(conf.token).Result;
-            await Serialize(videoEncoderConfiguration, $"{MediaPath}/videoEncoderConfigurations", $"{videoEncoderConfiguration.Name}");
+            await Serialize(videoEncoderConfiguration, $"{MediaPath}/videoEncoderConfigurations/{conf.Name}", "videoEncoderConfiguration");
+
             foreach (var prof in profiles.Profiles)
             {
                 var videoEncoderConfigurationOptions = media.GetVideoEncoderConfigurationOptionsAsync(conf.token, prof.token).Result;
-                await Serialize(videoEncoderConfigurationOptions, $"{MediaPath}/videoEncoderConfigurations/videoEncoderConfigurationOptions", $"{prof.Name}");
+                await Serialize(videoEncoderConfigurationOptions, $"{MediaPath}/videoEncoderConfigurations/{conf.Name}/videoEncoderConfigurationOptions/{prof.Name}", "videoEncoderConfigurationOptions");
             }
         }
 
@@ -969,30 +1005,196 @@ public static class Program
         await Serialize(videoSourceConfigurations, $"{MediaPath}", "videoSourceConfigurations");
         foreach (var conf in videoSourceConfigurations.Configurations)
         {
+            await Serialize(conf, $"{MediaPath}/videoSourceConfigurations", $"{conf.Name}");
+
             var videoSourceConfiguration = media.GetVideoSourceConfigurationAsync(conf.token).Result;
-            await Serialize(videoSourceConfiguration, $"{MediaPath}/videoSourceConfigurations", $"{videoSourceConfiguration.Name}");
+            await Serialize(videoSourceConfiguration, $"{MediaPath}/videoSourceConfigurations/{conf.Name}", "videoSourceConfiguration");
+
             foreach (var prof in profiles.Profiles)
             {
                 var videoSourceConfigurationOptions = media.GetVideoSourceConfigurationOptionsAsync(conf.token, prof.token).Result;
-                await Serialize(videoSourceConfigurationOptions, $"{MediaPath}/videoSourceConfigurations/videoSourceConfigurationOptions", $"{prof.Name}");
+                await Serialize(videoSourceConfigurationOptions, $"{MediaPath}/videoSourceConfigurations/{conf.Name}/videoSourceConfigurationOptions/{prof.Name}", "videoSourceConfigurationOptions");
             }
 
-            // MicroDigital не поддерживает var oSDs = media.GetOSDsAsync(conf.token).Result;
-            // MicroDigital не поддерживает var osd = media.GetOSDAsync(new GetOSDRequest()).Result;
-            // MicroDigital не поддерживает var osdOptions = media.GetOSDOptionsAsync(new GetOSDOptionsRequest()).Result;
+            var oSDs = media.GetOSDsAsync(conf.token).Result;
+            await Serialize(oSDs, $"{MediaPath}/videoSourceConfigurations/{conf.Name}", "oSDs");
+            foreach (var osdConf in oSDs.OSDs)
+            {
+                var osd = media.GetOSDAsync(new GetOSDRequest(osdConf.token, new XmlElement[] { })).Result;
+                await Serialize(osd, $"{MediaPath}/videoSourceConfigurations/{conf.Name}/osd/{osdConf.token}", "osd");
+
+                var osdOptions = media.GetOSDOptionsAsync(new GetOSDOptionsRequest(osdConf.token, new XmlElement[] { })).Result;
+                await Serialize(osdOptions, $"{MediaPath}/videoSourceConfigurations/{conf.Name}/osdOptions/{osdConf.token}", "osdOptions");
+            }
 
             var guaranteedNumberOfVideoEncoderInstances = media.GetGuaranteedNumberOfVideoEncoderInstancesAsync(new GetGuaranteedNumberOfVideoEncoderInstancesRequest(conf.token)).Result;
-            await Serialize(guaranteedNumberOfVideoEncoderInstances, $"{MediaPath}/videoSourceConfigurations", "guaranteedNumberOfVideoEncoderInstances");
+            await Serialize(guaranteedNumberOfVideoEncoderInstances, $"{MediaPath}/videoSourceConfigurations/{conf.Name}", "guaranteedNumberOfVideoEncoderInstances");
         }
 
         var videoSources = media.GetVideoSourcesAsync().Result;
         await Serialize(videoSources, $"{MediaPath}", "videoSources");
         foreach (var conf in videoSources.VideoSources)
         {
+            await Serialize(conf, $"{MediaPath}/videoSources", $"{conf.token}");
+
             var videoSourceModes = media.GetVideoSourceModesAsync(conf.token).Result;
-            await Serialize(videoSourceModes, $"{MediaPath}/videoSources", $"{videoSourceModes}");
+            await Serialize(videoSourceModes, $"{MediaPath}/videoSources/{conf.token}", "videoSources");
             foreach (var mode in videoSourceModes.VideoSourceModes)
-                await Serialize(mode, $"{MediaPath}/videoSources/videoSourceModes", $"{mode.token}");
+                await Serialize(mode, $"{MediaPath}/videoSources/{conf.token}/videoSourceModes/{mode.token}", "mode");
         }
+    }
+
+    private static async Task AllMedia2GetMethods(MediaClient media, Media2Client media2)
+    {
+        var profiles = media2.GetProfilesAsync(null, null).Result;
+        await Serialize(profiles, $"{Media2Path}", "profiles");
+        foreach (var conf in profiles.Profiles)
+        {
+            await Serialize(profiles, $"{Media2Path}/profiles", $"{conf.Name}");
+
+            var videoSourceConfigurations = media2.GetVideoSourceConfigurationsAsync(null, conf.token).Result;
+            await Serialize(videoSourceConfigurations, $"{Media2Path}/profiles/{conf.Name}", "videoSourceConfigurations");
+            foreach (var prof in videoSourceConfigurations.Configurations)
+            {
+                await Serialize(prof, $"{Media2Path}/profiles/{conf.Name}/videoSourceConfigurations", $"{prof.Name}");
+
+                var videoSourceConfigurationOptions = media2.GetVideoSourceConfigurationOptionsAsync(null, prof.token).Result;
+                await Serialize(videoSourceConfigurationOptions, $"{Media2Path}/profiles/{conf.Name}/videoSourceConfigurations", "videoSourceConfigurationOptions");
+            }
+
+            var videoEncoderConfigurations = media2.GetVideoEncoderConfigurationsAsync(null, conf.token).Result;
+            await Serialize(videoEncoderConfigurations, $"{Media2Path}/profiles/{conf.Name}", "videoEncoderConfigurations");
+            foreach (var prof in videoEncoderConfigurations.Configurations)
+            {
+                await Serialize(prof, $"{Media2Path}/profiles/{conf.Name}/videoEncoderConfigurations", $"{prof.Name}");
+
+                var videoEncoderConfigurationOptions = media2.GetVideoEncoderConfigurationOptionsAsync(null, prof.token).Result;
+                await Serialize(videoEncoderConfigurationOptions, $"{Media2Path}/profiles/{conf.Name}/videoEncoderConfigurations", "videoEncoderConfigurationOptions");
+            }
+        }
+
+        var videoSources = media.GetVideoSourcesAsync().Result;
+        foreach (var conf in videoSources.VideoSources)
+        {
+            var videoSourceModes = media2.GetVideoSourceModesAsync(conf.token).Result;
+            await Serialize(videoSourceModes, $"{Media2Path}/videoSources/{conf.token}", "videoSourceModes");
+            foreach (var mode in videoSourceModes.VideoSourceModes)
+                await Serialize(mode, $"{Media2Path}/videoSources/{conf.token}/videoSourceModes", $"{mode.token}");
+        }
+
+        //var analyticsConfigurations = media2.GetAnalyticsConfigurationsAsync().Result;
+        //var audioDecoderConfigurationOptions = media2.GetAudioDecoderConfigurationOptionsAsync().Result;
+        //var audioDecoderConfigurations = media2.GetAudioDecoderConfigurationsAsync().Result;
+        //var audioEncoderConfigurationOptions = media2.GetAudioEncoderConfigurationOptionsAsync().Result;
+        //var audioEncoderConfigurations = media2.GetAudioEncoderConfigurationsAsync().Result;
+        //var audioOutputConfigurationOptions = media2.GetAudioOutputConfigurationOptionsAsync().Result;
+        //var audioOutputConfigurations = media2.GetAudioOutputConfigurationsAsync().Result;
+        //var audioSourceConfigurationOptions = media2.GetAudioSourceConfigurationOptionsAsync().Result;
+        //var audioSourceConfigurations = media2.GetAudioSourceConfigurationsAsync().Result;
+        //var maskOptions = media2.GetMaskOptionsAsync().Result;
+        //var masks = media2.GetMasksAsync().Result;
+        //var metadataConfigurationOptions = media2.GetMetadataConfigurationOptionsAsync().Result;
+        //var metadataConfigurations = media2.GetMetadataConfigurationsAsync().Result;
+        //var osdOptions = media2.GetOSDOptionsAsync().Result;
+        //var oSDs = media2.GetOSDsAsync().Result;
+        //var serviceCapabilities = media2.GetServiceCapabilitiesAsync().Result;
+        //var snapshotUri = media2.GetSnapshotUriAsync().Result;
+        //var streamUri = media2.GetStreamUriAsync().Result;
+        //var videoEncoderInstances = media2.GetVideoEncoderInstancesAsync().Result;
+    }
+
+    private static async Task AllImagingGetMethods(MediaClient media, ImagingPortClient imaging)
+    {
+        var serviceCapabilitiesImaging = imaging.GetServiceCapabilitiesAsync().Result;
+        await Serialize(serviceCapabilitiesImaging, $"{ImagingPath}", "serviceCapabilities");
+
+        var videoSources = media.GetVideoSourcesAsync().Result;
+        await Serialize(videoSources, $"{ImagingPath}", "videoSources");
+        foreach (var conf in videoSources.VideoSources)
+        {
+            await Serialize(conf, $"{ImagingPath}/videoSources/", $"{conf.token}");
+
+            var status = imaging.GetStatusAsync(conf.token).Result;
+            await Serialize(status, $"{ImagingPath}/videoSources/{conf.token}", "status");
+
+            var options = imaging.GetOptionsAsync(conf.token).Result;
+            await Serialize(options, $"{ImagingPath}/videoSources/{conf.token}", "options");
+
+            var moveOptions = imaging.GetMoveOptionsAsync(conf.token).Result;
+            await Serialize(moveOptions, $"{ImagingPath}/videoSources/{conf.token}", "moveOptions");
+
+            var imagingSettings = imaging.GetImagingSettingsAsync(conf.token).Result;
+            await Serialize(imagingSettings, $"{ImagingPath}/videoSources/{conf.token}", "imagingSettings");
+
+            var presets = imaging.GetPresetsAsync(conf.token).Result;
+            await Serialize(presets, $"{ImagingPath}/videoSources/{conf.token}", "presets");
+            foreach (var pres in presets.Preset)
+                await Serialize(pres, $"{ImagingPath}/videoSources/{conf.token}/presets", $"{pres.Name}");
+
+            var currentPreset = imaging.GetCurrentPresetAsync(conf.token).Result;
+            await Serialize(currentPreset, $"{ImagingPath}/videoSources/{conf.token}", "currentPreset");
+        }
+    }
+
+    private static async Task AllPtzGetMethods(MediaClient media, PTZClient ptz)
+    {
+        var configurations = ptz.GetConfigurationsAsync().Result;
+        await Serialize(configurations, $"{PtzPath}", "configurations");
+        foreach (var conf in configurations.PTZConfiguration)
+        {
+            await Serialize(conf, $"{PtzPath}/configurations", $"{conf.Name}");
+
+            var configuration = ptz.GetConfigurationAsync(conf.token).Result;
+            await Serialize(configuration, $"{PtzPath}/configurations/{conf.Name}", "configuration");
+
+            var configurationOptions = ptz.GetConfigurationOptionsAsync(conf.token).Result;
+            await Serialize(configurationOptions, $"{PtzPath}/configurations/{conf.Name}", "configurationOptions");
+        }
+
+        var profiles = media.GetProfilesAsync().Result;
+        await Serialize(profiles, $"{PtzPath}", "profiles");
+        foreach (var conf in profiles.Profiles)
+        {
+            await Serialize(conf, $"{PtzPath}/profiles", $"{conf.Name}");
+
+            var status = ptz.GetStatusAsync(conf.token).Result;
+            await Serialize(status, $"{PtzPath}/profiles/{conf.Name}", "status");
+
+            var compatibleConfigurations = ptz.GetCompatibleConfigurationsAsync(conf.token).Result;
+            await Serialize(compatibleConfigurations, $"{PtzPath}/profiles/{conf.Name}", "compatibleConfigurations");
+            foreach (var compConf in compatibleConfigurations.PTZConfiguration)
+                await Serialize(compConf, $"{PtzPath}/profiles/{conf.Name}/compatibleConfigurations", $"{compConf.Name}");
+
+            var presets = ptz.GetPresetsAsync(conf.token).Result;
+            await Serialize(presets, $"{PtzPath}/profiles/{conf.Name}", "presets");
+            foreach (var pres in presets.Preset)
+            {
+                await Serialize(pres, $"{PtzPath}/profiles/{conf.Name}/presets", $"{pres.Name}");
+
+                var presetTour = ptz.GetPresetTourAsync(pres.token, conf.token).Result;
+                await Serialize(presetTour, $"{PtzPath}/profiles/{conf.Name}/presets", "presetTour");
+            }
+
+            var presetTours = ptz.GetPresetToursAsync(conf.token).Result;
+            await Serialize(presetTours, $"{PtzPath}/profiles/{conf.Name}", "presetTours");
+            foreach (var pres in presetTours.PresetTour) 
+                await Serialize(pres, $"{PtzPath}/profiles/{conf.Name}/presetTours", $"{pres.Name}");
+
+            //var presetTourOptions = ptz.GetPresetTourOptionsAsync(pres.token, conf.token).Result;
+            //await Serialize(presetTourOptions, $"{PtzPath}/profiles/presetTours", $"presetTourOptions");
+        }
+
+        var nodes = ptz.GetNodesAsync().Result;
+        await Serialize(nodes, $"{PtzPath}", "nodes");
+        foreach (var conf in nodes.PTZNode)
+        {
+            await Serialize(conf, $"{PtzPath}/nodes", $"{conf.Name}");
+
+            var node = ptz.GetNodeAsync(conf.token).Result;
+            await Serialize(node, $"{PtzPath}/nodes/{conf.Name}", "node");
+        }
+
+        var serviceCapabilities = ptz.GetServiceCapabilitiesAsync().Result;
+        await Serialize(serviceCapabilities, $"{PtzPath}", "serviceCapabilities");
     }
 }
