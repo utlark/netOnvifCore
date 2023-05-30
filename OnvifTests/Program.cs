@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -41,6 +42,7 @@ using StreamSetup = netOnvifCore.Media.StreamSetup;
 using StreamType = netOnvifCore.Media.StreamType;
 using Transport = netOnvifCore.Media.Transport;
 using TransportProtocol = netOnvifCore.Media.TransportProtocol;
+// ReSharper disable UnusedMember.Local
 
 namespace OnvifTests;
 
@@ -54,6 +56,7 @@ public static class Program
     private const string ImagingPath = $"{BasePath}/Imaging/Get";
     private const string PtzPath = $"{BasePath}/Ptz/Get";
 
+    [SuppressMessage("ReSharper", "UnusedMember.Local")]
     private enum RotateModes
     {
         Normal = 0,
@@ -62,6 +65,7 @@ public static class Program
         Both = 269
     }
 
+    [SuppressMessage("ReSharper", "UnusedMember.Local")]
     private enum CameraModels
     {
         NovaCam,
