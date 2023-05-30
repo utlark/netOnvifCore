@@ -31,7 +31,7 @@ public static class OnvifClientFactory
 
     public static async Task<MediaClient> CreateMediaClientAsync(DeviceClient deviceClient)
     {
-        var capabilities = await deviceClient.GetCapabilitiesAsync(new[] { CapabilityCategory.Media });
+        var capabilities = await deviceClient.GetCapabilitiesAsync(new[] { CapabilityCategory.All });
         var media = new MediaClient(CreateBinding(), new EndpointAddress(new Uri(capabilities.Capabilities.Media.XAddr)));
 
         media.ChannelFactory.Endpoint.EndpointBehaviors.Clear();
@@ -46,47 +46,47 @@ public static class OnvifClientFactory
 
     public static async Task<Media2Client> CreateMedia2ClientAsync(DeviceClient deviceClient)
     {
-        var capabilities = await deviceClient.GetCapabilitiesAsync(new[] { CapabilityCategory.Media });
-        var media = new Media2Client(CreateBinding(), new EndpointAddress(new Uri(capabilities.Capabilities.Media.XAddr)));
+        var capabilities = await deviceClient.GetCapabilitiesAsync(new[] { CapabilityCategory.All });
+        var newDeviceClient = new Media2Client(CreateBinding(), new EndpointAddress(new Uri(capabilities.Capabilities.Media.XAddr)));
 
-        media.ChannelFactory.Endpoint.EndpointBehaviors.Clear();
+        newDeviceClient.ChannelFactory.Endpoint.EndpointBehaviors.Clear();
         foreach (var endpointEndpointBehavior in deviceClient.ChannelFactory.Endpoint.EndpointBehaviors)
-            media.ChannelFactory.Endpoint.EndpointBehaviors.Add(endpointEndpointBehavior);
+            newDeviceClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(endpointEndpointBehavior);
 
         // Connectivity Test
-        await media.OpenAsync();
+        await newDeviceClient.OpenAsync();
 
-        return media;
+        return newDeviceClient;
     }
 
     public static async Task<ImagingPortClient> CreateImagingClientAsync(DeviceClient deviceClient)
     {
-        var capabilities = await deviceClient.GetCapabilitiesAsync(new[] { CapabilityCategory.Media });
-        var media = new ImagingPortClient(CreateBinding(), new EndpointAddress(new Uri(capabilities.Capabilities.Media.XAddr)));
+        var capabilities = await deviceClient.GetCapabilitiesAsync(new[] { CapabilityCategory.All });
+        var newDeviceClient = new ImagingPortClient(CreateBinding(), new EndpointAddress(new Uri(capabilities.Capabilities.Imaging.XAddr)));
 
-        media.ChannelFactory.Endpoint.EndpointBehaviors.Clear();
+        newDeviceClient.ChannelFactory.Endpoint.EndpointBehaviors.Clear();
         foreach (var endpointEndpointBehavior in deviceClient.ChannelFactory.Endpoint.EndpointBehaviors)
-            media.ChannelFactory.Endpoint.EndpointBehaviors.Add(endpointEndpointBehavior);
+            newDeviceClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(endpointEndpointBehavior);
 
         // Connectivity Test
-        await media.OpenAsync();
+        await newDeviceClient.OpenAsync();
 
-        return media;
+        return newDeviceClient;
     }
 
     public static async Task<PTZClient> CreatePtzClientAsync(DeviceClient deviceClient)
     {
-        var capabilities = await deviceClient.GetCapabilitiesAsync(new[] { CapabilityCategory.Media });
-        var media = new PTZClient(CreateBinding(), new EndpointAddress(new Uri(capabilities.Capabilities.Media.XAddr)));
+        var capabilities = await deviceClient.GetCapabilitiesAsync(new[] { CapabilityCategory.All });
+        var newDeviceClient = new PTZClient(CreateBinding(), new EndpointAddress(new Uri(capabilities.Capabilities.PTZ.XAddr)));
 
-        media.ChannelFactory.Endpoint.EndpointBehaviors.Clear();
+        newDeviceClient.ChannelFactory.Endpoint.EndpointBehaviors.Clear();
         foreach (var endpointEndpointBehavior in deviceClient.ChannelFactory.Endpoint.EndpointBehaviors)
-            media.ChannelFactory.Endpoint.EndpointBehaviors.Add(endpointEndpointBehavior);
+            newDeviceClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(endpointEndpointBehavior);
 
         // Connectivity Test
-        await media.OpenAsync();
+        await newDeviceClient.OpenAsync();
 
-        return media;
+        return newDeviceClient;
     }
 
     public static async Task<MediaClient> CreateMediaClientAsync(string deviceIp, string username, string password) => 
