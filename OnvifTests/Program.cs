@@ -54,18 +54,38 @@ public static class Program
     private const string ImagingPath = $"{BasePath}/Imaging/Get";
     private const string PtzPath = $"{BasePath}/Ptz/Get";
 
+    private enum RotateModes
+    {
+        Normal = 0,
+        Flip = 180,
+        Mirror = 89,
+        Both = 269
+    }
+
+    private enum CameraModels
+    {
+        NovaCam,
+        Ltv,
+        Infinity,
+        MicroDigital
+    }
+
+    private static CameraModels _cameraModel;
+
     private static readonly List<(string Ip, (string Login, string Password) User)> Cameras = new()
     {
         new ValueTuple<string, (string Login, string Password)>("20.0.1.10", new ValueTuple<string, string>("root", "root")),
         new ValueTuple<string, (string Login, string Password)>("20.0.1.11", new ValueTuple<string, string>("admin", "admin")),
         new ValueTuple<string, (string Login, string Password)>("20.0.1.12", new ValueTuple<string, string>("root", "root")),
-        new ValueTuple<string, (string Login, string Password)>("20.0.1.13", new ValueTuple<string, string>("admin", "123456"))
+        new ValueTuple<string, (string Login, string Password)>("20.0.1.13", new ValueTuple<string, string>("admin", "123456")),
+        new ValueTuple<string, (string Login, string Password)>("10.15.51.120", new ValueTuple<string, string>("admin", "admin"))
     };
 
     public static async Task Main()
     {
-        var camera = Cameras[3];
-        await new Discovery().Discover(1, device => camera = Cameras.First(x => x.Ip == device.Address));
+        var camera = Cameras[4];
+        if (string.IsNullOrEmpty(camera.Ip))
+            await new Discovery().Discover(1, device => camera = Cameras.First(x => x.Ip == device.Address));
         Console.WriteLine($"Address: {camera.Ip}");
 
         if (!string.IsNullOrEmpty(camera.Ip))
@@ -74,20 +94,76 @@ public static class Program
                 Directory.Delete(BasePath, true);
 
             var device = OnvifClientFactory.CreateDeviceClientAsync(camera.Ip, camera.User.Login, camera.User.Password).Result;
+
+            _cameraModel = device.GetDeviceInformationAsync(new GetDeviceInformationRequest()).Result.Manufacturer switch
+            {
+                "BASIC_45S" => CameraModels.NovaCam,
+                "LTV" => CameraModels.Ltv,
+                "Infinity" => CameraModels.Infinity,
+                "Microdigital Inc.," => CameraModels.MicroDigital,
+                _ => _cameraModel
+            };
+
             var media = await OnvifClientFactory.CreateMediaClientAsync(device);
-            var media2 = await OnvifClientFactory.CreateMedia2ClientAsync(device);
             var imaging = await OnvifClientFactory.CreateImagingClientAsync(device);
-            var ptz = await OnvifClientFactory.CreatePtzClientAsync(device);
 
             await AllGetMethods();
             await AllSetMethods();
             await AllOtherMethods();
             await AllDeviceGetMethods(device);
             await AllMediaGetMethods(media);
-            await AllMedia2GetMethods(media, media2);
             await AllImagingGetMethods(media, imaging);
-            await AllPtzGetMethods(media, ptz);
+
+            Media2Client media2 = null;
+            try
+            {
+                media2 = await OnvifClientFactory.CreateMedia2ClientAsync(device);
+            }
+            catch
+            {
+                // ignored
+            }
+
+            if (media2 != null)
+                await AllMedia2GetMethods(media, media2);
+
+            PTZClient ptz = null;
+            try
+            {
+                ptz = await OnvifClientFactory.CreatePtzClientAsync(device);
+            }
+            catch
+            {
+                // ignored
+            }
+
+            if (ptz != null)
+                await AllPtzGetMethods(media, ptz);
         }
+    }
+
+    private static async Task SetSourceRotate(MediaClient media, RotateModes modes)
+    {
+        var configuration = media.GetVideoSourceConfigurationsAsync().Result.Configurations[0];
+
+        var doc = new XmlDocument();
+
+        var modeElement = doc.CreateElement("tt:Mode", "http://www.onvif.org/ver10/schema");
+        modeElement.InnerText = "ON";
+
+        var degreeElement = doc.CreateElement("tt:Degree", "http://www.onvif.org/ver10/schema");
+        degreeElement.InnerText = ((int)modes).ToString();
+
+        var rotateElement = doc.CreateElement("tt:Rotate", "http://www.onvif.org/ver10/schema");
+        rotateElement.AppendChild(modeElement);
+        rotateElement.AppendChild(degreeElement);
+
+        var extensionElement = doc.CreateElement("tt:Extension", "http://www.onvif.org/ver10/schema");
+        extensionElement.AppendChild(rotateElement);
+
+        configuration.Any = new[] { extensionElement };
+
+        await media.SetVideoSourceConfigurationAsync(configuration, true);
     }
 
     private static async Task Serialize(object obj, string directory, string fileName)
@@ -662,8 +738,15 @@ public static class Program
 
     private static async Task AllDeviceGetMethods(DeviceClient device)
     {
-        var accessPolicy = device.GetAccessPolicyAsync().Result;
-        await Serialize(accessPolicy, $"{DevicePath}", "accessPolicy");
+        try
+        {
+            var accessPolicy = device.GetAccessPolicyAsync().Result;
+            await Serialize(accessPolicy, $"{DevicePath}", "accessPolicy");
+        }
+        catch
+        {
+            // ignored
+        }
 
         // MicroDigital не поддерживает var authFailureWarningConfiguration = device.GetAuthFailureWarningConfigurationAsync(new GetAuthFailureWarningConfigurationRequest()).Result;
         // MicroDigital не поддерживает var authFailureWarningOptions = device.GetAuthFailureWarningOptionsAsync(new GetAuthFailureWarningOptionsRequest()).Result;
@@ -728,8 +811,15 @@ public static class Program
         // Infinity не поддерживает var dynamicDns = device.GetDynamicDNSAsync().Result;
         // await Serialize(dynamicDns, $"{DevicePath}", "dynamicDns");
 
-        var endpointReference = device.GetEndpointReferenceAsync(new GetEndpointReferenceRequest()).Result;
-        await Serialize(endpointReference, $"{DevicePath}", "endpointReference");
+        try
+        {
+            var endpointReference = device.GetEndpointReferenceAsync(new GetEndpointReferenceRequest()).Result;
+            await Serialize(endpointReference, $"{DevicePath}", "endpointReference");
+        }
+        catch
+        {
+            // ignored
+        }
 
         // MicroDigital не поддерживает var geoLocation = device.GetGeoLocationAsync().Result;
 
@@ -853,12 +943,17 @@ public static class Program
             await Serialize(audioEncoderConfiguration, $"{MediaPath}/audioEncoderConfigurations/{conf.Name}", "audioEncoderConfiguration");
 
             foreach (var prof in profiles.Profiles)
-            {
-                var audioEncoderConfigurationOptions = media.GetAudioEncoderConfigurationOptionsAsync(conf.token, prof.token).Result;
-                await Serialize(audioEncoderConfigurationOptions, $"{MediaPath}/audioEncoderConfigurations/{conf.Name}/audioEncoderConfigurationOptions/{prof.Name}", "audioEncoderConfigurationOptions");
-                foreach (var opt in audioEncoderConfigurationOptions.Options)
-                    await Serialize(opt, $"{MediaPath}/audioEncoderConfigurations/{conf.Name}/audioEncoderConfigurationOptions/{prof.Name}/audioEncoderConfigurationOptions", $"{opt.Encoding}");
-            }
+                try
+                {
+                    var audioEncoderConfigurationOptions = media.GetAudioEncoderConfigurationOptionsAsync(conf.token, prof.token).Result;
+                    await Serialize(audioEncoderConfigurationOptions, $"{MediaPath}/audioEncoderConfigurations/{conf.Name}/audioEncoderConfigurationOptions/{prof.Name}", "audioEncoderConfigurationOptions");
+                    foreach (var opt in audioEncoderConfigurationOptions.Options)
+                        await Serialize(opt, $"{MediaPath}/audioEncoderConfigurations/{conf.Name}/audioEncoderConfigurationOptions/{prof.Name}/audioEncoderConfigurationOptions", $"{opt.Encoding}");
+                }
+                catch
+                {
+                    // ignored
+                }
         }
 
         var audioOutputs = media.GetAudioOutputsAsync().Result;
@@ -906,15 +1001,25 @@ public static class Program
         var streamSetup = new StreamSetup { Stream = StreamType.RTPUnicast, Transport = new Transport { Protocol = TransportProtocol.UDP, Tunnel = null } };
         foreach (var prof in profiles.Profiles)
         {
-            var compatibleAudioDecoderConfigurations = media.GetCompatibleAudioDecoderConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleAudioDecoderConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleAudioDecoderConfigurations");
-            foreach (var conf in compatibleAudioDecoderConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleAudioDecoderConfigurations", $"{conf.Name}");
+            if (_cameraModel != CameraModels.NovaCam)
+            {
+                var compatibleAudioDecoderConfigurations = media.GetCompatibleAudioDecoderConfigurationsAsync(prof.token).Result;
+                await Serialize(compatibleAudioDecoderConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleAudioDecoderConfigurations");
+                foreach (var conf in compatibleAudioDecoderConfigurations.Configurations)
+                    await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleAudioDecoderConfigurations", $"{conf.Name}");
+            }
 
-            var compatibleAudioEncoderConfigurations = media.GetCompatibleAudioEncoderConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleAudioEncoderConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleAudioEncoderConfigurations");
-            foreach (var conf in compatibleAudioEncoderConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleAudioEncoderConfigurations", $"{conf.Name}");
+            try
+            {
+                var compatibleAudioEncoderConfigurations = media.GetCompatibleAudioEncoderConfigurationsAsync(prof.token).Result;
+                await Serialize(compatibleAudioEncoderConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleAudioEncoderConfigurations");
+                foreach (var conf in compatibleAudioEncoderConfigurations.Configurations)
+                    await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleAudioEncoderConfigurations", $"{conf.Name}");
+            }
+            catch
+            {
+                // ignored
+            }
 
             var compatibleAudioOutputConfigurations = media.GetCompatibleAudioOutputConfigurationsAsync(prof.token).Result;
             await Serialize(compatibleAudioOutputConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleAudioOutputConfigurations");
@@ -931,10 +1036,18 @@ public static class Program
             foreach (var conf in compatibleMetadataConfigurations.Configurations)
                 await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleMetadataConfigurations", $"{conf.Name}");
 
-            var compatibleVideoAnalyticsConfigurations = media.GetCompatibleVideoAnalyticsConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleVideoAnalyticsConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleVideoAnalyticsConfigurations");
-            foreach (var conf in compatibleVideoAnalyticsConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleVideoAnalyticsConfigurations", $"{conf.Name}");
+            if (_cameraModel != CameraModels.NovaCam)
+                try
+                {
+                    var compatibleVideoAnalyticsConfigurations = media.GetCompatibleVideoAnalyticsConfigurationsAsync(prof.token).Result;
+                    await Serialize(compatibleVideoAnalyticsConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleVideoAnalyticsConfigurations");
+                    foreach (var conf in compatibleVideoAnalyticsConfigurations.Configurations)
+                        await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleVideoAnalyticsConfigurations", $"{conf.Name}");
+                }
+                catch
+                {
+                    // ignored
+                }
 
             var compatibleVideoEncoderConfigurations = media.GetCompatibleVideoEncoderConfigurationsAsync(prof.token).Result;
             await Serialize(compatibleVideoEncoderConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleVideoEncoderConfigurations");
@@ -956,33 +1069,47 @@ public static class Program
             await Serialize(streamUri, $"{MediaPath}/profiles/{prof.Name}", "streamUri");
         }
 
-        var metadataConfigurations = media.GetMetadataConfigurationsAsync().Result;
-        await Serialize(metadataConfigurations, $"{MediaPath}", "metadataConfigurations");
-        foreach (var conf in metadataConfigurations.Configurations)
+        try
         {
-            await Serialize(conf, $"{MediaPath}/metadataConfigurations", $"{conf.Name}");
-
-            var metadataConfiguration = media.GetMetadataConfigurationAsync(conf.token).Result;
-            await Serialize(metadataConfiguration, $"{MediaPath}/metadataConfigurations/{conf.Name}", "metadataConfiguration");
-
-            foreach (var prof in profiles.Profiles)
+            var metadataConfigurations = media.GetMetadataConfigurationsAsync().Result;
+            await Serialize(metadataConfigurations, $"{MediaPath}", "metadataConfigurations");
+            foreach (var conf in metadataConfigurations.Configurations)
             {
-                var metadataConfigurationOptions = media.GetMetadataConfigurationOptionsAsync(conf.token, prof.token).Result;
-                await Serialize(metadataConfigurationOptions, $"{MediaPath}/metadataConfigurations/{conf.Name}/metadataConfigurationOptions/{prof.Name}", "metadataConfigurationOptions");
+                await Serialize(conf, $"{MediaPath}/metadataConfigurations", $"{conf.Name}");
+
+                var metadataConfiguration = media.GetMetadataConfigurationAsync(conf.token).Result;
+                await Serialize(metadataConfiguration, $"{MediaPath}/metadataConfigurations/{conf.Name}", "metadataConfiguration");
+
+                foreach (var prof in profiles.Profiles)
+                {
+                    var metadataConfigurationOptions = media.GetMetadataConfigurationOptionsAsync(conf.token, prof.token).Result;
+                    await Serialize(metadataConfigurationOptions, $"{MediaPath}/metadataConfigurations/{conf.Name}/metadataConfigurationOptions/{prof.Name}", "metadataConfigurationOptions");
+                }
             }
+        }
+        catch
+        {
+            // ignored
         }
 
         var serviceCapabilities = media.GetServiceCapabilitiesAsync().Result;
         await Serialize(serviceCapabilities, $"{MediaPath}", "serviceCapabilities");
 
-        var videoAnalyticsConfigurations = media.GetVideoAnalyticsConfigurationsAsync().Result;
-        await Serialize(videoAnalyticsConfigurations, $"{MediaPath}", "videoAnalyticsConfigurations");
-        foreach (var conf in videoAnalyticsConfigurations.Configurations)
+        try
         {
-            await Serialize(conf, $"{MediaPath}/videoAnalyticsConfigurations", $"{conf.Name}");
+            var videoAnalyticsConfigurations = media.GetVideoAnalyticsConfigurationsAsync().Result;
+            await Serialize(videoAnalyticsConfigurations, $"{MediaPath}", "videoAnalyticsConfigurations");
+            foreach (var conf in videoAnalyticsConfigurations.Configurations)
+            {
+                await Serialize(conf, $"{MediaPath}/videoAnalyticsConfigurations", $"{conf.Name}");
 
-            var videoAnalyticsConfiguration = media.GetVideoAnalyticsConfigurationAsync(conf.token).Result;
-            await Serialize(videoAnalyticsConfiguration, $"{MediaPath}/videoAnalyticsConfigurations/{conf.Name}", "videoAnalyticsConfiguration");
+                var videoAnalyticsConfiguration = media.GetVideoAnalyticsConfigurationAsync(conf.token).Result;
+                await Serialize(videoAnalyticsConfiguration, $"{MediaPath}/videoAnalyticsConfigurations/{conf.Name}", "videoAnalyticsConfiguration");
+            }
+        }
+        catch
+        {
+            // ignored
         }
 
         var videoEncoderConfigurations = media.GetVideoEncoderConfigurationsAsync().Result;
@@ -1016,15 +1143,22 @@ public static class Program
                 await Serialize(videoSourceConfigurationOptions, $"{MediaPath}/videoSourceConfigurations/{conf.Name}/videoSourceConfigurationOptions/{prof.Name}", "videoSourceConfigurationOptions");
             }
 
-            var oSDs = media.GetOSDsAsync(conf.token).Result;
-            await Serialize(oSDs, $"{MediaPath}/videoSourceConfigurations/{conf.Name}", "oSDs");
-            foreach (var osdConf in oSDs.OSDs)
+            try
             {
-                var osd = media.GetOSDAsync(new GetOSDRequest(osdConf.token, new XmlElement[] { })).Result;
-                await Serialize(osd, $"{MediaPath}/videoSourceConfigurations/{conf.Name}/osd/{osdConf.token}", "osd");
+                var oSDs = media.GetOSDsAsync(conf.token).Result;
+                await Serialize(oSDs, $"{MediaPath}/videoSourceConfigurations/{conf.Name}", "oSDs");
+                foreach (var osdConf in oSDs.OSDs)
+                {
+                    var osd = media.GetOSDAsync(new GetOSDRequest(osdConf.token, new XmlElement[] { })).Result;
+                    await Serialize(osd, $"{MediaPath}/videoSourceConfigurations/{conf.Name}/osd/{osdConf.token}", "osd");
 
-                var osdOptions = media.GetOSDOptionsAsync(new GetOSDOptionsRequest(osdConf.token, new XmlElement[] { })).Result;
-                await Serialize(osdOptions, $"{MediaPath}/videoSourceConfigurations/{conf.Name}/osdOptions/{osdConf.token}", "osdOptions");
+                    var osdOptions = media.GetOSDOptionsAsync(new GetOSDOptionsRequest(osdConf.token, new XmlElement[] { })).Result;
+                    await Serialize(osdOptions, $"{MediaPath}/videoSourceConfigurations/{conf.Name}/osdOptions/{osdConf.token}", "osdOptions");
+                }
+            }
+            catch
+            {
+                // ignored
             }
 
             var guaranteedNumberOfVideoEncoderInstances = media.GetGuaranteedNumberOfVideoEncoderInstancesAsync(new GetGuaranteedNumberOfVideoEncoderInstancesRequest(conf.token)).Result;
@@ -1037,50 +1171,83 @@ public static class Program
         {
             await Serialize(conf, $"{MediaPath}/videoSources", $"{conf.token}");
 
-            var videoSourceModes = media.GetVideoSourceModesAsync(conf.token).Result;
-            await Serialize(videoSourceModes, $"{MediaPath}/videoSources/{conf.token}", "videoSources");
-            foreach (var mode in videoSourceModes.VideoSourceModes)
-                await Serialize(mode, $"{MediaPath}/videoSources/{conf.token}/videoSourceModes/{mode.token}", "mode");
+            try
+            {
+                var videoSourceModes = media.GetVideoSourceModesAsync(conf.token).Result;
+                await Serialize(videoSourceModes, $"{MediaPath}/videoSources/{conf.token}", "videoSources");
+                foreach (var mode in videoSourceModes.VideoSourceModes)
+                    await Serialize(mode, $"{MediaPath}/videoSources/{conf.token}/videoSourceModes/{mode.token}", "mode");
+            }
+            catch
+            {
+                // ignored
+            }
         }
     }
 
     private static async Task AllMedia2GetMethods(MediaClient media, Media2Client media2)
     {
-        var profiles = media2.GetProfilesAsync(null, null).Result;
-        await Serialize(profiles, $"{Media2Path}", "profiles");
-        foreach (var conf in profiles.Profiles)
+        try
         {
-            await Serialize(profiles, $"{Media2Path}/profiles", $"{conf.Name}");
-
-            var videoSourceConfigurations = media2.GetVideoSourceConfigurationsAsync(null, conf.token).Result;
-            await Serialize(videoSourceConfigurations, $"{Media2Path}/profiles/{conf.Name}", "videoSourceConfigurations");
-            foreach (var prof in videoSourceConfigurations.Configurations)
+            var profiles = media2.GetProfilesAsync(null, null).Result;
+            await Serialize(profiles, $"{Media2Path}", "profiles");
+            foreach (var conf in profiles.Profiles)
             {
-                await Serialize(prof, $"{Media2Path}/profiles/{conf.Name}/videoSourceConfigurations", $"{prof.Name}");
+                await Serialize(profiles, $"{Media2Path}/profiles", $"{conf.Name}");
 
-                var videoSourceConfigurationOptions = media2.GetVideoSourceConfigurationOptionsAsync(null, prof.token).Result;
-                await Serialize(videoSourceConfigurationOptions, $"{Media2Path}/profiles/{conf.Name}/videoSourceConfigurations", "videoSourceConfigurationOptions");
+                var videoSourceConfigurations = media2.GetVideoSourceConfigurationsAsync(null, conf.token).Result;
+                await Serialize(videoSourceConfigurations, $"{Media2Path}/profiles/{conf.Name}", "videoSourceConfigurations");
+                foreach (var prof in videoSourceConfigurations.Configurations)
+                {
+                    await Serialize(prof, $"{Media2Path}/profiles/{conf.Name}/videoSourceConfigurations", $"{prof.Name}");
+
+                    try
+                    {
+                        var videoSourceConfigurationOptions = media2.GetVideoSourceConfigurationOptionsAsync(null, prof.token).Result;
+                        await Serialize(videoSourceConfigurationOptions, $"{Media2Path}/profiles/{conf.Name}/videoSourceConfigurations", "videoSourceConfigurationOptions");
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                }
+
+                var videoEncoderConfigurations = media2.GetVideoEncoderConfigurationsAsync(null, conf.token).Result;
+                await Serialize(videoEncoderConfigurations, $"{Media2Path}/profiles/{conf.Name}", "videoEncoderConfigurations");
+                foreach (var prof in videoEncoderConfigurations.Configurations)
+                {
+                    await Serialize(prof, $"{Media2Path}/profiles/{conf.Name}/videoEncoderConfigurations", $"{prof.Name}");
+
+                    try
+                    {
+                        var videoEncoderConfigurationOptions = media2.GetVideoEncoderConfigurationOptionsAsync(null, prof.token).Result;
+                        await Serialize(videoEncoderConfigurationOptions, $"{Media2Path}/profiles/{conf.Name}/videoEncoderConfigurations", "videoEncoderConfigurationOptions");
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                }
             }
-
-            var videoEncoderConfigurations = media2.GetVideoEncoderConfigurationsAsync(null, conf.token).Result;
-            await Serialize(videoEncoderConfigurations, $"{Media2Path}/profiles/{conf.Name}", "videoEncoderConfigurations");
-            foreach (var prof in videoEncoderConfigurations.Configurations)
-            {
-                await Serialize(prof, $"{Media2Path}/profiles/{conf.Name}/videoEncoderConfigurations", $"{prof.Name}");
-
-                var videoEncoderConfigurationOptions = media2.GetVideoEncoderConfigurationOptionsAsync(null, prof.token).Result;
-                await Serialize(videoEncoderConfigurationOptions, $"{Media2Path}/profiles/{conf.Name}/videoEncoderConfigurations", "videoEncoderConfigurationOptions");
-            }
+        }
+        catch
+        {
+            // ignored
         }
 
         var videoSources = media.GetVideoSourcesAsync().Result;
         foreach (var conf in videoSources.VideoSources)
-        {
-            var videoSourceModes = media2.GetVideoSourceModesAsync(conf.token).Result;
-            await Serialize(videoSourceModes, $"{Media2Path}/videoSources/{conf.token}", "videoSourceModes");
-            foreach (var mode in videoSourceModes.VideoSourceModes)
-                await Serialize(mode, $"{Media2Path}/videoSources/{conf.token}/videoSourceModes", $"{mode.token}");
-        }
+            try
+            {
+                var videoSourceModes = media2.GetVideoSourceModesAsync(conf.token).Result;
+                await Serialize(videoSourceModes, $"{Media2Path}/videoSources/{conf.token}", "videoSourceModes");
+                foreach (var mode in videoSourceModes.VideoSourceModes)
+                    await Serialize(mode, $"{Media2Path}/videoSources/{conf.token}/videoSourceModes", $"{mode.token}");
+            }
+            catch
+            {
+                // ignored
+            }
 
         //var analyticsConfigurations = media2.GetAnalyticsConfigurationsAsync().Result;
         //var audioDecoderConfigurationOptions = media2.GetAudioDecoderConfigurationOptionsAsync().Result;
@@ -1126,13 +1293,27 @@ public static class Program
             var imagingSettings = imaging.GetImagingSettingsAsync(conf.token).Result;
             await Serialize(imagingSettings, $"{ImagingPath}/videoSources/{conf.token}", "imagingSettings");
 
-            var presets = imaging.GetPresetsAsync(conf.token).Result;
-            await Serialize(presets, $"{ImagingPath}/videoSources/{conf.token}", "presets");
-            foreach (var pres in presets.Preset)
-                await Serialize(pres, $"{ImagingPath}/videoSources/{conf.token}/presets", $"{pres.Name}");
+            try
+            {
+                var presets = imaging.GetPresetsAsync(conf.token).Result;
+                await Serialize(presets, $"{ImagingPath}/videoSources/{conf.token}", "presets");
+                foreach (var pres in presets.Preset)
+                    await Serialize(pres, $"{ImagingPath}/videoSources/{conf.token}/presets", $"{pres.Name}");
+            }
+            catch
+            {
+                // ignored
+            }
 
-            var currentPreset = imaging.GetCurrentPresetAsync(conf.token).Result;
-            await Serialize(currentPreset, $"{ImagingPath}/videoSources/{conf.token}", "currentPreset");
+            try
+            {
+                var currentPreset = imaging.GetCurrentPresetAsync(conf.token).Result;
+                await Serialize(currentPreset, $"{ImagingPath}/videoSources/{conf.token}", "currentPreset");
+            }
+            catch
+            {
+                // ignored
+            }
         }
     }
 
@@ -1177,11 +1358,20 @@ public static class Program
 
             var presetTours = ptz.GetPresetToursAsync(conf.token).Result;
             await Serialize(presetTours, $"{PtzPath}/profiles/{conf.Name}", "presetTours");
-            foreach (var pres in presetTours.PresetTour) 
+            foreach (var pres in presetTours.PresetTour)
+            {
                 await Serialize(pres, $"{PtzPath}/profiles/{conf.Name}/presetTours", $"{pres.Name}");
 
-            //var presetTourOptions = ptz.GetPresetTourOptionsAsync(pres.token, conf.token).Result;
-            //await Serialize(presetTourOptions, $"{PtzPath}/profiles/presetTours", $"presetTourOptions");
+                try
+                {
+                    var presetTourOptions = ptz.GetPresetTourOptionsAsync(conf.token, pres.token).Result;
+                    await Serialize(presetTourOptions, $"{PtzPath}/profiles/{conf.Name}/presetTours/{pres.Name}", "presetTourOptions");
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
         }
 
         var nodes = ptz.GetNodesAsync().Result;
