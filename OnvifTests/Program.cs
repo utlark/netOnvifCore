@@ -32,32 +32,40 @@ using netOnvifCore.Security;
 using netOnvifCore.Thermal;
 using netOnvifCore.Uplink;
 using Newtonsoft.Json;
-using OnvifDiscovery;
 using CapabilityCategory = netOnvifCore.DeviceManagement.CapabilityCategory;
 using DeviceClient = netOnvifCore.DeviceManagement.DeviceClient;
 using Formatting = Newtonsoft.Json.Formatting;
+using GetAuthFailureWarningConfigurationRequest = netOnvifCore.DeviceManagement.GetAuthFailureWarningConfigurationRequest;
+using GetAuthFailureWarningOptionsRequest = netOnvifCore.DeviceManagement.GetAuthFailureWarningOptionsRequest;
 using GetDeviceInformationRequest = netOnvifCore.DeviceManagement.GetDeviceInformationRequest;
 using GetEndpointReferenceRequest = netOnvifCore.DeviceManagement.GetEndpointReferenceRequest;
+using GetPasswordComplexityConfigurationRequest = netOnvifCore.DeviceManagement.GetPasswordComplexityConfigurationRequest;
+using GetPasswordComplexityOptionsRequest = netOnvifCore.DeviceManagement.GetPasswordComplexityOptionsRequest;
+using GetPasswordHistoryConfigurationRequest = netOnvifCore.DeviceManagement.GetPasswordHistoryConfigurationRequest;
+using GetSystemUrisRequest = netOnvifCore.DeviceManagement.GetSystemUrisRequest;
 using StreamSetup = netOnvifCore.Media.StreamSetup;
 using StreamType = netOnvifCore.Media.StreamType;
+using SystemLogType = netOnvifCore.DeviceManagement.SystemLogType;
 using Transport = netOnvifCore.Media.Transport;
 using TransportProtocol = netOnvifCore.Media.TransportProtocol;
-// ReSharper disable UnusedMember.Local
 
 namespace OnvifTests;
 
+[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public static class Program
 {
-    private const string BasePath = "CameraSettings/";
-    private const string DevicePath = $"{BasePath}/Device/Get";
-    private const string MethodsPath = $"{BasePath}/Methods";
-    private const string MediaPath = $"{BasePath}/Media/Get";
-    private const string Media2Path = $"{BasePath}/Media2/Get";
-    private const string ImagingPath = $"{BasePath}/Imaging/Get";
-    private const string PtzPath = $"{BasePath}/Ptz/Get";
+    [SuppressMessage("ReSharper", "UnusedMember.Local")]
+    public enum CameraManufacturers
+    {
+        NovaCam,
+        Ltv,
+        Infinity,
+        MicroDigital,
+        UniView
+    }
 
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
-    private enum RotateModes
+    public enum InfinityRotateModes
     {
         Normal = 0,
         Flip = 180,
@@ -65,88 +73,95 @@ public static class Program
         Both = 269
     }
 
-    [SuppressMessage("ReSharper", "UnusedMember.Local")]
-    private enum CameraModels
-    {
-        NovaCam,
-        Ltv,
-        Infinity,
-        MicroDigital
-    }
+    private const string BasePath = "OnvifData/";
+    private const string MethodsPath = $"{BasePath}/Methods";
 
-    private static CameraModels _cameraModel;
+    private static string _devicePath;
+    private static string _mediaPath;
+    private static string _media2Path;
+    private static string _imagingPath;
+    private static string _ptzPath;
 
-    private static readonly List<(string Ip, (string Login, string Password) User)> Cameras = new()
+    private static CameraManufacturers _cameraManufacturer;
+
+    private static readonly List<(string Ip, (string Login, string Password) User)> AvailableCameras = new()
     {
         new ValueTuple<string, (string Login, string Password)>("20.0.1.10", new ValueTuple<string, string>("root", "root")),
         new ValueTuple<string, (string Login, string Password)>("20.0.1.11", new ValueTuple<string, string>("admin", "admin")),
         new ValueTuple<string, (string Login, string Password)>("20.0.1.12", new ValueTuple<string, string>("root", "root")),
         new ValueTuple<string, (string Login, string Password)>("20.0.1.13", new ValueTuple<string, string>("admin", "123456")),
-        new ValueTuple<string, (string Login, string Password)>("10.15.51.120", new ValueTuple<string, string>("admin", "admin"))
+        new ValueTuple<string, (string Login, string Password)>("10.15.51.120", new ValueTuple<string, string>("admin", "admin")),
+        new ValueTuple<string, (string Login, string Password)>("10.15.51.126", new ValueTuple<string, string>("admin", "123456Ps@"))
     };
 
     public static async Task Main()
     {
-        var camera = Cameras[4];
-        if (string.IsNullOrEmpty(camera.Ip))
-            await new Discovery().Discover(1, device => camera = Cameras.First(x => x.Ip == device.Address));
-        Console.WriteLine($"Address: {camera.Ip}");
-
-        if (!string.IsNullOrEmpty(camera.Ip))
+        if (!Directory.Exists(MethodsPath))
         {
-            if (Directory.Exists(BasePath))
-                Directory.Delete(BasePath, true);
+            await SaveAllOnvifFilteredMethods(m => m.Name.StartsWith("Get"), "getMethods");
+            await SaveAllOnvifFilteredMethods(m => m.Name.StartsWith("Set"), "setMethods");
+            await SaveAllOnvifFilteredMethods(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"), "otherMethods");
+        }
 
-            var device = OnvifClientFactory.CreateDeviceClientAsync(camera.Ip, camera.User.Login, camera.User.Password).Result;
+        //foreach (var camera in AvailableCameras)
+        {
+            var camera = AvailableCameras[1];
+            Console.WriteLine($"Address: {camera.Ip}");
 
-            _cameraModel = device.GetDeviceInformationAsync(new GetDeviceInformationRequest()).Result.Manufacturer switch
-            {
-                "BASIC_45S" => CameraModels.NovaCam,
-                "LTV" => CameraModels.Ltv,
-                "Infinity" => CameraModels.Infinity,
-                "Microdigital Inc.," => CameraModels.MicroDigital,
-                _ => _cameraModel
-            };
+            var device = OnvifClientFactory.CreateDeviceClientAsync(camera.Ip, camera.User.Login, camera.User.Password)
+                .Result;
 
-            var media = await OnvifClientFactory.CreateMediaClientAsync(device);
-            var imaging = await OnvifClientFactory.CreateImagingClientAsync(device);
+            _cameraManufacturer =
+                device.GetDeviceInformationAsync(new GetDeviceInformationRequest()).Result.Manufacturer switch
+                {
+                    "BASIC_45S" => CameraManufacturers.NovaCam,
+                    "LTV" => CameraManufacturers.Ltv,
+                    "Infinity" => CameraManufacturers.Infinity,
+                    "Microdigital Inc.," => CameraManufacturers.MicroDigital,
+                    "UNIVIEW" => CameraManufacturers.UniView,
+                    _ => _cameraManufacturer
+                };
 
-            await AllGetMethods();
-            await AllSetMethods();
-            await AllOtherMethods();
-            await AllDeviceGetMethods(device);
-            await AllMediaGetMethods(media);
-            await AllImagingGetMethods(media, imaging);
+            if (Directory.Exists($"{BasePath}/{_cameraManufacturer}"))
+                Directory.Delete($"{BasePath}/{_cameraManufacturer}", true);
 
-            Media2Client media2 = null;
-            try
-            {
-                media2 = await OnvifClientFactory.CreateMedia2ClientAsync(device);
-            }
-            catch
-            {
-                // ignored
-            }
+            _devicePath = $"{BasePath}/CamerasSettings/{_cameraManufacturer}/Device/Get";
+            _mediaPath = $"{BasePath}/CamerasSettings/{_cameraManufacturer}/Media/Get";
+            _media2Path = $"{BasePath}/CamerasSettings/{_cameraManufacturer}/Media2/Get";
+            _imagingPath = $"{BasePath}/CamerasSettings/{_cameraManufacturer}/Imaging/Get";
+            _ptzPath = $"{BasePath}/CamerasSettings/{_cameraManufacturer}/Ptz/Get";
 
-            if (media2 != null)
-                await AllMedia2GetMethods(media, media2);
+            var media = OnvifClientFactory.CreateMediaClientAsync(device).Result;
+            var imaging = OnvifClientFactory.CreateImagingClientAsync(device).Result;
 
-            PTZClient ptz = null;
-            try
-            {
-                ptz = await OnvifClientFactory.CreatePtzClientAsync(device);
-            }
-            catch
-            {
-                // ignored
-            }
+            await SaveAllDeviceClientGetMethods(device);
+            await SaveAllMediaClientGetMethods(media);
+            await SaveAllImagingClientGetMethods(media, imaging);
 
-            if (ptz != null)
-                await AllPtzGetMethods(media, ptz);
+            await ExecuteAndIgnoreExceptions(async () => await SaveAllMedia2ClientGetMethods(media, OnvifClientFactory.CreateMedia2ClientAsync(device).Result));
+            await ExecuteAndIgnoreExceptions(async () => await SaveAllPtzClientGetMethods(media, OnvifClientFactory.CreatePtzClientAsync(device).Result));
         }
     }
 
-    private static async Task SetSourceRotate(MediaClient media, RotateModes modes)
+    private static async Task ExecuteAndIgnoreExceptions(Func<Task> taskAction)
+    {
+        try
+        {
+            await taskAction();
+        }
+        catch
+        {
+            // Проигнорировать исключение и продолжить выполнение кода
+        }
+    }
+
+    private static async Task Serialize(object obj, string directory, string fileName)
+    {
+        Directory.CreateDirectory($"./{directory}");
+        await File.WriteAllTextAsync($"./{directory}/{fileName}.json", JsonConvert.SerializeObject(obj, Formatting.Indented));
+    }
+
+    private static async Task SetSourceRotate(MediaClient media, InfinityRotateModes modes)
     {
         var configuration = media.GetVideoSourceConfigurationsAsync().Result.Configurations[0];
 
@@ -170,1088 +185,749 @@ public static class Program
         await media.SetVideoSourceConfigurationAsync(configuration, true);
     }
 
-    private static async Task Serialize(object obj, string directory, string fileName)
-    {
-        Directory.CreateDirectory($"./{directory}");
-        await File.WriteAllTextAsync($"./{directory}/{fileName}.json", JsonConvert.SerializeObject(obj, Formatting.Indented));
-    }
-
-    private static async Task AllGetMethods()
+    private static async Task SaveAllOnvifFilteredMethods(Func<MethodInfo, bool> filterCondition, string fileName)
     {
         await Serialize(typeof(PACSPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PACSPortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PACSPortClient)}", fileName);
 
         await Serialize(typeof(AccessRulesPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AccessRulesPortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AccessRulesPortClient)}", fileName);
 
         await Serialize(typeof(ActionEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ActionEnginePortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ActionEnginePortClient)}", fileName);
 
         await Serialize(typeof(AnalyticsEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AnalyticsEnginePortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AnalyticsEnginePortClient)}", fileName);
 
         await Serialize(typeof(RuleEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(RuleEnginePortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(RuleEnginePortClient)}", fileName);
 
         await Serialize(typeof(AppManagementClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AppManagementClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AppManagementClient)}", fileName);
 
         await Serialize(typeof(AuthenticationBehaviorPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AuthenticationBehaviorPortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AuthenticationBehaviorPortClient)}", fileName);
 
         await Serialize(typeof(CredentialPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(CredentialPortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(CredentialPortClient)}", fileName);
 
         await Serialize(typeof(netOnvifCore.DeviceIO.DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(netOnvifCore.DeviceIO.DeviceClient)}IO", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(netOnvifCore.DeviceIO.DeviceClient)}IO", fileName);
 
         await Serialize(typeof(DeviceIOPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceIOPortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceIOPortClient)}", fileName);
 
         await Serialize(typeof(DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceClient)}", fileName);
 
         await Serialize(typeof(DisplayPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DisplayPortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DisplayPortClient)}", fileName);
 
         await Serialize(typeof(DoorControlPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DoorControlPortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(DoorControlPortClient)}", fileName);
 
         await Serialize(typeof(CreatePullPointClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(CreatePullPointClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(CreatePullPointClient)}", fileName);
 
         await Serialize(typeof(EventPortTypeClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(EventPortTypeClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(EventPortTypeClient)}", fileName);
 
         await Serialize(typeof(NotificationConsumerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationConsumerClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationConsumerClient)}", fileName);
 
         await Serialize(typeof(NotificationProducerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationProducerClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationProducerClient)}", fileName);
 
         await Serialize(typeof(PausableSubscriptionManagerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PausableSubscriptionManagerClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PausableSubscriptionManagerClient)}", fileName);
 
         await Serialize(typeof(PullPointClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointClient)}", fileName);
 
         await Serialize(typeof(PullPointSubscriptionClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointSubscriptionClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointSubscriptionClient)}", fileName);
 
         await Serialize(typeof(SubscriptionManagerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(SubscriptionManagerClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(SubscriptionManagerClient)}", fileName);
 
         await Serialize(typeof(ImagingPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ImagingPortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ImagingPortClient)}", fileName);
 
         await Serialize(typeof(MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(MediaClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(MediaClient)}", fileName);
 
         await Serialize(typeof(Media2Client).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(Media2Client)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(Media2Client)}", fileName);
 
         await Serialize(typeof(ProvisioningServiceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ProvisioningServiceClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ProvisioningServiceClient)}", fileName);
 
         await Serialize(typeof(PTZClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PTZClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(PTZClient)}", fileName);
 
         await Serialize(typeof(ReceiverPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReceiverPortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReceiverPortClient)}", fileName);
 
         await Serialize(typeof(RecordingPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(RecordingPortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(RecordingPortClient)}", fileName);
 
         await Serialize(typeof(ReplayPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReplayPortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReplayPortClient)}", fileName);
 
         await Serialize(typeof(SchedulePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(SchedulePortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(SchedulePortClient)}", fileName);
 
         await Serialize(typeof(SearchPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(SearchPortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(SearchPortClient)}", fileName);
 
         await Serialize(typeof(AdvancedSecurityServiceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AdvancedSecurityServiceClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(AdvancedSecurityServiceClient)}", fileName);
 
         await Serialize(typeof(Dot1XClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(Dot1XClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(Dot1XClient)}", fileName);
 
         await Serialize(typeof(KeystoreClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(KeystoreClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(KeystoreClient)}", fileName);
 
         await Serialize(typeof(TLSServerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(TLSServerClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(TLSServerClient)}", fileName);
 
         await Serialize(typeof(ThermalPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ThermalPortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(ThermalPortClient)}", fileName);
 
         await Serialize(typeof(UplinkPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Get"))
+            .Where(filterCondition)
             .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(UplinkPortClient)}", "getMethods");
+            .OrderBy(x => x), $"{MethodsPath}/{nameof(UplinkPortClient)}", fileName);
     }
 
-    private static async Task AllSetMethods()
+    private static async Task SaveAllDeviceClientGetMethods(DeviceClient device)
     {
-        await Serialize(typeof(PACSPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PACSPortClient)}", "setMethods");
-
-        await Serialize(typeof(AccessRulesPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AccessRulesPortClient)}", "setMethods");
-
-        await Serialize(typeof(ActionEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ActionEnginePortClient)}", "setMethods");
-
-        await Serialize(typeof(AnalyticsEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AnalyticsEnginePortClient)}", "setMethods");
-
-        await Serialize(typeof(RuleEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(RuleEnginePortClient)}", "setMethods");
-
-        await Serialize(typeof(AppManagementClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AppManagementClient)}", "setMethods");
-
-        await Serialize(typeof(AuthenticationBehaviorPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AuthenticationBehaviorPortClient)}", "setMethods");
-
-        await Serialize(typeof(CredentialPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(CredentialPortClient)}", "setMethods");
-
-        await Serialize(typeof(netOnvifCore.DeviceIO.DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(netOnvifCore.DeviceIO.DeviceClient)}IO", "setMethods");
-
-        await Serialize(typeof(DeviceIOPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceIOPortClient)}", "setMethods");
-
-        await Serialize(typeof(DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceClient)}", "setMethods");
-
-        await Serialize(typeof(DisplayPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DisplayPortClient)}", "setMethods");
-
-        await Serialize(typeof(DoorControlPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DoorControlPortClient)}", "setMethods");
-
-        await Serialize(typeof(CreatePullPointClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(CreatePullPointClient)}", "setMethods");
-
-        await Serialize(typeof(EventPortTypeClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(EventPortTypeClient)}", "setMethods");
-
-        await Serialize(typeof(NotificationConsumerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationConsumerClient)}", "setMethods");
-
-        await Serialize(typeof(NotificationProducerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationProducerClient)}", "setMethods");
-
-        await Serialize(typeof(PausableSubscriptionManagerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PausableSubscriptionManagerClient)}", "setMethods");
-
-        await Serialize(typeof(PullPointClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointClient)}", "setMethods");
-
-        await Serialize(typeof(PullPointSubscriptionClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointSubscriptionClient)}", "setMethods");
-
-        await Serialize(typeof(SubscriptionManagerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(SubscriptionManagerClient)}", "setMethods");
-
-        await Serialize(typeof(ImagingPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ImagingPortClient)}", "setMethods");
-
-        await Serialize(typeof(MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(MediaClient)}", "setMethods");
-
-        await Serialize(typeof(Media2Client).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(Media2Client)}", "setMethods");
-
-        await Serialize(typeof(ProvisioningServiceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ProvisioningServiceClient)}", "setMethods");
-
-        await Serialize(typeof(PTZClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PTZClient)}", "setMethods");
-
-        await Serialize(typeof(ReceiverPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReceiverPortClient)}", "setMethods");
-
-        await Serialize(typeof(RecordingPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(RecordingPortClient)}", "setMethods");
-
-        await Serialize(typeof(ReplayPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReplayPortClient)}", "setMethods");
-
-        await Serialize(typeof(SchedulePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(SchedulePortClient)}", "setMethods");
-
-        await Serialize(typeof(SearchPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(SearchPortClient)}", "setMethods");
-
-        await Serialize(typeof(AdvancedSecurityServiceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AdvancedSecurityServiceClient)}", "setMethods");
-
-        await Serialize(typeof(Dot1XClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(Dot1XClient)}", "setMethods");
-
-        await Serialize(typeof(KeystoreClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(KeystoreClient)}", "setMethods");
-
-        await Serialize(typeof(TLSServerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(TLSServerClient)}", "setMethods");
-
-        await Serialize(typeof(ThermalPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ThermalPortClient)}", "setMethods");
-
-        await Serialize(typeof(UplinkPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(UplinkPortClient)}", "setMethods");
-    }
-
-    private static async Task AllOtherMethods()
-    {
-        await Serialize(typeof(PACSPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PACSPortClient)}", "otherMethods");
-
-        await Serialize(typeof(AccessRulesPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AccessRulesPortClient)}", "otherMethods");
-
-        await Serialize(typeof(ActionEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ActionEnginePortClient)}", "otherMethods");
-
-        await Serialize(typeof(AnalyticsEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AnalyticsEnginePortClient)}", "otherMethods");
-
-        await Serialize(typeof(RuleEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(RuleEnginePortClient)}", "otherMethods");
-
-        await Serialize(typeof(AppManagementClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AppManagementClient)}", "otherMethods");
-
-        await Serialize(typeof(AuthenticationBehaviorPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AuthenticationBehaviorPortClient)}", "otherMethods");
-
-        await Serialize(typeof(CredentialPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(CredentialPortClient)}", "otherMethods");
-
-        await Serialize(typeof(netOnvifCore.DeviceIO.DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(netOnvifCore.DeviceIO.DeviceClient)}IO", "otherMethods");
-
-        await Serialize(typeof(DeviceIOPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceIOPortClient)}", "otherMethods");
-
-        await Serialize(typeof(DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceClient)}", "otherMethods");
-
-        await Serialize(typeof(DisplayPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DisplayPortClient)}", "otherMethods");
-
-        await Serialize(typeof(DoorControlPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DoorControlPortClient)}", "otherMethods");
-
-        await Serialize(typeof(CreatePullPointClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(CreatePullPointClient)}", "otherMethods");
-
-        await Serialize(typeof(EventPortTypeClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(EventPortTypeClient)}", "otherMethods");
-
-        await Serialize(typeof(NotificationConsumerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationConsumerClient)}", "otherMethods");
-
-        await Serialize(typeof(NotificationProducerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationProducerClient)}", "otherMethods");
-
-        await Serialize(typeof(PausableSubscriptionManagerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PausableSubscriptionManagerClient)}", "otherMethods");
-
-        await Serialize(typeof(PullPointClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointClient)}", "otherMethods");
-
-        await Serialize(typeof(PullPointSubscriptionClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointSubscriptionClient)}", "otherMethods");
-
-        await Serialize(typeof(SubscriptionManagerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(SubscriptionManagerClient)}", "otherMethods");
-
-        await Serialize(typeof(ImagingPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ImagingPortClient)}", "otherMethods");
-
-        await Serialize(typeof(MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(MediaClient)}", "otherMethods");
-
-        await Serialize(typeof(Media2Client).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(Media2Client)}", "otherMethods");
-
-        await Serialize(typeof(ProvisioningServiceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ProvisioningServiceClient)}", "otherMethods");
-
-        await Serialize(typeof(PTZClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PTZClient)}", "otherMethods");
-
-        await Serialize(typeof(ReceiverPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReceiverPortClient)}", "otherMethods");
-
-        await Serialize(typeof(RecordingPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(RecordingPortClient)}", "otherMethods");
-
-        await Serialize(typeof(ReplayPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReplayPortClient)}", "otherMethods");
-
-        await Serialize(typeof(SchedulePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(SchedulePortClient)}", "otherMethods");
-
-        await Serialize(typeof(SearchPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(SearchPortClient)}", "otherMethods");
-
-        await Serialize(typeof(AdvancedSecurityServiceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AdvancedSecurityServiceClient)}", "otherMethods");
-
-        await Serialize(typeof(Dot1XClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(Dot1XClient)}", "otherMethods");
-
-        await Serialize(typeof(KeystoreClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(KeystoreClient)}", "otherMethods");
-
-        await Serialize(typeof(TLSServerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(TLSServerClient)}", "otherMethods");
-
-        await Serialize(typeof(ThermalPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ThermalPortClient)}", "otherMethods");
-
-        await Serialize(typeof(UplinkPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"))
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(UplinkPortClient)}", "otherMethods");
-    }
-
-    private static async Task AllDeviceGetMethods(DeviceClient device)
-    {
-        try
+        await ExecuteAndIgnoreExceptions(async () =>
         {
             var accessPolicy = device.GetAccessPolicyAsync().Result;
-            await Serialize(accessPolicy, $"{DevicePath}", "accessPolicy");
-        }
-        catch
+            await Serialize(accessPolicy, $"{_devicePath}", "accessPolicy");
+        });
+
+        await ExecuteAndIgnoreExceptions(async () =>
         {
-            // ignored
-        }
+            var authFailureWarningConfiguration = device.GetAuthFailureWarningConfigurationAsync(new GetAuthFailureWarningConfigurationRequest()).Result;
+            await Serialize(authFailureWarningConfiguration, $"{_devicePath}", "authFailureWarningConfiguration");
+        });
 
-        // MicroDigital не поддерживает var authFailureWarningConfiguration = device.GetAuthFailureWarningConfigurationAsync(new GetAuthFailureWarningConfigurationRequest()).Result;
-        // MicroDigital не поддерживает var authFailureWarningOptions = device.GetAuthFailureWarningOptionsAsync(new GetAuthFailureWarningOptionsRequest()).Result;
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var authFailureWarningOptions = device.GetAuthFailureWarningOptionsAsync(new GetAuthFailureWarningOptionsRequest()).Result;
+            await Serialize(authFailureWarningOptions, $"{_devicePath}", "authFailureWarningOptions");
+        });
 
-        // Infinity не поддерживает var caCertificates = device.GetCACertificatesAsync().Result;
-        // await Serialize(caCertificates, $"{DevicePath}", "caCertificates");
-        // foreach (var conf in caCertificates.CACertificate)
-        // {
-        //     var pkcs10Request = device.GetPkcs10RequestAsync(conf.CertificateID, "", new BinaryData()).Result;
-        //     await Serialize(pkcs10Request, $"{DevicePath}/caCertificates", "pkcs10Request");
-        // }
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var caCertificates = device.GetCACertificatesAsync().Result;
+            await Serialize(caCertificates, $"{_devicePath}", "caCertificates");
+            foreach (var conf in caCertificates.CACertificate)
+            {
+                await Serialize(conf, $"{_devicePath}/caCertificates", $"{conf.CertificateID}");
+
+                var pkcs10Request = device.GetPkcs10RequestAsync(conf.CertificateID, null, null).Result;
+                await Serialize(pkcs10Request, $"{_devicePath}/caCertificates/{conf.CertificateID}", "pkcs10Request");
+            }
+        });
 
         var capabilities = device.GetCapabilitiesAsync(new[] { CapabilityCategory.All }).Result;
-        await Serialize(capabilities, $"{DevicePath}", "capabilities");
+        await Serialize(capabilities, $"{_devicePath}", "capabilities");
 
-        // Infinity не поддерживает var certificates = device.GetCertificatesAsync().Result;
-        // await Serialize(certificates, $"{DevicePath}", "certificates");
-        // foreach (var conf in certificates.NvtCertificate)
-        // {
-        //     var certificateInformation = device.GetCertificateInformationAsync(conf.CertificateID).Result;
-        //     await Serialize(certificateInformation, $"{DevicePath}/certificates", $"{certificateInformation.CertificateInformation.CertificateID}");
-        // }
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var certificates = device.GetCertificatesAsync().Result;
+            await Serialize(certificates, $"{_devicePath}", "certificates");
+            foreach (var conf in certificates.NvtCertificate)
+            {
+                await Serialize(conf, $"{_devicePath}/certificates", $"{conf.CertificateID}");
 
-        // Infinity не поддерживает var certificatesStatus = device.GetCertificatesStatusAsync().Result;
-        // await Serialize(certificatesStatus, $"{DevicePath}", "certificatesStatus");
-        // foreach (var conf in certificatesStatus.CertificateStatus)
-        //     await Serialize(conf, $"{DevicePath}/certificatesStatus", $"{conf.CertificateID}");
+                var certificateInformation = device.GetCertificateInformationAsync(conf.CertificateID).Result;
+                await Serialize(certificateInformation, $"{_devicePath}/certificates/{conf.CertificateID}", "certificateInformation");
+            }
+        });
 
-        // Infinity не поддерживает var clientCertificateMode = device.GetClientCertificateModeAsync().Result;
-        // await Serialize(clientCertificateMode, $"{DevicePath}", "clientCertificateMode");
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var certificatesStatus = device.GetCertificatesStatusAsync().Result;
+            await Serialize(certificatesStatus, $"{_devicePath}", "certificatesStatus");
+            foreach (var conf in certificatesStatus.CertificateStatus)
+                await Serialize(conf, $"{_devicePath}/certificatesStatus", $"{conf.CertificateID}");
+        });
+
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var clientCertificateMode = device.GetClientCertificateModeAsync().Result;
+            await Serialize(clientCertificateMode, $"{_devicePath}", "clientCertificateMode");
+        });
 
         var deviceInformation = device.GetDeviceInformationAsync(new GetDeviceInformationRequest()).Result;
-        await Serialize(deviceInformation, $"{DevicePath}", "deviceInformation");
+        await Serialize(deviceInformation, $"{_devicePath}", "deviceInformation");
 
         var discoveryMode = device.GetDiscoveryModeAsync().Result;
-        await Serialize(discoveryMode, $"{DevicePath}", "discoveryMode");
+        await Serialize(discoveryMode, $"{_devicePath}", "discoveryMode");
 
         var dns = device.GetDNSAsync().Result;
-        await Serialize(dns, $"{DevicePath}", "dns");
+        await Serialize(dns, $"{_devicePath}", "dns");
 
-        // Infinity не поддерживает var dot11Capabilities = device.GetDot11CapabilitiesAsync(new XmlElement[] { }).Result;
-        // await Serialize(dot11Capabilities, $"{DevicePath}", "dot11Capabilities");
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var dot11Capabilities = device.GetDot11CapabilitiesAsync(new XmlElement[] { }).Result;
+            await Serialize(dot11Capabilities, $"{_devicePath}", "dot11Capabilities");
+        });
 
         var zeroConfiguration = device.GetZeroConfigurationAsync().Result;
-        await Serialize(zeroConfiguration, $"{DevicePath}", "zeroConfiguration");
-        // Infinity не поддерживает var dot11Status = device.GetDot11StatusAsync(zeroConfiguration.InterfaceToken).Result;
-        // await Serialize(dot11Status, $"{DevicePath}", "dot11Status");
+        await Serialize(zeroConfiguration, $"{_devicePath}", "zeroConfiguration");
 
-        // Infinity не поддерживает var dot1XConfigurations = device.GetDot1XConfigurationsAsync().Result;
-        // await Serialize(dot1XConfigurations, $"{DevicePath}", "dot1XConfigurations");
-        // foreach (var conf in dot1XConfigurations.Dot1XConfiguration)
-        // {
-        //     var dot1XConfiguration = device.GetDot1XConfigurationAsync(conf.Dot1XConfigurationToken).Result;
-        //     await Serialize(dot1XConfiguration, $"{DevicePath}/dot1XConfigurations", $"{dot1XConfiguration.Dot1XConfigurationToken}");
-        // }
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var dot11Status = device.GetDot11StatusAsync(zeroConfiguration.InterfaceToken).Result;
+            await Serialize(dot11Status, $"{_devicePath}", "dot11Status");
+        });
 
-        // Infinity не поддерживает var dpAddresses = device.GetDPAddressesAsync().Result;
-        // await Serialize(dpAddresses, $"{DevicePath}", "dpAddresses");
-        // foreach (var conf in dpAddresses.DPAddress)
-        //     await Serialize(conf, $"{DevicePath}/dpAddresses", $"{conf.DNSname}");
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var dot1XConfigurations = device.GetDot1XConfigurationsAsync().Result;
+            await Serialize(dot1XConfigurations, $"{_devicePath}", "dot1XConfigurations");
+            foreach (var conf in dot1XConfigurations.Dot1XConfiguration)
+            {
+                await Serialize(conf, $"{_devicePath}/dot1XConfigurations", $"{conf.Identity}");
 
-        // Infinity не поддерживает var dynamicDns = device.GetDynamicDNSAsync().Result;
-        // await Serialize(dynamicDns, $"{DevicePath}", "dynamicDns");
+                var dot1XConfiguration = device.GetDot1XConfigurationAsync(conf.Dot1XConfigurationToken).Result;
+                await Serialize(dot1XConfiguration, $"{_devicePath}/dot1XConfigurations/{conf.Identity}", "dot1XConfiguration");
+            }
+        });
 
-        try
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var dpAddresses = device.GetDPAddressesAsync().Result;
+            await Serialize(dpAddresses, $"{_devicePath}", "dpAddresses");
+            foreach (var conf in dpAddresses.DPAddress)
+                await Serialize(conf, $"{_devicePath}/dpAddresses", $"{conf.DNSname}");
+        });
+
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var dynamicDns = device.GetDynamicDNSAsync().Result;
+            await Serialize(dynamicDns, $"{_devicePath}", "dynamicDns");
+        });
+
+        await ExecuteAndIgnoreExceptions(async () =>
         {
             var endpointReference = device.GetEndpointReferenceAsync(new GetEndpointReferenceRequest()).Result;
-            await Serialize(endpointReference, $"{DevicePath}", "endpointReference");
-        }
-        catch
-        {
-            // ignored
-        }
+            await Serialize(endpointReference, $"{_devicePath}", "endpointReference");
+        });
 
-        // MicroDigital не поддерживает var geoLocation = device.GetGeoLocationAsync().Result;
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var geoLocation = device.GetGeoLocationAsync().Result;
+            await Serialize(geoLocation, $"{_devicePath}", "geoLocation");
+        });
 
         var hostname = device.GetHostnameAsync().Result;
-        await Serialize(hostname, $"{DevicePath}", "hostname");
+        await Serialize(hostname, $"{_devicePath}", "hostname");
 
-        // Infinity не поддерживает var ipAddressFilter = device.GetIPAddressFilterAsync().Result;
-        // await Serialize(ipAddressFilter, $"{DevicePath}", "ipAddressFilter");
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var ipAddressFilter = device.GetIPAddressFilterAsync().Result;
+            await Serialize(ipAddressFilter, $"{_devicePath}", "ipAddressFilter");
+        });
 
         var networkDefaultGateway = device.GetNetworkDefaultGatewayAsync().Result;
-        await Serialize(networkDefaultGateway, $"{DevicePath}", "networkDefaultGateway");
+        await Serialize(networkDefaultGateway, $"{_devicePath}", "networkDefaultGateway");
 
         var networkInterfaces = device.GetNetworkInterfacesAsync().Result;
-        await Serialize(networkInterfaces, $"{DevicePath}", "networkInterfaces");
+        await Serialize(networkInterfaces, $"{_devicePath}", "networkInterfaces");
         foreach (var conf in networkInterfaces.NetworkInterfaces)
-            await Serialize(conf, $"{DevicePath}/networkInterfaces", $"{conf.token}");
+            await Serialize(conf, $"{_devicePath}/networkInterfaces", $"{conf.token}");
 
         var networkProtocols = device.GetNetworkProtocolsAsync().Result;
-        await Serialize(networkProtocols, $"{DevicePath}", "networkProtocols");
+        await Serialize(networkProtocols, $"{_devicePath}", "networkProtocols");
         foreach (var conf in networkProtocols.NetworkProtocols)
-            await Serialize(conf, $"{DevicePath}/networkProtocols", $"{conf.Name}");
+            await Serialize(conf, $"{_devicePath}/networkProtocols", $"{conf.Name}");
 
         var ntp = device.GetNTPAsync().Result;
-        await Serialize(ntp, $"{DevicePath}", "ntp");
+        await Serialize(ntp, $"{_devicePath}", "ntp");
 
-        // MicroDigital не поддерживает var passwordComplexityConfiguration = device.GetPasswordComplexityConfigurationAsync(new GetPasswordComplexityConfigurationRequest()).Result;
-        // MicroDigital не поддерживает var passwordComplexityOptions = device.GetPasswordComplexityOptionsAsync(new GetPasswordComplexityOptionsRequest()).Result;
-        // MicroDigital не поддерживает var passwordHistoryConfiguration = device.GetPasswordHistoryConfigurationAsync(new GetPasswordHistoryConfigurationRequest()).Result;
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var passwordComplexityConfiguration = device.GetPasswordComplexityConfigurationAsync(new GetPasswordComplexityConfigurationRequest()).Result;
+            await Serialize(passwordComplexityConfiguration, $"{_devicePath}", "passwordComplexityConfiguration");
+        });
+
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var passwordComplexityOptions = device.GetPasswordComplexityOptionsAsync(new GetPasswordComplexityOptionsRequest()).Result;
+            await Serialize(passwordComplexityOptions, $"{_devicePath}", "passwordComplexityOptions");
+        });
+
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var passwordHistoryConfiguration = device.GetPasswordHistoryConfigurationAsync(new GetPasswordHistoryConfigurationRequest()).Result;
+            await Serialize(passwordHistoryConfiguration, $"{_devicePath}", "passwordHistoryConfiguration");
+        });
 
         var relayOutputs = device.GetRelayOutputsAsync().Result;
-        await Serialize(relayOutputs, $"{DevicePath}", "relayOutputs");
+        await Serialize(relayOutputs, $"{_devicePath}", "relayOutputs");
         foreach (var conf in relayOutputs.RelayOutputs)
-            await Serialize(conf, $"{DevicePath}/relayOutputs", $"{conf.token}");
+            await Serialize(conf, $"{_devicePath}/relayOutputs", $"{conf.token}");
 
-        // Infinity не поддерживает var remoteDiscoveryMode = device.GetRemoteDiscoveryModeAsync().Result;
-        // await Serialize(remoteDiscoveryMode, $"{DevicePath}", "remoteDiscoveryMode");
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var remoteDiscoveryMode = device.GetRemoteDiscoveryModeAsync().Result;
+            await Serialize(remoteDiscoveryMode, $"{_devicePath}", "remoteDiscoveryMode");
+        });
 
-        // Infinity не поддерживает var remoteUser = device.GetRemoteUserAsync().Result;
-        // await Serialize(remoteUser, $"{DevicePath}", "remoteUser");
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var remoteUser = device.GetRemoteUserAsync().Result;
+            await Serialize(remoteUser, $"{_devicePath}", "remoteUser");
+        });
 
         var scopes = device.GetScopesAsync().Result;
-        await Serialize(scopes, $"{DevicePath}", "scopes");
+        await Serialize(scopes, $"{_devicePath}", "scopes");
         foreach (var conf in scopes.Scopes)
-            await Serialize(conf, $"{DevicePath}/scopes", $"{conf.ScopeItem.Split('/').Last()}");
+            await Serialize(conf, $"{_devicePath}/scopes", $"{conf.ScopeItem.Split('/').Last()}");
 
         var serviceCapabilities = device.GetServiceCapabilitiesAsync().Result;
-        await Serialize(serviceCapabilities, $"{DevicePath}", "serviceCapabilities");
+        await Serialize(serviceCapabilities, $"{_devicePath}", "serviceCapabilities");
 
         var services = device.GetServicesAsync(true).Result;
-        await Serialize(services, $"{DevicePath}", "services");
+        await Serialize(services, $"{_devicePath}", "services");
         foreach (var conf in services.Service)
-            await Serialize(conf, $"{DevicePath}/services", $"{conf.Namespace.Split('/')[^1]}");
+            await Serialize(conf, $"{_devicePath}/services", $"{conf.Namespace.Split('/')[^1]}");
 
-        // MicroDigital не поддерживает var storageConfigurations = device.GetStorageConfigurationsAsync().Result;
-        // foreach (var conf in storageConfigurations.StorageConfigurations)
-        // {
-        //     var storageConfiguration = device.GetStorageConfigurationAsync(conf.token).Result;
-        // }
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var storageConfigurations = device.GetStorageConfigurationsAsync().Result;
+            await Serialize(storageConfigurations, $"{_devicePath}", "storageConfigurations");
+            foreach (var conf in storageConfigurations.StorageConfigurations)
+            {
+                await Serialize(conf, $"{_devicePath}/storageConfigurations", $"{conf.token}");
 
-        // Infinity не поддерживает var systemBackup = device.GetSystemBackupAsync().Result;
-        // await Serialize(systemBackup, $"{DevicePath}", "systemBackup");
-        // foreach (var conf in systemBackup.BackupFiles)
-        //     await Serialize(systemBackup, $"{DevicePath}/systemBackup", $"{conf.Name}");
+                var storageConfiguration = device.GetStorageConfigurationAsync(conf.token).Result;
+                await Serialize(storageConfiguration, $"{_devicePath}/storageConfigurations/{conf.token}", "storageConfiguration");
+            }
+        });
+
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var systemBackup = device.GetSystemBackupAsync().Result;
+            await Serialize(systemBackup, $"{_devicePath}", "systemBackup");
+            foreach (var conf in systemBackup.BackupFiles)
+                await Serialize(systemBackup, $"{_devicePath}/systemBackup", $"{conf.Name}");
+        });
 
         var systemDateAndTime = device.GetSystemDateAndTimeAsync().Result;
-        await Serialize(systemDateAndTime, $"{DevicePath}", "systemDateAndTime");
+        await Serialize(systemDateAndTime, $"{_devicePath}", "systemDateAndTime");
 
-        // Infinity не поддерживает var systemLogAccess = device.GetSystemLogAsync(SystemLogType.Access).Result;
-        // await Serialize(systemLogAccess, $"{DevicePath}", "systemLogAccess");
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var systemLogAccess = device.GetSystemLogAsync(SystemLogType.Access).Result;
+            await Serialize(systemLogAccess, $"{_devicePath}", "systemLogAccess");
+        });
 
-        // Infinity не поддерживает var systemLogSystem = device.GetSystemLogAsync(SystemLogType.System).Result;
-        // await Serialize(systemLogSystem, $"{DevicePath}", "systemLogSystem");
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var systemLogSystem = device.GetSystemLogAsync(SystemLogType.System).Result;
+            await Serialize(systemLogSystem, $"{_devicePath}", "systemLogSystem");
+        });
 
-        // Infinity не поддерживает var systemSupportInformation = device.GetSystemSupportInformationAsync().Result;
-        // await Serialize(systemSupportInformation, $"{DevicePath}", "systemSupportInformation");
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var systemSupportInformation = device.GetSystemSupportInformationAsync().Result;
+            await Serialize(systemSupportInformation, $"{_devicePath}", "systemSupportInformation");
+        });
 
-        // Infinity не поддерживает var systemUris = device.GetSystemUrisAsync(new GetSystemUrisRequest()).Result;
-        // await Serialize(systemUris, $"{DevicePath}", "systemUris");
-        // foreach (var conf in systemUris.SystemLogUris)
-        //     await Serialize(conf, $"{DevicePath}/systemUris", $"{conf.Uri}");
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var systemUris = device.GetSystemUrisAsync(new GetSystemUrisRequest()).Result;
+            await Serialize(systemUris, $"{_devicePath}", "systemUris");
+            foreach (var conf in systemUris.SystemLogUris)
+                await Serialize(conf, $"{_devicePath}/systemUris", $"{conf.Uri}");
+        });
 
         var users = device.GetUsersAsync().Result;
-        await Serialize(users, $"{DevicePath}", "users");
+        await Serialize(users, $"{_devicePath}", "users");
         foreach (var conf in users.User)
-            await Serialize(conf, $"{DevicePath}/users", $"{conf.Username}");
+            await Serialize(conf, $"{_devicePath}/users", $"{conf.Username}");
 
         var wsdlUrl = device.GetWsdlUrlAsync().Result;
-        await Serialize(wsdlUrl, $"{DevicePath}", "wsdlUrl");
+        await Serialize(wsdlUrl, $"{_devicePath}", "wsdlUrl");
     }
 
-    private static async Task AllMediaGetMethods(MediaClient media)
+    private static async Task SaveAllMediaClientGetMethods(MediaClient media)
     {
         var profiles = media.GetProfilesAsync().Result;
-        await Serialize(profiles, $"{MediaPath}", "profiles");
+        await Serialize(profiles, $"{_mediaPath}", "profiles");
         foreach (var conf in profiles.Profiles)
-            await Serialize(conf, $"{MediaPath}/profiles", $"{conf.token}");
+            await Serialize(conf, $"{_mediaPath}/profiles", $"{conf.token}");
 
         var audioDecoderConfigurations = media.GetAudioDecoderConfigurationsAsync().Result;
-        await Serialize(audioDecoderConfigurations, $"{MediaPath}", "audioDecoderConfigurations");
+        await Serialize(audioDecoderConfigurations, $"{_mediaPath}", "audioDecoderConfigurations");
         foreach (var conf in audioDecoderConfigurations.Configurations)
         {
-            await Serialize(conf, $"{MediaPath}/audioDecoderConfigurations", $"{conf.Name}");
+            await Serialize(conf, $"{_mediaPath}/audioDecoderConfigurations", $"{conf.Name}");
 
             var audioDecoderConfiguration = media.GetAudioDecoderConfigurationAsync(conf.token).Result;
-            await Serialize(audioDecoderConfiguration, $"{MediaPath}/audioDecoderConfigurations/{conf.Name}", "audioDecoderConfiguration");
+            await Serialize(audioDecoderConfiguration, $"{_mediaPath}/audioDecoderConfigurations/{conf.Name}", "audioDecoderConfiguration");
 
             foreach (var prof in profiles.Profiles)
             {
                 var audioDecoderConfigurationOptions = media.GetAudioDecoderConfigurationOptionsAsync(conf.token, prof.token).Result;
-                await Serialize(audioDecoderConfigurationOptions, $"{MediaPath}/audioDecoderConfigurations/{conf.Name}/audioDecoderConfigurationOptions/{prof.Name}", "audioDecoderConfigurationOptions");
+                await Serialize(audioDecoderConfigurationOptions, $"{_mediaPath}/audioDecoderConfigurations/{conf.Name}/audioDecoderConfigurationOptions/{prof.Name}", "audioDecoderConfigurationOptions");
             }
         }
 
         var audioEncoderConfigurations = media.GetAudioEncoderConfigurationsAsync().Result;
-        await Serialize(audioEncoderConfigurations, $"{MediaPath}", "audioEncoderConfigurations");
+        await Serialize(audioEncoderConfigurations, $"{_mediaPath}", "audioEncoderConfigurations");
         foreach (var conf in audioEncoderConfigurations.Configurations)
         {
-            await Serialize(conf, $"{MediaPath}/audioEncoderConfigurations", $"{conf.Name}");
+            await Serialize(conf, $"{_mediaPath}/audioEncoderConfigurations", $"{conf.Name}");
 
             var audioEncoderConfiguration = media.GetAudioEncoderConfigurationAsync(conf.token).Result;
-            await Serialize(audioEncoderConfiguration, $"{MediaPath}/audioEncoderConfigurations/{conf.Name}", "audioEncoderConfiguration");
+            await Serialize(audioEncoderConfiguration, $"{_mediaPath}/audioEncoderConfigurations/{conf.Name}", "audioEncoderConfiguration");
 
             foreach (var prof in profiles.Profiles)
-                try
+                await ExecuteAndIgnoreExceptions(async () =>
                 {
                     var audioEncoderConfigurationOptions = media.GetAudioEncoderConfigurationOptionsAsync(conf.token, prof.token).Result;
-                    await Serialize(audioEncoderConfigurationOptions, $"{MediaPath}/audioEncoderConfigurations/{conf.Name}/audioEncoderConfigurationOptions/{prof.Name}", "audioEncoderConfigurationOptions");
+                    await Serialize(audioEncoderConfigurationOptions, $"{_mediaPath}/audioEncoderConfigurations/{conf.Name}/audioEncoderConfigurationOptions/{prof.Name}", "audioEncoderConfigurationOptions");
                     foreach (var opt in audioEncoderConfigurationOptions.Options)
-                        await Serialize(opt, $"{MediaPath}/audioEncoderConfigurations/{conf.Name}/audioEncoderConfigurationOptions/{prof.Name}/audioEncoderConfigurationOptions", $"{opt.Encoding}");
-                }
-                catch
-                {
-                    // ignored
-                }
+                        await Serialize(opt, $"{_mediaPath}/audioEncoderConfigurations/{conf.Name}/audioEncoderConfigurationOptions/{prof.Name}/audioEncoderConfigurationOptions", $"{opt.Encoding}");
+                });
         }
 
         var audioOutputs = media.GetAudioOutputsAsync().Result;
-        await Serialize(audioOutputs, $"{MediaPath}", "audioOutputs");
+        await Serialize(audioOutputs, $"{_mediaPath}", "audioOutputs");
         foreach (var conf in audioOutputs.AudioOutputs)
-            await Serialize(conf, $"{MediaPath}/audioOutputs", $"{conf.token}");
+            await Serialize(conf, $"{_mediaPath}/audioOutputs", $"{conf.token}");
 
         var audioOutputConfigurations = media.GetAudioOutputConfigurationsAsync().Result;
-        await Serialize(audioOutputConfigurations, $"{MediaPath}", "audioOutputConfigurations");
+        await Serialize(audioOutputConfigurations, $"{_mediaPath}", "audioOutputConfigurations");
         foreach (var conf in audioOutputConfigurations.Configurations)
         {
-            await Serialize(conf, $"{MediaPath}/audioOutputConfigurations", $"{conf.Name}");
+            await Serialize(conf, $"{_mediaPath}/audioOutputConfigurations", $"{conf.Name}");
 
             var audioOutputConfiguration = media.GetAudioOutputConfigurationAsync(conf.token).Result;
-            await Serialize(audioOutputConfiguration, $"{MediaPath}/audioOutputConfiguration/{conf.Name}", "audioOutputConfiguration");
+            await Serialize(audioOutputConfiguration, $"{_mediaPath}/audioOutputConfiguration/{conf.Name}", "audioOutputConfiguration");
 
             foreach (var prof in profiles.Profiles)
             {
                 var audioOutputConfigurationOptions = media.GetAudioOutputConfigurationOptionsAsync(conf.token, prof.token).Result;
-                await Serialize(audioOutputConfigurationOptions, $"{MediaPath}/audioOutputConfiguration/{conf.Name}/audioOutputConfigurationOptions/{prof.Name}", "audioOutputConfigurationOptions");
+                await Serialize(audioOutputConfigurationOptions, $"{_mediaPath}/audioOutputConfiguration/{conf.Name}/audioOutputConfigurationOptions/{prof.Name}", "audioOutputConfigurationOptions");
             }
         }
 
         var audioSources = media.GetAudioSourcesAsync().Result;
-        await Serialize(audioSources, $"{MediaPath}", "audioSources");
+        await Serialize(audioSources, $"{_mediaPath}", "audioSources");
         foreach (var conf in audioSources.AudioSources)
-            await Serialize(conf, $"{MediaPath}/audioSources", $"{conf.token}");
+            await Serialize(conf, $"{_mediaPath}/audioSources", $"{conf.token}");
 
         var audioSourceConfigurations = media.GetAudioSourceConfigurationsAsync().Result;
-        await Serialize(audioSourceConfigurations, $"{MediaPath}", "audioSourceConfigurations");
+        await Serialize(audioSourceConfigurations, $"{_mediaPath}", "audioSourceConfigurations");
         foreach (var conf in audioSourceConfigurations.Configurations)
         {
-            await Serialize(conf, $"{MediaPath}/audioSourceConfigurations", $"{conf.Name}");
+            await Serialize(conf, $"{_mediaPath}/audioSourceConfigurations", $"{conf.Name}");
 
             var audioSourceConfiguration = media.GetAudioSourceConfigurationAsync(conf.token).Result;
-            await Serialize(audioSourceConfiguration, $"{MediaPath}/audioSourceConfigurations/{conf.Name}", "audioSourceConfiguration");
+            await Serialize(audioSourceConfiguration, $"{_mediaPath}/audioSourceConfigurations/{conf.Name}", "audioSourceConfiguration");
 
             foreach (var prof in profiles.Profiles)
             {
                 var audioSourceConfigurationOptions = media.GetAudioSourceConfigurationOptionsAsync(conf.token, prof.token).Result;
-                await Serialize(audioSourceConfigurationOptions, $"{MediaPath}/audioSourceConfigurations/{conf.Name}/audioSourceConfigurationOptions/{prof.Name}", "audioSourceConfigurationOptions");
+                await Serialize(audioSourceConfigurationOptions, $"{_mediaPath}/audioSourceConfigurations/{conf.Name}/audioSourceConfigurationOptions/{prof.Name}", "audioSourceConfigurationOptions");
             }
         }
 
         var streamSetup = new StreamSetup { Stream = StreamType.RTPUnicast, Transport = new Transport { Protocol = TransportProtocol.UDP, Tunnel = null } };
         foreach (var prof in profiles.Profiles)
         {
-            if (_cameraModel != CameraModels.NovaCam)
+            if (_cameraManufacturer != CameraManufacturers.NovaCam)
             {
                 var compatibleAudioDecoderConfigurations = media.GetCompatibleAudioDecoderConfigurationsAsync(prof.token).Result;
-                await Serialize(compatibleAudioDecoderConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleAudioDecoderConfigurations");
+                await Serialize(compatibleAudioDecoderConfigurations, $"{_mediaPath}/profiles/{prof.Name}", "compatibleAudioDecoderConfigurations");
                 foreach (var conf in compatibleAudioDecoderConfigurations.Configurations)
-                    await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleAudioDecoderConfigurations", $"{conf.Name}");
+                    await Serialize(conf, $"{_mediaPath}/profiles/{prof.Name}/compatibleAudioDecoderConfigurations", $"{conf.Name}");
             }
 
-            try
+            await ExecuteAndIgnoreExceptions(async () =>
             {
                 var compatibleAudioEncoderConfigurations = media.GetCompatibleAudioEncoderConfigurationsAsync(prof.token).Result;
-                await Serialize(compatibleAudioEncoderConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleAudioEncoderConfigurations");
+                await Serialize(compatibleAudioEncoderConfigurations, $"{_mediaPath}/profiles/{prof.Name}", "compatibleAudioEncoderConfigurations");
                 foreach (var conf in compatibleAudioEncoderConfigurations.Configurations)
-                    await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleAudioEncoderConfigurations", $"{conf.Name}");
-            }
-            catch
-            {
-                // ignored
-            }
+                    await Serialize(conf, $"{_mediaPath}/profiles/{prof.Name}/compatibleAudioEncoderConfigurations", $"{conf.Name}");
+            });
 
             var compatibleAudioOutputConfigurations = media.GetCompatibleAudioOutputConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleAudioOutputConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleAudioOutputConfigurations");
+            await Serialize(compatibleAudioOutputConfigurations, $"{_mediaPath}/profiles/{prof.Name}", "compatibleAudioOutputConfigurations");
             foreach (var conf in compatibleAudioOutputConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleAudioOutputConfigurations", $"{conf.Name}");
+                await Serialize(conf, $"{_mediaPath}/profiles/{prof.Name}/compatibleAudioOutputConfigurations", $"{conf.Name}");
 
             var compatibleAudioSourceConfigurations = media.GetCompatibleAudioSourceConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleAudioSourceConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleAudioSourceConfigurations");
+            await Serialize(compatibleAudioSourceConfigurations, $"{_mediaPath}/profiles/{prof.Name}", "compatibleAudioSourceConfigurations");
             foreach (var conf in compatibleAudioSourceConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleAudioSourceConfigurations", $"{conf.Name}");
+                await Serialize(conf, $"{_mediaPath}/profiles/{prof.Name}/compatibleAudioSourceConfigurations", $"{conf.Name}");
 
             var compatibleMetadataConfigurations = media.GetCompatibleMetadataConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleMetadataConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleMetadataConfigurations");
+            await Serialize(compatibleMetadataConfigurations, $"{_mediaPath}/profiles/{prof.Name}", "compatibleMetadataConfigurations");
             foreach (var conf in compatibleMetadataConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleMetadataConfigurations", $"{conf.Name}");
+                await Serialize(conf, $"{_mediaPath}/profiles/{prof.Name}/compatibleMetadataConfigurations", $"{conf.Name}");
 
-            if (_cameraModel != CameraModels.NovaCam)
-                try
+            if (_cameraManufacturer != CameraManufacturers.NovaCam)
+                await ExecuteAndIgnoreExceptions(async () =>
                 {
                     var compatibleVideoAnalyticsConfigurations = media.GetCompatibleVideoAnalyticsConfigurationsAsync(prof.token).Result;
-                    await Serialize(compatibleVideoAnalyticsConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleVideoAnalyticsConfigurations");
+                    await Serialize(compatibleVideoAnalyticsConfigurations, $"{_mediaPath}/profiles/{prof.Name}", "compatibleVideoAnalyticsConfigurations");
                     foreach (var conf in compatibleVideoAnalyticsConfigurations.Configurations)
-                        await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleVideoAnalyticsConfigurations", $"{conf.Name}");
-                }
-                catch
-                {
-                    // ignored
-                }
+                        await Serialize(conf, $"{_mediaPath}/profiles/{prof.Name}/compatibleVideoAnalyticsConfigurations", $"{conf.Name}");
+                });
 
             var compatibleVideoEncoderConfigurations = media.GetCompatibleVideoEncoderConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleVideoEncoderConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleVideoEncoderConfigurations");
+            await Serialize(compatibleVideoEncoderConfigurations, $"{_mediaPath}/profiles/{prof.Name}", "compatibleVideoEncoderConfigurations");
             foreach (var conf in compatibleVideoEncoderConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleVideoEncoderConfigurations", $"{conf.Name}");
+                await Serialize(conf, $"{_mediaPath}/profiles/{prof.Name}/compatibleVideoEncoderConfigurations", $"{conf.Name}");
 
             var compatibleVideoSourceConfigurations = media.GetCompatibleVideoSourceConfigurationsAsync(prof.token).Result;
-            await Serialize(compatibleVideoSourceConfigurations, $"{MediaPath}/profiles/{prof.Name}", "compatibleVideoSourceConfigurations");
+            await Serialize(compatibleVideoSourceConfigurations, $"{_mediaPath}/profiles/{prof.Name}", "compatibleVideoSourceConfigurations");
             foreach (var conf in compatibleVideoSourceConfigurations.Configurations)
-                await Serialize(conf, $"{MediaPath}/profiles/{prof.Name}/compatibleVideoSourceConfigurations", $"{conf.Name}");
+                await Serialize(conf, $"{_mediaPath}/profiles/{prof.Name}/compatibleVideoSourceConfigurations", $"{conf.Name}");
 
             var profile = media.GetProfileAsync(prof.token).Result;
-            await Serialize(profile, $"{MediaPath}/profiles/{prof.Name}", "profile");
+            await Serialize(profile, $"{_mediaPath}/profiles/{prof.Name}", "profile");
 
             var snapshotUri = media.GetSnapshotUriAsync(prof.token).Result;
-            await Serialize(snapshotUri, $"{MediaPath}/profiles/{prof.Name}", "snapshotUri");
+            await Serialize(snapshotUri, $"{_mediaPath}/profiles/{prof.Name}", "snapshotUri");
 
             var streamUri = media.GetStreamUriAsync(streamSetup, prof.token).Result;
-            await Serialize(streamUri, $"{MediaPath}/profiles/{prof.Name}", "streamUri");
+            await Serialize(streamUri, $"{_mediaPath}/profiles/{prof.Name}", "streamUri");
         }
 
-        try
+        await ExecuteAndIgnoreExceptions(async () =>
         {
             var metadataConfigurations = media.GetMetadataConfigurationsAsync().Result;
-            await Serialize(metadataConfigurations, $"{MediaPath}", "metadataConfigurations");
+            await Serialize(metadataConfigurations, $"{_mediaPath}", "metadataConfigurations");
             foreach (var conf in metadataConfigurations.Configurations)
             {
-                await Serialize(conf, $"{MediaPath}/metadataConfigurations", $"{conf.Name}");
+                await Serialize(conf, $"{_mediaPath}/metadataConfigurations", $"{conf.Name}");
 
                 var metadataConfiguration = media.GetMetadataConfigurationAsync(conf.token).Result;
-                await Serialize(metadataConfiguration, $"{MediaPath}/metadataConfigurations/{conf.Name}", "metadataConfiguration");
+                await Serialize(metadataConfiguration, $"{_mediaPath}/metadataConfigurations/{conf.Name}", "metadataConfiguration");
 
                 foreach (var prof in profiles.Profiles)
                 {
                     var metadataConfigurationOptions = media.GetMetadataConfigurationOptionsAsync(conf.token, prof.token).Result;
-                    await Serialize(metadataConfigurationOptions, $"{MediaPath}/metadataConfigurations/{conf.Name}/metadataConfigurationOptions/{prof.Name}", "metadataConfigurationOptions");
+                    await Serialize(metadataConfigurationOptions, $"{_mediaPath}/metadataConfigurations/{conf.Name}/metadataConfigurationOptions/{prof.Name}", "metadataConfigurationOptions");
                 }
             }
-        }
-        catch
-        {
-            // ignored
-        }
+        });
 
         var serviceCapabilities = media.GetServiceCapabilitiesAsync().Result;
-        await Serialize(serviceCapabilities, $"{MediaPath}", "serviceCapabilities");
+        await Serialize(serviceCapabilities, $"{_mediaPath}", "serviceCapabilities");
 
-        try
+        await ExecuteAndIgnoreExceptions(async () =>
         {
             var videoAnalyticsConfigurations = media.GetVideoAnalyticsConfigurationsAsync().Result;
-            await Serialize(videoAnalyticsConfigurations, $"{MediaPath}", "videoAnalyticsConfigurations");
+            await Serialize(videoAnalyticsConfigurations, $"{_mediaPath}", "videoAnalyticsConfigurations");
             foreach (var conf in videoAnalyticsConfigurations.Configurations)
             {
-                await Serialize(conf, $"{MediaPath}/videoAnalyticsConfigurations", $"{conf.Name}");
+                await Serialize(conf, $"{_mediaPath}/videoAnalyticsConfigurations", $"{conf.Name}");
 
                 var videoAnalyticsConfiguration = media.GetVideoAnalyticsConfigurationAsync(conf.token).Result;
-                await Serialize(videoAnalyticsConfiguration, $"{MediaPath}/videoAnalyticsConfigurations/{conf.Name}", "videoAnalyticsConfiguration");
+                await Serialize(videoAnalyticsConfiguration, $"{_mediaPath}/videoAnalyticsConfigurations/{conf.Name}", "videoAnalyticsConfiguration");
             }
-        }
-        catch
-        {
-            // ignored
-        }
+        });
 
         var videoEncoderConfigurations = media.GetVideoEncoderConfigurationsAsync().Result;
-        await Serialize(videoEncoderConfigurations, $"{MediaPath}", "videoEncoderConfigurations");
+        await Serialize(videoEncoderConfigurations, $"{_mediaPath}", "videoEncoderConfigurations");
         foreach (var conf in videoEncoderConfigurations.Configurations)
         {
-            await Serialize(conf, $"{MediaPath}/videoEncoderConfigurations", $"{conf.Name}");
+            await Serialize(conf, $"{_mediaPath}/videoEncoderConfigurations", $"{conf.Name}");
 
             var videoEncoderConfiguration = media.GetVideoEncoderConfigurationAsync(conf.token).Result;
-            await Serialize(videoEncoderConfiguration, $"{MediaPath}/videoEncoderConfigurations/{conf.Name}", "videoEncoderConfiguration");
+            await Serialize(videoEncoderConfiguration, $"{_mediaPath}/videoEncoderConfigurations/{conf.Name}", "videoEncoderConfiguration");
 
             foreach (var prof in profiles.Profiles)
             {
                 var videoEncoderConfigurationOptions = media.GetVideoEncoderConfigurationOptionsAsync(conf.token, prof.token).Result;
-                await Serialize(videoEncoderConfigurationOptions, $"{MediaPath}/videoEncoderConfigurations/{conf.Name}/videoEncoderConfigurationOptions/{prof.Name}", "videoEncoderConfigurationOptions");
+                await Serialize(videoEncoderConfigurationOptions, $"{_mediaPath}/videoEncoderConfigurations/{conf.Name}/videoEncoderConfigurationOptions/{prof.Name}", "videoEncoderConfigurationOptions");
             }
         }
 
         var videoSourceConfigurations = media.GetVideoSourceConfigurationsAsync().Result;
-        await Serialize(videoSourceConfigurations, $"{MediaPath}", "videoSourceConfigurations");
+        await Serialize(videoSourceConfigurations, $"{_mediaPath}", "videoSourceConfigurations");
         foreach (var conf in videoSourceConfigurations.Configurations)
         {
-            await Serialize(conf, $"{MediaPath}/videoSourceConfigurations", $"{conf.Name}");
+            await Serialize(conf, $"{_mediaPath}/videoSourceConfigurations", $"{conf.Name}");
 
             var videoSourceConfiguration = media.GetVideoSourceConfigurationAsync(conf.token).Result;
-            await Serialize(videoSourceConfiguration, $"{MediaPath}/videoSourceConfigurations/{conf.Name}", "videoSourceConfiguration");
+            await Serialize(videoSourceConfiguration, $"{_mediaPath}/videoSourceConfigurations/{conf.Name}", "videoSourceConfiguration");
 
             foreach (var prof in profiles.Profiles)
             {
                 var videoSourceConfigurationOptions = media.GetVideoSourceConfigurationOptionsAsync(conf.token, prof.token).Result;
-                await Serialize(videoSourceConfigurationOptions, $"{MediaPath}/videoSourceConfigurations/{conf.Name}/videoSourceConfigurationOptions/{prof.Name}", "videoSourceConfigurationOptions");
+                await Serialize(videoSourceConfigurationOptions, $"{_mediaPath}/videoSourceConfigurations/{conf.Name}/videoSourceConfigurationOptions/{prof.Name}", "videoSourceConfigurationOptions");
             }
 
-            try
+            await ExecuteAndIgnoreExceptions(async () =>
             {
                 var oSDs = media.GetOSDsAsync(conf.token).Result;
-                await Serialize(oSDs, $"{MediaPath}/videoSourceConfigurations/{conf.Name}", "oSDs");
+                await Serialize(oSDs, $"{_mediaPath}/videoSourceConfigurations/{conf.Name}", "oSDs");
                 foreach (var osdConf in oSDs.OSDs)
                 {
                     var osd = media.GetOSDAsync(new GetOSDRequest(osdConf.token, new XmlElement[] { })).Result;
-                    await Serialize(osd, $"{MediaPath}/videoSourceConfigurations/{conf.Name}/osd/{osdConf.token}", "osd");
+                    await Serialize(osd, $"{_mediaPath}/videoSourceConfigurations/{conf.Name}/osd/{osdConf.token}", "osd");
 
                     var osdOptions = media.GetOSDOptionsAsync(new GetOSDOptionsRequest(osdConf.token, new XmlElement[] { })).Result;
-                    await Serialize(osdOptions, $"{MediaPath}/videoSourceConfigurations/{conf.Name}/osdOptions/{osdConf.token}", "osdOptions");
+                    await Serialize(osdOptions, $"{_mediaPath}/videoSourceConfigurations/{conf.Name}/osdOptions/{osdConf.token}", "osdOptions");
                 }
-            }
-            catch
-            {
-                // ignored
-            }
+            });
 
             var guaranteedNumberOfVideoEncoderInstances = media.GetGuaranteedNumberOfVideoEncoderInstancesAsync(new GetGuaranteedNumberOfVideoEncoderInstancesRequest(conf.token)).Result;
-            await Serialize(guaranteedNumberOfVideoEncoderInstances, $"{MediaPath}/videoSourceConfigurations/{conf.Name}", "guaranteedNumberOfVideoEncoderInstances");
+            await Serialize(guaranteedNumberOfVideoEncoderInstances, $"{_mediaPath}/videoSourceConfigurations/{conf.Name}", "guaranteedNumberOfVideoEncoderInstances");
         }
 
         var videoSources = media.GetVideoSourcesAsync().Result;
-        await Serialize(videoSources, $"{MediaPath}", "videoSources");
+        await Serialize(videoSources, $"{_mediaPath}", "videoSources");
         foreach (var conf in videoSources.VideoSources)
         {
-            await Serialize(conf, $"{MediaPath}/videoSources", $"{conf.token}");
+            await Serialize(conf, $"{_mediaPath}/videoSources", $"{conf.token}");
 
-            try
+            await ExecuteAndIgnoreExceptions(async () =>
             {
                 var videoSourceModes = media.GetVideoSourceModesAsync(conf.token).Result;
-                await Serialize(videoSourceModes, $"{MediaPath}/videoSources/{conf.token}", "videoSources");
+                await Serialize(videoSourceModes, $"{_mediaPath}/videoSources/{conf.token}", "videoSources");
                 foreach (var mode in videoSourceModes.VideoSourceModes)
-                    await Serialize(mode, $"{MediaPath}/videoSources/{conf.token}/videoSourceModes/{mode.token}", "mode");
-            }
-            catch
-            {
-                // ignored
-            }
+                    await Serialize(mode, $"{_mediaPath}/videoSources/{conf.token}/videoSourceModes/{mode.token}", "mode");
+            });
         }
     }
 
-    private static async Task AllMedia2GetMethods(MediaClient media, Media2Client media2)
+    private static async Task SaveAllMedia2ClientGetMethods(MediaClient media, Media2Client media2)
     {
-        try
+        await Task.Delay(0);
+        await ExecuteAndIgnoreExceptions(async () =>
         {
             var profiles = media2.GetProfilesAsync(null, null).Result;
-            await Serialize(profiles, $"{Media2Path}", "profiles");
+            await Serialize(profiles, $"{_media2Path}", "profiles");
             foreach (var conf in profiles.Profiles)
             {
-                await Serialize(profiles, $"{Media2Path}/profiles", $"{conf.Name}");
+                await Serialize(profiles, $"{_media2Path}/profiles", $"{conf.Name}");
 
                 var videoSourceConfigurations = media2.GetVideoSourceConfigurationsAsync(null, conf.token).Result;
-                await Serialize(videoSourceConfigurations, $"{Media2Path}/profiles/{conf.Name}", "videoSourceConfigurations");
+                await Serialize(videoSourceConfigurations, $"{_media2Path}/profiles/{conf.Name}", "videoSourceConfigurations");
                 foreach (var prof in videoSourceConfigurations.Configurations)
                 {
-                    await Serialize(prof, $"{Media2Path}/profiles/{conf.Name}/videoSourceConfigurations", $"{prof.Name}");
+                    await Serialize(prof, $"{_media2Path}/profiles/{conf.Name}/videoSourceConfigurations", $"{prof.Name}");
 
-                    try
+                    await ExecuteAndIgnoreExceptions(async () =>
                     {
                         var videoSourceConfigurationOptions = media2.GetVideoSourceConfigurationOptionsAsync(null, prof.token).Result;
-                        await Serialize(videoSourceConfigurationOptions, $"{Media2Path}/profiles/{conf.Name}/videoSourceConfigurations", "videoSourceConfigurationOptions");
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
+                        await Serialize(videoSourceConfigurationOptions, $"{_media2Path}/profiles/{conf.Name}/videoSourceConfigurations", "videoSourceConfigurationOptions");
+                    });
                 }
 
                 var videoEncoderConfigurations = media2.GetVideoEncoderConfigurationsAsync(null, conf.token).Result;
-                await Serialize(videoEncoderConfigurations, $"{Media2Path}/profiles/{conf.Name}", "videoEncoderConfigurations");
+                await Serialize(videoEncoderConfigurations, $"{_media2Path}/profiles/{conf.Name}", "videoEncoderConfigurations");
                 foreach (var prof in videoEncoderConfigurations.Configurations)
                 {
-                    await Serialize(prof, $"{Media2Path}/profiles/{conf.Name}/videoEncoderConfigurations", $"{prof.Name}");
+                    await Serialize(prof, $"{_media2Path}/profiles/{conf.Name}/videoEncoderConfigurations", $"{prof.Name}");
 
-                    try
+                    await ExecuteAndIgnoreExceptions(async () =>
                     {
                         var videoEncoderConfigurationOptions = media2.GetVideoEncoderConfigurationOptionsAsync(null, prof.token).Result;
-                        await Serialize(videoEncoderConfigurationOptions, $"{Media2Path}/profiles/{conf.Name}/videoEncoderConfigurations", "videoEncoderConfigurationOptions");
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
+                        await Serialize(videoEncoderConfigurationOptions, $"{_media2Path}/profiles/{conf.Name}/videoEncoderConfigurations", "videoEncoderConfigurationOptions");
+                    });
                 }
             }
-        }
-        catch
-        {
-            // ignored
-        }
+        });
 
-        var videoSources = media.GetVideoSourcesAsync().Result;
-        foreach (var conf in videoSources.VideoSources)
-            try
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var videoSources = media.GetVideoSourcesAsync().Result;
+            foreach (var conf in videoSources.VideoSources)
             {
                 var videoSourceModes = media2.GetVideoSourceModesAsync(conf.token).Result;
-                await Serialize(videoSourceModes, $"{Media2Path}/videoSources/{conf.token}", "videoSourceModes");
+                await Serialize(videoSourceModes, $"{_media2Path}/videoSources/{conf.token}", "videoSourceModes");
                 foreach (var mode in videoSourceModes.VideoSourceModes)
-                    await Serialize(mode, $"{Media2Path}/videoSources/{conf.token}/videoSourceModes", $"{mode.token}");
+                    await Serialize(mode, $"{_media2Path}/videoSources/{conf.token}/videoSourceModes", $"{mode.token}");
             }
-            catch
-            {
-                // ignored
-            }
+        });
 
         //var analyticsConfigurations = media2.GetAnalyticsConfigurationsAsync().Result;
         //var audioDecoderConfigurationOptions = media2.GetAudioDecoderConfigurationOptionsAsync().Result;
@@ -1274,121 +950,112 @@ public static class Program
         //var videoEncoderInstances = media2.GetVideoEncoderInstancesAsync().Result;
     }
 
-    private static async Task AllImagingGetMethods(MediaClient media, ImagingPortClient imaging)
+    private static async Task SaveAllImagingClientGetMethods(MediaClient media, ImagingPortClient imaging)
     {
         var serviceCapabilitiesImaging = imaging.GetServiceCapabilitiesAsync().Result;
-        await Serialize(serviceCapabilitiesImaging, $"{ImagingPath}", "serviceCapabilities");
+        await Serialize(serviceCapabilitiesImaging, $"{_imagingPath}", "serviceCapabilities");
 
         var videoSources = media.GetVideoSourcesAsync().Result;
-        await Serialize(videoSources, $"{ImagingPath}", "videoSources");
+        await Serialize(videoSources, $"{_imagingPath}", "videoSources");
         foreach (var conf in videoSources.VideoSources)
         {
-            await Serialize(conf, $"{ImagingPath}/videoSources/", $"{conf.token}");
+            await Serialize(conf, $"{_imagingPath}/videoSources/", $"{conf.token}");
 
-            var status = imaging.GetStatusAsync(conf.token).Result;
-            await Serialize(status, $"{ImagingPath}/videoSources/{conf.token}", "status");
+            await ExecuteAndIgnoreExceptions(async () =>
+            {
+                var status = imaging.GetStatusAsync(conf.token).Result;
+                await Serialize(status, $"{_imagingPath}/videoSources/{conf.token}", "status");
+            });
 
             var options = imaging.GetOptionsAsync(conf.token).Result;
-            await Serialize(options, $"{ImagingPath}/videoSources/{conf.token}", "options");
+            await Serialize(options, $"{_imagingPath}/videoSources/{conf.token}", "options");
 
             var moveOptions = imaging.GetMoveOptionsAsync(conf.token).Result;
-            await Serialize(moveOptions, $"{ImagingPath}/videoSources/{conf.token}", "moveOptions");
+            await Serialize(moveOptions, $"{_imagingPath}/videoSources/{conf.token}", "moveOptions");
 
             var imagingSettings = imaging.GetImagingSettingsAsync(conf.token).Result;
-            await Serialize(imagingSettings, $"{ImagingPath}/videoSources/{conf.token}", "imagingSettings");
+            await Serialize(imagingSettings, $"{_imagingPath}/videoSources/{conf.token}", "imagingSettings");
 
-            try
+            await ExecuteAndIgnoreExceptions(async () =>
             {
                 var presets = imaging.GetPresetsAsync(conf.token).Result;
-                await Serialize(presets, $"{ImagingPath}/videoSources/{conf.token}", "presets");
+                await Serialize(presets, $"{_imagingPath}/videoSources/{conf.token}", "presets");
                 foreach (var pres in presets.Preset)
-                    await Serialize(pres, $"{ImagingPath}/videoSources/{conf.token}/presets", $"{pres.Name}");
-            }
-            catch
-            {
-                // ignored
-            }
+                    await Serialize(pres, $"{_imagingPath}/videoSources/{conf.token}/presets", $"{pres.Name}");
+            });
 
-            try
+            await ExecuteAndIgnoreExceptions(async () =>
             {
                 var currentPreset = imaging.GetCurrentPresetAsync(conf.token).Result;
-                await Serialize(currentPreset, $"{ImagingPath}/videoSources/{conf.token}", "currentPreset");
-            }
-            catch
-            {
-                // ignored
-            }
+                await Serialize(currentPreset, $"{_imagingPath}/videoSources/{conf.token}", "currentPreset");
+            });
         }
     }
 
-    private static async Task AllPtzGetMethods(MediaClient media, PTZClient ptz)
+    private static async Task SaveAllPtzClientGetMethods(MediaClient media, PTZClient ptz)
     {
         var configurations = ptz.GetConfigurationsAsync().Result;
-        await Serialize(configurations, $"{PtzPath}", "configurations");
+        await Serialize(configurations, $"{_ptzPath}", "configurations");
         foreach (var conf in configurations.PTZConfiguration)
         {
-            await Serialize(conf, $"{PtzPath}/configurations", $"{conf.Name}");
+            await Serialize(conf, $"{_ptzPath}/configurations", $"{conf.Name}");
 
             var configuration = ptz.GetConfigurationAsync(conf.token).Result;
-            await Serialize(configuration, $"{PtzPath}/configurations/{conf.Name}", "configuration");
+            await Serialize(configuration, $"{_ptzPath}/configurations/{conf.Name}", "configuration");
 
             var configurationOptions = ptz.GetConfigurationOptionsAsync(conf.token).Result;
-            await Serialize(configurationOptions, $"{PtzPath}/configurations/{conf.Name}", "configurationOptions");
+            await Serialize(configurationOptions, $"{_ptzPath}/configurations/{conf.Name}", "configurationOptions");
         }
 
         var profiles = media.GetProfilesAsync().Result;
-        await Serialize(profiles, $"{PtzPath}", "profiles");
+        await Serialize(profiles, $"{_ptzPath}", "profiles");
         foreach (var conf in profiles.Profiles)
         {
-            await Serialize(conf, $"{PtzPath}/profiles", $"{conf.Name}");
+            await Serialize(conf, $"{_ptzPath}/profiles", $"{conf.Name}");
 
             var status = ptz.GetStatusAsync(conf.token).Result;
-            await Serialize(status, $"{PtzPath}/profiles/{conf.Name}", "status");
+            await Serialize(status, $"{_ptzPath}/profiles/{conf.Name}", "status");
 
             var compatibleConfigurations = ptz.GetCompatibleConfigurationsAsync(conf.token).Result;
-            await Serialize(compatibleConfigurations, $"{PtzPath}/profiles/{conf.Name}", "compatibleConfigurations");
+            await Serialize(compatibleConfigurations, $"{_ptzPath}/profiles/{conf.Name}", "compatibleConfigurations");
             foreach (var compConf in compatibleConfigurations.PTZConfiguration)
-                await Serialize(compConf, $"{PtzPath}/profiles/{conf.Name}/compatibleConfigurations", $"{compConf.Name}");
+                await Serialize(compConf, $"{_ptzPath}/profiles/{conf.Name}/compatibleConfigurations", $"{compConf.Name}");
 
             var presets = ptz.GetPresetsAsync(conf.token).Result;
-            await Serialize(presets, $"{PtzPath}/profiles/{conf.Name}", "presets");
+            await Serialize(presets, $"{_ptzPath}/profiles/{conf.Name}", "presets");
             foreach (var pres in presets.Preset)
             {
-                await Serialize(pres, $"{PtzPath}/profiles/{conf.Name}/presets", $"{pres.Name}");
+                await Serialize(pres, $"{_ptzPath}/profiles/{conf.Name}/presets", $"{pres.Name}");
 
                 var presetTour = ptz.GetPresetTourAsync(pres.token, conf.token).Result;
-                await Serialize(presetTour, $"{PtzPath}/profiles/{conf.Name}/presets", "presetTour");
+                await Serialize(presetTour, $"{_ptzPath}/profiles/{conf.Name}/presets", "presetTour");
             }
 
             var presetTours = ptz.GetPresetToursAsync(conf.token).Result;
-            await Serialize(presetTours, $"{PtzPath}/profiles/{conf.Name}", "presetTours");
+            await Serialize(presetTours, $"{_ptzPath}/profiles/{conf.Name}", "presetTours");
             foreach (var pres in presetTours.PresetTour)
             {
-                await Serialize(pres, $"{PtzPath}/profiles/{conf.Name}/presetTours", $"{pres.Name}");
+                await Serialize(pres, $"{_ptzPath}/profiles/{conf.Name}/presetTours", $"{pres.Name}");
 
-                try
+                await ExecuteAndIgnoreExceptions(async () =>
                 {
                     var presetTourOptions = ptz.GetPresetTourOptionsAsync(conf.token, pres.token).Result;
-                    await Serialize(presetTourOptions, $"{PtzPath}/profiles/{conf.Name}/presetTours/{pres.Name}", "presetTourOptions");
-                }
-                catch
-                {
-                    // ignored
-                }
+                    await Serialize(presetTourOptions, $"{_ptzPath}/profiles/{conf.Name}/presetTours/{pres.Name}", "presetTourOptions");
+                });
             }
         }
 
         var nodes = ptz.GetNodesAsync().Result;
-        await Serialize(nodes, $"{PtzPath}", "nodes");
+        await Serialize(nodes, $"{_ptzPath}", "nodes");
         foreach (var conf in nodes.PTZNode)
         {
-            await Serialize(conf, $"{PtzPath}/nodes", $"{conf.Name}");
+            await Serialize(conf, $"{_ptzPath}/nodes", $"{conf.Name}");
 
             var node = ptz.GetNodeAsync(conf.token).Result;
-            await Serialize(node, $"{PtzPath}/nodes/{conf.Name}", "node");
+            await Serialize(node, $"{_ptzPath}/nodes/{conf.Name}", "node");
         }
 
         var serviceCapabilities = ptz.GetServiceCapabilitiesAsync().Result;
-        await Serialize(serviceCapabilities, $"{PtzPath}", "serviceCapabilities");
+        await Serialize(serviceCapabilities, $"{_ptzPath}", "serviceCapabilities");
     }
 }
