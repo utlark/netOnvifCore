@@ -88,7 +88,6 @@ public static class Program
     {
         new ValueTuple<string, (string Login, string Password)>("20.0.1.10", new ValueTuple<string, string>("root", "root")),
         new ValueTuple<string, (string Login, string Password)>("20.0.1.11", new ValueTuple<string, string>("admin", "admin")),
-        new ValueTuple<string, (string Login, string Password)>("20.0.1.12", new ValueTuple<string, string>("root", "root")),
         new ValueTuple<string, (string Login, string Password)>("20.0.1.13", new ValueTuple<string, string>("admin", "123456")),
         new ValueTuple<string, (string Login, string Password)>("10.15.51.120", new ValueTuple<string, string>("admin", "admin")),
         new ValueTuple<string, (string Login, string Password)>("10.15.51.126", new ValueTuple<string, string>("admin", "123456Ps@"))
