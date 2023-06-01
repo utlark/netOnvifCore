@@ -90,7 +90,7 @@ public static class Program
         new ValueTuple<string, (string Login, string Password)>("20.0.1.11", new ValueTuple<string, string>("admin", "admin")),
         new ValueTuple<string, (string Login, string Password)>("20.0.1.13", new ValueTuple<string, string>("admin", "123456")),
         new ValueTuple<string, (string Login, string Password)>("10.15.51.120", new ValueTuple<string, string>("admin", "admin")),
-        new ValueTuple<string, (string Login, string Password)>("10.15.51.126", new ValueTuple<string, string>("admin", "123456Ps@"))
+        new ValueTuple<string, (string Login, string Password)>("10.15.51.126", new ValueTuple<string, string>("admin", "123456-Saut"))
     };
 
     public static async Task Main()
@@ -104,7 +104,7 @@ public static class Program
 
         //foreach (var camera in AvailableCameras)
         {
-            var camera = AvailableCameras[1];
+            var camera = AvailableCameras[0];
             Console.WriteLine($"Address: {camera.Ip}");
 
             var device = OnvifClientFactory.CreateDeviceClientAsync(camera.Ip, camera.User.Login, camera.User.Password)
@@ -133,12 +133,12 @@ public static class Program
             var media = OnvifClientFactory.CreateMediaClientAsync(device).Result;
             var imaging = OnvifClientFactory.CreateImagingClientAsync(device).Result;
 
-            await SaveAllDeviceClientGetMethods(device);
+            //await SaveAllDeviceClientGetMethods(device);
             await SaveAllMediaClientGetMethods(media);
-            await SaveAllImagingClientGetMethods(media, imaging);
+            //await SaveAllImagingClientGetMethods(media, imaging);
 
-            await ExecuteAndIgnoreExceptions(async () => await SaveAllMedia2ClientGetMethods(media, OnvifClientFactory.CreateMedia2ClientAsync(device).Result));
-            await ExecuteAndIgnoreExceptions(async () => await SaveAllPtzClientGetMethods(media, OnvifClientFactory.CreatePtzClientAsync(device).Result));
+            //await ExecuteAndIgnoreExceptions(async () => await SaveAllMedia2ClientGetMethods(media, OnvifClientFactory.CreateMedia2ClientAsync(device).Result));
+            //await ExecuteAndIgnoreExceptions(async () => await SaveAllPtzClientGetMethods(media, OnvifClientFactory.CreatePtzClientAsync(device).Result));
         }
     }
 
@@ -849,10 +849,10 @@ public static class Program
                 await Serialize(oSDs, $"{_mediaPath}/videoSourceConfigurations/{conf.Name}", "oSDs");
                 foreach (var osdConf in oSDs.OSDs)
                 {
-                    var osd = media.GetOSDAsync(new GetOSDRequest(osdConf.token, new XmlElement[] { })).Result;
+                    var osd = media.GetOSDAsync(new GetOSDRequest(osdConf.token, null)).Result;
                     await Serialize(osd, $"{_mediaPath}/videoSourceConfigurations/{conf.Name}/osd/{osdConf.token}", "osd");
 
-                    var osdOptions = media.GetOSDOptionsAsync(new GetOSDOptionsRequest(osdConf.token, new XmlElement[] { })).Result;
+                    var osdOptions = media.GetOSDOptionsAsync(new GetOSDOptionsRequest(osdConf.token, null)).Result;
                     await Serialize(osdOptions, $"{_mediaPath}/videoSourceConfigurations/{conf.Name}/osdOptions/{osdConf.token}", "osdOptions");
                 }
             });
