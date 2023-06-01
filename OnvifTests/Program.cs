@@ -102,13 +102,12 @@ public static class Program
             await SaveAllOnvifFilteredMethods(m => !m.Name.StartsWith("Get") && !m.Name.StartsWith("Set"), "otherMethods");
         }
 
-        //foreach (var camera in AvailableCameras)
+        foreach (var camera in AvailableCameras)
         {
-            var camera = AvailableCameras[0];
+            //var camera = AvailableCameras[0];
             Console.WriteLine($"Address: {camera.Ip}");
 
-            var device = OnvifClientFactory.CreateDeviceClientAsync(camera.Ip, camera.User.Login, camera.User.Password)
-                .Result;
+            var device = OnvifClientFactory.CreateDeviceClientAsync(camera.Ip, camera.User.Login, camera.User.Password).Result;
 
             _cameraManufacturer =
                 device.GetDeviceInformationAsync(new GetDeviceInformationRequest()).Result.Manufacturer switch
@@ -133,12 +132,12 @@ public static class Program
             var media = OnvifClientFactory.CreateMediaClientAsync(device).Result;
             var imaging = OnvifClientFactory.CreateImagingClientAsync(device).Result;
 
-            //await SaveAllDeviceClientGetMethods(device);
+            await SaveAllDeviceClientGetMethods(device);
             await SaveAllMediaClientGetMethods(media);
-            //await SaveAllImagingClientGetMethods(media, imaging);
+            await SaveAllImagingClientGetMethods(media, imaging);
 
-            //await ExecuteAndIgnoreExceptions(async () => await SaveAllMedia2ClientGetMethods(media, OnvifClientFactory.CreateMedia2ClientAsync(device).Result));
-            //await ExecuteAndIgnoreExceptions(async () => await SaveAllPtzClientGetMethods(media, OnvifClientFactory.CreatePtzClientAsync(device).Result));
+            await ExecuteAndIgnoreExceptions(async () => await SaveAllMedia2ClientGetMethods(media, OnvifClientFactory.CreateMedia2ClientAsync(device).Result));
+            await ExecuteAndIgnoreExceptions(async () => await SaveAllPtzClientGetMethods(media, OnvifClientFactory.CreatePtzClientAsync(device).Result));
         }
     }
 
@@ -569,7 +568,7 @@ public static class Program
         var services = device.GetServicesAsync(true).Result;
         await Serialize(services, $"{_devicePath}", "services");
         foreach (var conf in services.Service)
-            await Serialize(conf, $"{_devicePath}/services", $"{conf.Namespace.Split('/')[^1]}");
+            await Serialize(conf, $"{_devicePath}/services", $"{conf.Namespace.Split('/')[^2]}");
 
         await ExecuteAndIgnoreExceptions(async () =>
         {
@@ -879,7 +878,6 @@ public static class Program
 
     private static async Task SaveAllMedia2ClientGetMethods(MediaClient media, Media2Client media2)
     {
-        await Task.Delay(0);
         await ExecuteAndIgnoreExceptions(async () =>
         {
             var profiles = media2.GetProfilesAsync(null, null).Result;
