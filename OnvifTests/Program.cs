@@ -120,8 +120,8 @@ public static class Program
                     _ => _cameraManufacturer
                 };
 
-            if (Directory.Exists($"{BasePath}/{_cameraManufacturer}"))
-                Directory.Delete($"{BasePath}/{_cameraManufacturer}", true);
+            if (Directory.Exists($"{BasePath}/CamerasSettings/{_cameraManufacturer}"))
+                Directory.Delete($"{BasePath}/CamerasSettings/{_cameraManufacturer}", true);
 
             _devicePath = $"{BasePath}/CamerasSettings/{_cameraManufacturer}/Device/Get";
             _mediaPath = $"{BasePath}/CamerasSettings/{_cameraManufacturer}/Media/Get";
@@ -568,7 +568,10 @@ public static class Program
         var services = device.GetServicesAsync(true).Result;
         await Serialize(services, $"{_devicePath}", "services");
         foreach (var conf in services.Service)
-            await Serialize(conf, $"{_devicePath}/services", $"{conf.Namespace.Split('/')[^2]}");
+        {
+            var fileName = conf.Namespace.Contains('/') ? conf.Namespace.Split('/')[^2] : conf.Namespace;
+            await Serialize(conf, $"{_devicePath}/services", $"{fileName}");
+        }
 
         await ExecuteAndIgnoreExceptions(async () =>
         {
