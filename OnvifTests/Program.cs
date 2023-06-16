@@ -32,22 +32,39 @@ using netOnvifCore.Security;
 using netOnvifCore.Thermal;
 using netOnvifCore.Uplink;
 using Newtonsoft.Json;
+using AudioDecoderConfiguration = netOnvifCore.Media.AudioDecoderConfiguration;
+using AudioEncoderConfiguration = netOnvifCore.Media.AudioEncoderConfiguration;
+using AudioOutputConfiguration = netOnvifCore.Media.AudioOutputConfiguration;
+using AudioSourceConfiguration = netOnvifCore.Media.AudioSourceConfiguration;
 using CapabilityCategory = netOnvifCore.DeviceManagement.CapabilityCategory;
 using DeviceClient = netOnvifCore.DeviceManagement.DeviceClient;
 using Formatting = Newtonsoft.Json.Formatting;
+using GetAudioDecoderConfigurationsResponse = netOnvifCore.Media.GetAudioDecoderConfigurationsResponse;
+using GetAudioEncoderConfigurationsResponse = netOnvifCore.Media.GetAudioEncoderConfigurationsResponse;
+using GetAudioOutputConfigurationsResponse = netOnvifCore.Media.GetAudioOutputConfigurationsResponse;
+using GetAudioSourceConfigurationsResponse = netOnvifCore.Media.GetAudioSourceConfigurationsResponse;
 using GetAuthFailureWarningConfigurationRequest = netOnvifCore.DeviceManagement.GetAuthFailureWarningConfigurationRequest;
 using GetAuthFailureWarningOptionsRequest = netOnvifCore.DeviceManagement.GetAuthFailureWarningOptionsRequest;
 using GetDeviceInformationRequest = netOnvifCore.DeviceManagement.GetDeviceInformationRequest;
 using GetEndpointReferenceRequest = netOnvifCore.DeviceManagement.GetEndpointReferenceRequest;
+using GetMetadataConfigurationsResponse = netOnvifCore.Media.GetMetadataConfigurationsResponse;
 using GetPasswordComplexityConfigurationRequest = netOnvifCore.DeviceManagement.GetPasswordComplexityConfigurationRequest;
 using GetPasswordComplexityOptionsRequest = netOnvifCore.DeviceManagement.GetPasswordComplexityOptionsRequest;
 using GetPasswordHistoryConfigurationRequest = netOnvifCore.DeviceManagement.GetPasswordHistoryConfigurationRequest;
 using GetSystemUrisRequest = netOnvifCore.DeviceManagement.GetSystemUrisRequest;
+using GetVideoEncoderConfigurationsResponse = netOnvifCore.Media.GetVideoEncoderConfigurationsResponse;
+using GetVideoSourceConfigurationsResponse = netOnvifCore.Media.GetVideoSourceConfigurationsResponse;
+using ImagingSettings20 = netOnvifCore.Imaging.ImagingSettings20;
+using MetadataConfiguration = netOnvifCore.Media.MetadataConfiguration;
+using OSDConfiguration = netOnvifCore.Media.OSDConfiguration;
 using StreamSetup = netOnvifCore.Media.StreamSetup;
 using StreamType = netOnvifCore.Media.StreamType;
 using SystemLogType = netOnvifCore.DeviceManagement.SystemLogType;
 using Transport = netOnvifCore.Media.Transport;
 using TransportProtocol = netOnvifCore.Media.TransportProtocol;
+using VideoAnalyticsConfiguration = netOnvifCore.Media.VideoAnalyticsConfiguration;
+using VideoEncoderConfiguration = netOnvifCore.Media.VideoEncoderConfiguration;
+using VideoSourceConfiguration = netOnvifCore.Media.VideoSourceConfiguration;
 
 namespace OnvifTests;
 
@@ -686,12 +703,12 @@ public static class Program
             await Serialize(conf, $"{_mediaPath}/audioOutputConfigurations", $"{conf.Name}");
 
             var audioOutputConfiguration = media.GetAudioOutputConfigurationAsync(conf.token).Result;
-            await Serialize(audioOutputConfiguration, $"{_mediaPath}/audioOutputConfiguration/{conf.Name}", "audioOutputConfiguration");
+            await Serialize(audioOutputConfiguration, $"{_mediaPath}/audioOutputConfigurations/{conf.Name}", "audioOutputConfiguration");
 
             foreach (var prof in profiles.Profiles)
             {
                 var audioOutputConfigurationOptions = media.GetAudioOutputConfigurationOptionsAsync(conf.token, prof.token).Result;
-                await Serialize(audioOutputConfigurationOptions, $"{_mediaPath}/audioOutputConfiguration/{conf.Name}/audioOutputConfigurationOptions/{prof.Name}", "audioOutputConfigurationOptions");
+                await Serialize(audioOutputConfigurationOptions, $"{_mediaPath}/audioOutputConfigurations/{conf.Name}/audioOutputConfigurationOptions/{prof.Name}", "audioOutputConfigurationOptions");
             }
         }
 
@@ -1057,5 +1074,110 @@ public static class Program
 
         var serviceCapabilities = ptz.GetServiceCapabilitiesAsync().Result;
         await Serialize(serviceCapabilities, $"{_ptzPath}", "serviceCapabilities");
+    }
+
+    private static async Task AllMediaClientSetMethods(MediaClient media)
+    {
+        var jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioDecoderConfigurations.json");
+        await ExecuteAndIgnoreExceptions(async () =>
+        {
+            var audioDecoderConfigurations = JsonConvert.DeserializeObject<GetAudioDecoderConfigurationsResponse>(jsonText);
+            foreach (var conf in audioDecoderConfigurations.Configurations)
+            {
+                var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioDecoderConfigurations/{conf.Name}/audioDecoderConfiguration.json");
+                var audioDecoderConfiguration = JsonConvert.DeserializeObject<AudioDecoderConfiguration>(text);
+
+                await media.SetAudioDecoderConfigurationAsync(audioDecoderConfiguration, true);
+            }
+        });
+
+        jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioEncoderConfigurations.json");
+        var audioEncoderConfigurations = JsonConvert.DeserializeObject<GetAudioEncoderConfigurationsResponse>(jsonText);
+        foreach (var conf in audioEncoderConfigurations.Configurations)
+        {
+            var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioEncoderConfigurations/{conf.Name}/audioEncoderConfiguration.json");
+            var audioEncoderConfiguration = JsonConvert.DeserializeObject<AudioEncoderConfiguration>(text);
+
+            await media.SetAudioEncoderConfigurationAsync(audioEncoderConfiguration, true);
+        }
+
+        jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioOutputConfigurations.json");
+        var audioOutputConfigurations = JsonConvert.DeserializeObject<GetAudioOutputConfigurationsResponse>(jsonText);
+        foreach (var conf in audioOutputConfigurations.Configurations)
+        {
+            var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioOutputConfigurations/{conf.Name}/audioOutputConfiguration.json");
+            var audioOutputConfiguration = JsonConvert.DeserializeObject<AudioOutputConfiguration>(text);
+
+            await media.SetAudioOutputConfigurationAsync(audioOutputConfiguration, true);
+        }
+
+        jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioSourceConfigurations.json");
+        var audioSourceConfigurations = JsonConvert.DeserializeObject<GetAudioSourceConfigurationsResponse>(jsonText);
+        foreach (var conf in audioSourceConfigurations.Configurations)
+        {
+            var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioSourceConfigurations/{conf.Name}/audioSourceConfiguration.json");
+            var audioSourceConfiguration = JsonConvert.DeserializeObject<AudioSourceConfiguration>(text);
+
+            await media.SetAudioSourceConfigurationAsync(audioSourceConfiguration, true);
+        }
+
+        jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/metadataConfigurations.json");
+        var metadataConfigurations = JsonConvert.DeserializeObject<GetMetadataConfigurationsResponse>(jsonText);
+        foreach (var conf in metadataConfigurations.Configurations)
+        {
+            var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/metadataConfigurations/{conf.Name}/metadataConfiguration.json");
+            var metadataConfiguration = JsonConvert.DeserializeObject<MetadataConfiguration>(text);
+
+            await media.SetMetadataConfigurationAsync(metadataConfiguration, true);
+        }
+
+        jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoAnalyticsConfigurations.json");
+        var videoAnalyticsConfigurations = JsonConvert.DeserializeObject<GetVideoAnalyticsConfigurationsResponse>(jsonText);
+        foreach (var conf in videoAnalyticsConfigurations.Configurations)
+        {
+            var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoAnalyticsConfigurations/{conf.Name}/videoAnalyticsConfiguration.json");
+            var videoAnalyticsConfiguration = JsonConvert.DeserializeObject<VideoAnalyticsConfiguration>(text);
+
+            await media.SetVideoAnalyticsConfigurationAsync(videoAnalyticsConfiguration, true);
+        }
+
+        jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoEncoderConfigurations.json");
+        var videoEncoderConfigurations = JsonConvert.DeserializeObject<GetVideoEncoderConfigurationsResponse>(jsonText);
+        foreach (var conf in videoEncoderConfigurations.Configurations)
+        {
+            var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoEncoderConfigurations/{conf.Name}/videoEncoderConfiguration.json");
+            var videoEncoderConfiguration = JsonConvert.DeserializeObject<VideoEncoderConfiguration>(text);
+
+            await media.SetVideoEncoderConfigurationAsync(videoEncoderConfiguration, true);
+        }
+
+        jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoSourceConfigurations.json");
+        var videoSourceConfigurations = JsonConvert.DeserializeObject<GetVideoSourceConfigurationsResponse>(jsonText);
+        foreach (var conf in videoSourceConfigurations.Configurations)
+        {
+            var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoSourceConfigurations/{conf.Name}/videoSourceConfiguration.json");
+            var videoSourceConfiguration = JsonConvert.DeserializeObject<VideoSourceConfiguration>(text);
+            videoSourceConfiguration.Any = null;
+
+            await media.SetVideoSourceConfigurationAsync(videoSourceConfiguration, true);
+
+            text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoSourceConfigurations/{conf.Name}/oSDs.json");
+            var osDConfiguration = JsonConvert.DeserializeObject<OSDConfiguration>(text);
+
+            await media.SetOSDAsync(new SetOSDRequest(osDConfiguration, null));
+        }
+
+        //await media.SetVideoSourceModeAsync("", "");
+        //await media.SetSynchronizationPointAsync("");
+    }
+
+    private static async Task AllImagingClientSetMethods(MediaClient media, ImagingPortClient imaging)
+    {
+        foreach (var conf in media.GetVideoSourcesAsync().Result.VideoSources)
+        {
+            var jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Imaging/Get/videoSources/{conf.token}/imagingSettings.json");
+            var imagingSettings = JsonConvert.DeserializeObject<ImagingSettings20>(jsonText);
+            await imaging.SetImagingSettingsAsync(conf.token, imagingSettings, true);
+        }
     }
 }
