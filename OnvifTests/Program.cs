@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml;
 using netOnvifCore;
@@ -31,14 +32,12 @@ using netOnvifCore.Search;
 using netOnvifCore.Security;
 using netOnvifCore.Thermal;
 using netOnvifCore.Uplink;
-using Newtonsoft.Json;
 using AudioDecoderConfiguration = netOnvifCore.Media.AudioDecoderConfiguration;
 using AudioEncoderConfiguration = netOnvifCore.Media.AudioEncoderConfiguration;
 using AudioOutputConfiguration = netOnvifCore.Media.AudioOutputConfiguration;
 using AudioSourceConfiguration = netOnvifCore.Media.AudioSourceConfiguration;
 using CapabilityCategory = netOnvifCore.DeviceManagement.CapabilityCategory;
 using DeviceClient = netOnvifCore.DeviceManagement.DeviceClient;
-using Formatting = Newtonsoft.Json.Formatting;
 using GetAudioDecoderConfigurationsResponse = netOnvifCore.Media.GetAudioDecoderConfigurationsResponse;
 using GetAudioEncoderConfigurationsResponse = netOnvifCore.Media.GetAudioEncoderConfigurationsResponse;
 using GetAudioOutputConfigurationsResponse = netOnvifCore.Media.GetAudioOutputConfigurationsResponse;
@@ -173,7 +172,7 @@ public static class Program
     private static async Task Serialize(object obj, string directory, string fileName)
     {
         Directory.CreateDirectory($"./{directory}");
-        await File.WriteAllTextAsync($"./{directory}/{fileName}.json", JsonConvert.SerializeObject(obj, Formatting.Indented));
+        await File.WriteAllTextAsync($"./{directory}/{fileName}.json", JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true }));
     }
 
     private static async Task SetSourceRotate(MediaClient media, InfinityRotateModes modes)
@@ -203,189 +202,189 @@ public static class Program
     private static async Task SaveAllOnvifFilteredMethods(Func<MethodInfo, bool> filterCondition, string fileName)
     {
         await Serialize(typeof(PACSPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PACSPortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(PACSPortClient)}", fileName);
 
         await Serialize(typeof(AccessRulesPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AccessRulesPortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(AccessRulesPortClient)}", fileName);
 
         await Serialize(typeof(ActionEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ActionEnginePortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(ActionEnginePortClient)}", fileName);
 
         await Serialize(typeof(AnalyticsEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AnalyticsEnginePortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(AnalyticsEnginePortClient)}", fileName);
 
         await Serialize(typeof(RuleEnginePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(RuleEnginePortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(RuleEnginePortClient)}", fileName);
 
         await Serialize(typeof(AppManagementClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AppManagementClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(AppManagementClient)}", fileName);
 
         await Serialize(typeof(AuthenticationBehaviorPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AuthenticationBehaviorPortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(AuthenticationBehaviorPortClient)}", fileName);
 
         await Serialize(typeof(CredentialPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(CredentialPortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(CredentialPortClient)}", fileName);
 
         await Serialize(typeof(netOnvifCore.DeviceIO.DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(netOnvifCore.DeviceIO.DeviceClient)}IO", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(netOnvifCore.DeviceIO.DeviceClient)}IO", fileName);
 
         await Serialize(typeof(DeviceIOPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceIOPortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceIOPortClient)}", fileName);
 
         await Serialize(typeof(DeviceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(DeviceClient)}", fileName);
 
         await Serialize(typeof(DisplayPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DisplayPortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(DisplayPortClient)}", fileName);
 
         await Serialize(typeof(DoorControlPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(DoorControlPortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(DoorControlPortClient)}", fileName);
 
         await Serialize(typeof(CreatePullPointClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(CreatePullPointClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(CreatePullPointClient)}", fileName);
 
         await Serialize(typeof(EventPortTypeClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(EventPortTypeClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(EventPortTypeClient)}", fileName);
 
         await Serialize(typeof(NotificationConsumerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationConsumerClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationConsumerClient)}", fileName);
 
         await Serialize(typeof(NotificationProducerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationProducerClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(NotificationProducerClient)}", fileName);
 
         await Serialize(typeof(PausableSubscriptionManagerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PausableSubscriptionManagerClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(PausableSubscriptionManagerClient)}", fileName);
 
         await Serialize(typeof(PullPointClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointClient)}", fileName);
 
         await Serialize(typeof(PullPointSubscriptionClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointSubscriptionClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(PullPointSubscriptionClient)}", fileName);
 
         await Serialize(typeof(SubscriptionManagerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(SubscriptionManagerClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(SubscriptionManagerClient)}", fileName);
 
         await Serialize(typeof(ImagingPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ImagingPortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(ImagingPortClient)}", fileName);
 
         await Serialize(typeof(MediaClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(MediaClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(MediaClient)}", fileName);
 
         await Serialize(typeof(Media2Client).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(Media2Client)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(Media2Client)}", fileName);
 
         await Serialize(typeof(ProvisioningServiceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ProvisioningServiceClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(ProvisioningServiceClient)}", fileName);
 
         await Serialize(typeof(PTZClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(PTZClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(PTZClient)}", fileName);
 
         await Serialize(typeof(ReceiverPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReceiverPortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(ReceiverPortClient)}", fileName);
 
         await Serialize(typeof(RecordingPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(RecordingPortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(RecordingPortClient)}", fileName);
 
         await Serialize(typeof(ReplayPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ReplayPortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(ReplayPortClient)}", fileName);
 
         await Serialize(typeof(SchedulePortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(SchedulePortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(SchedulePortClient)}", fileName);
 
         await Serialize(typeof(SearchPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(SearchPortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(SearchPortClient)}", fileName);
 
         await Serialize(typeof(AdvancedSecurityServiceClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(AdvancedSecurityServiceClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(AdvancedSecurityServiceClient)}", fileName);
 
         await Serialize(typeof(Dot1XClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(Dot1XClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(Dot1XClient)}", fileName);
 
         await Serialize(typeof(KeystoreClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(KeystoreClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(KeystoreClient)}", fileName);
 
         await Serialize(typeof(TLSServerClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(TLSServerClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(TLSServerClient)}", fileName);
 
         await Serialize(typeof(ThermalPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(ThermalPortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(ThermalPortClient)}", fileName);
 
         await Serialize(typeof(UplinkPortClient).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(filterCondition)
-            .Select(x => x.Name)
-            .OrderBy(x => x), $"{MethodsPath}/{nameof(UplinkPortClient)}", fileName);
+                .Where(filterCondition)
+                .Select(x => x.Name)
+                .OrderBy(x => x), $"{MethodsPath}/{nameof(UplinkPortClient)}", fileName);
     }
 
     private static async Task SaveAllDeviceClientGetMethods(DeviceClient device)
@@ -1081,88 +1080,88 @@ public static class Program
         var jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioDecoderConfigurations.json");
         await ExecuteAndIgnoreExceptions(async () =>
         {
-            var audioDecoderConfigurations = JsonConvert.DeserializeObject<GetAudioDecoderConfigurationsResponse>(jsonText);
+            var audioDecoderConfigurations = JsonSerializer.Deserialize<GetAudioDecoderConfigurationsResponse>(jsonText);
             foreach (var conf in audioDecoderConfigurations.Configurations)
             {
                 var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioDecoderConfigurations/{conf.Name}/audioDecoderConfiguration.json");
-                var audioDecoderConfiguration = JsonConvert.DeserializeObject<AudioDecoderConfiguration>(text);
+                var audioDecoderConfiguration = JsonSerializer.Deserialize<AudioDecoderConfiguration>(text);
 
                 await media.SetAudioDecoderConfigurationAsync(audioDecoderConfiguration, true);
             }
         });
 
         jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioEncoderConfigurations.json");
-        var audioEncoderConfigurations = JsonConvert.DeserializeObject<GetAudioEncoderConfigurationsResponse>(jsonText);
+        var audioEncoderConfigurations = JsonSerializer.Deserialize<GetAudioEncoderConfigurationsResponse>(jsonText);
         foreach (var conf in audioEncoderConfigurations.Configurations)
         {
             var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioEncoderConfigurations/{conf.Name}/audioEncoderConfiguration.json");
-            var audioEncoderConfiguration = JsonConvert.DeserializeObject<AudioEncoderConfiguration>(text);
+            var audioEncoderConfiguration = JsonSerializer.Deserialize<AudioEncoderConfiguration>(text);
 
             await media.SetAudioEncoderConfigurationAsync(audioEncoderConfiguration, true);
         }
 
         jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioOutputConfigurations.json");
-        var audioOutputConfigurations = JsonConvert.DeserializeObject<GetAudioOutputConfigurationsResponse>(jsonText);
+        var audioOutputConfigurations = JsonSerializer.Deserialize<GetAudioOutputConfigurationsResponse>(jsonText);
         foreach (var conf in audioOutputConfigurations.Configurations)
         {
             var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioOutputConfigurations/{conf.Name}/audioOutputConfiguration.json");
-            var audioOutputConfiguration = JsonConvert.DeserializeObject<AudioOutputConfiguration>(text);
+            var audioOutputConfiguration = JsonSerializer.Deserialize<AudioOutputConfiguration>(text);
 
             await media.SetAudioOutputConfigurationAsync(audioOutputConfiguration, true);
         }
 
         jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioSourceConfigurations.json");
-        var audioSourceConfigurations = JsonConvert.DeserializeObject<GetAudioSourceConfigurationsResponse>(jsonText);
+        var audioSourceConfigurations = JsonSerializer.Deserialize<GetAudioSourceConfigurationsResponse>(jsonText);
         foreach (var conf in audioSourceConfigurations.Configurations)
         {
             var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioSourceConfigurations/{conf.Name}/audioSourceConfiguration.json");
-            var audioSourceConfiguration = JsonConvert.DeserializeObject<AudioSourceConfiguration>(text);
+            var audioSourceConfiguration = JsonSerializer.Deserialize<AudioSourceConfiguration>(text);
 
             await media.SetAudioSourceConfigurationAsync(audioSourceConfiguration, true);
         }
 
         jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/metadataConfigurations.json");
-        var metadataConfigurations = JsonConvert.DeserializeObject<GetMetadataConfigurationsResponse>(jsonText);
+        var metadataConfigurations = JsonSerializer.Deserialize<GetMetadataConfigurationsResponse>(jsonText);
         foreach (var conf in metadataConfigurations.Configurations)
         {
             var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/metadataConfigurations/{conf.Name}/metadataConfiguration.json");
-            var metadataConfiguration = JsonConvert.DeserializeObject<MetadataConfiguration>(text);
+            var metadataConfiguration = JsonSerializer.Deserialize<MetadataConfiguration>(text);
 
             await media.SetMetadataConfigurationAsync(metadataConfiguration, true);
         }
 
         jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoAnalyticsConfigurations.json");
-        var videoAnalyticsConfigurations = JsonConvert.DeserializeObject<GetVideoAnalyticsConfigurationsResponse>(jsonText);
+        var videoAnalyticsConfigurations = JsonSerializer.Deserialize<GetVideoAnalyticsConfigurationsResponse>(jsonText);
         foreach (var conf in videoAnalyticsConfigurations.Configurations)
         {
             var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoAnalyticsConfigurations/{conf.Name}/videoAnalyticsConfiguration.json");
-            var videoAnalyticsConfiguration = JsonConvert.DeserializeObject<VideoAnalyticsConfiguration>(text);
+            var videoAnalyticsConfiguration = JsonSerializer.Deserialize<VideoAnalyticsConfiguration>(text);
 
             await media.SetVideoAnalyticsConfigurationAsync(videoAnalyticsConfiguration, true);
         }
 
         jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoEncoderConfigurations.json");
-        var videoEncoderConfigurations = JsonConvert.DeserializeObject<GetVideoEncoderConfigurationsResponse>(jsonText);
+        var videoEncoderConfigurations = JsonSerializer.Deserialize<GetVideoEncoderConfigurationsResponse>(jsonText);
         foreach (var conf in videoEncoderConfigurations.Configurations)
         {
             var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoEncoderConfigurations/{conf.Name}/videoEncoderConfiguration.json");
-            var videoEncoderConfiguration = JsonConvert.DeserializeObject<VideoEncoderConfiguration>(text);
+            var videoEncoderConfiguration = JsonSerializer.Deserialize<VideoEncoderConfiguration>(text);
 
             await media.SetVideoEncoderConfigurationAsync(videoEncoderConfiguration, true);
         }
 
         jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoSourceConfigurations.json");
-        var videoSourceConfigurations = JsonConvert.DeserializeObject<GetVideoSourceConfigurationsResponse>(jsonText);
+        var videoSourceConfigurations = JsonSerializer.Deserialize<GetVideoSourceConfigurationsResponse>(jsonText);
         foreach (var conf in videoSourceConfigurations.Configurations)
         {
             var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoSourceConfigurations/{conf.Name}/videoSourceConfiguration.json");
-            var videoSourceConfiguration = JsonConvert.DeserializeObject<VideoSourceConfiguration>(text);
+            var videoSourceConfiguration = JsonSerializer.Deserialize<VideoSourceConfiguration>(text);
             videoSourceConfiguration.Any = null;
 
             await media.SetVideoSourceConfigurationAsync(videoSourceConfiguration, true);
 
             text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoSourceConfigurations/{conf.Name}/oSDs.json");
-            var osDConfiguration = JsonConvert.DeserializeObject<OSDConfiguration>(text);
+            var osDConfiguration = JsonSerializer.Deserialize<OSDConfiguration>(text);
 
             await media.SetOSDAsync(new SetOSDRequest(osDConfiguration, null));
         }
@@ -1176,7 +1175,7 @@ public static class Program
         foreach (var conf in media.GetVideoSourcesAsync().Result.VideoSources)
         {
             var jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Imaging/Get/videoSources/{conf.token}/imagingSettings.json");
-            var imagingSettings = JsonConvert.DeserializeObject<ImagingSettings20>(jsonText);
+            var imagingSettings = JsonSerializer.Deserialize<ImagingSettings20>(jsonText);
             await imaging.SetImagingSettingsAsync(conf.token, imagingSettings, true);
         }
     }
