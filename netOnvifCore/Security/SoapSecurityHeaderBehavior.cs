@@ -6,9 +6,16 @@ namespace netOnvifCore.Security;
 
 public class SoapSecurityHeaderBehavior : IEndpointBehavior
 {
-    private readonly string   _password;
-    private readonly TimeSpan _timeShift;
-    private readonly string   _username;
+    public void AddBindingParameters(ServiceEndpoint endpoint, BindingParameterCollection bindingParameters) { }
+
+    public void ApplyClientBehavior(ServiceEndpoint endpoint, ClientRuntime clientRuntime)
+    {
+        clientRuntime.ClientMessageInspectors.Add(new SoapSecurityHeaderInspector(_username, _password, _timeShift));
+    }
+
+    public void ApplyDispatchBehavior(ServiceEndpoint endpoint, EndpointDispatcher endpointDispatcher) { }
+
+    public void Validate(ServiceEndpoint endpoint) { }
 
     public SoapSecurityHeaderBehavior(string username, string password, TimeSpan timeShift)
     {
@@ -17,20 +24,7 @@ public class SoapSecurityHeaderBehavior : IEndpointBehavior
         _timeShift = timeShift;
     }
 
-    public void AddBindingParameters(ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
-    {
-    }
-
-    public void ApplyClientBehavior(ServiceEndpoint endpoint, ClientRuntime clientRuntime)
-    {
-        clientRuntime.ClientMessageInspectors.Add(new SoapSecurityHeaderInspector(_username, _password, _timeShift));
-    }
-
-    public void ApplyDispatchBehavior(ServiceEndpoint endpoint, EndpointDispatcher endpointDispatcher)
-    {
-    }
-
-    public void Validate(ServiceEndpoint endpoint)
-    {
-    }
+    private readonly string   _password;
+    private readonly TimeSpan _timeShift;
+    private readonly string   _username;
 }
