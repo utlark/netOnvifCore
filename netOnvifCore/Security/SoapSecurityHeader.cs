@@ -5,24 +5,20 @@ using System.Xml;
 
 namespace netOnvifCore.Security;
 
-public class SoapSecurityHeader : MessageHeader, IDisposable
+public class SoapSecurityHeader(string username, string password, TimeSpan timeShift) : MessageHeader, IDisposable
 {
-    public void Dispose() => _numberGenerator.Dispose();
-
-    public SoapSecurityHeader(string username, string password, TimeSpan timeShift)
+    public void Dispose()
     {
-        _username = username;
-        _password = password;
-        _created  = DateTime.UtcNow.Add(timeShift).ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+        _numberGenerator.Dispose();
+
+        GC.SuppressFinalize(this);
     }
 
     public override  string Name      => "Security";
     public override  string Namespace => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
-    private readonly string _created;
+    private readonly string _created = DateTime.UtcNow.Add(timeShift).ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
 
     private readonly RandomNumberGenerator _numberGenerator = RandomNumberGenerator.Create();
-    private readonly string                _password;
-    private readonly string                _username;
 
     private byte[]? _nonce;
 
@@ -30,7 +26,9 @@ public class SoapSecurityHeader : MessageHeader, IDisposable
     {
         get
         {
-            if (_nonce != null) return _nonce;
+            if (_nonce != null)
+                return _nonce;
+
             _nonce = new byte[0x10];
             _numberGenerator.GetBytes(_nonce);
             return _nonce;
@@ -45,12 +43,12 @@ public class SoapSecurityHeader : MessageHeader, IDisposable
         writer.WriteStartElement("UsernameToken");
 
         writer.WriteStartElement("Username");
-        writer.WriteValue(_username);
+        writer.WriteValue(username);
         writer.WriteEndElement();
 
         writer.WriteStartElement("Password");
         writer.WriteAttributeString("Type", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest");
-        writer.WriteValue(PasswordDigest(Nonce, _created, _password));
+        writer.WriteValue(PasswordDigest(Nonce, _created, password));
         writer.WriteEndElement();
 
         writer.WriteStartElement("Nonce");

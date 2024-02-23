@@ -11,7 +11,7 @@ namespace netOnvifCore.Schedule
 {
     
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="http://www.onvif.org/ver10/schedule/wsdl", ConfigurationName="netOnvifCore.Schedule.SchedulePort")]
     public interface SchedulePort
     {
@@ -116,7 +116,7 @@ namespace netOnvifCore.Schedule
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schedule/wsdl")]
     public partial class ServiceCapabilities
@@ -306,7 +306,7 @@ namespace netOnvifCore.Schedule
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schedule/wsdl")]
     public partial class SpecialDayGroupExtension
@@ -330,7 +330,7 @@ namespace netOnvifCore.Schedule
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schedule/wsdl")]
     public partial class ScheduleExtension
@@ -354,7 +354,7 @@ namespace netOnvifCore.Schedule
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schedule/wsdl")]
     public partial class SpecialDaysScheduleExtension
@@ -378,7 +378,7 @@ namespace netOnvifCore.Schedule
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schedule/wsdl")]
     public partial class TimePeriodExtension
@@ -402,7 +402,7 @@ namespace netOnvifCore.Schedule
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schedule/wsdl")]
     public partial class TimePeriod
@@ -474,7 +474,7 @@ namespace netOnvifCore.Schedule
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schedule/wsdl")]
     public partial class SpecialDaysSchedule
@@ -534,7 +534,7 @@ namespace netOnvifCore.Schedule
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(SpecialDayGroup))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(ScheduleInfo))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Schedule))]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/pacs")]
     public partial class DataEntity
@@ -559,7 +559,7 @@ namespace netOnvifCore.Schedule
     
     /// <remarks/>
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(SpecialDayGroup))]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schedule/wsdl")]
     public partial class SpecialDayGroupInfo : DataEntity
@@ -599,7 +599,7 @@ namespace netOnvifCore.Schedule
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schedule/wsdl")]
     public partial class SpecialDayGroup : SpecialDayGroupInfo
@@ -640,7 +640,7 @@ namespace netOnvifCore.Schedule
     
     /// <remarks/>
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Schedule))]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schedule/wsdl")]
     public partial class ScheduleInfo : DataEntity
@@ -680,7 +680,7 @@ namespace netOnvifCore.Schedule
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schedule/wsdl")]
     public partial class Schedule : ScheduleInfo
@@ -736,7 +736,7 @@ namespace netOnvifCore.Schedule
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schedule/wsdl")]
     public partial class ScheduleStateExtension
@@ -760,7 +760,7 @@ namespace netOnvifCore.Schedule
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schedule/wsdl")]
     public partial class ScheduleState
@@ -832,7 +832,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetScheduleInfo", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetScheduleInfoRequest
@@ -853,7 +853,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetScheduleInfoResponse", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetScheduleInfoResponse
@@ -874,7 +874,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetScheduleInfoList", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetScheduleInfoListRequest
     {
@@ -897,7 +897,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetScheduleInfoListResponse", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetScheduleInfoListResponse
     {
@@ -921,7 +921,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSchedules", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetSchedulesRequest
@@ -942,7 +942,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSchedulesResponse", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetSchedulesResponse
@@ -963,7 +963,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetScheduleList", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetScheduleListRequest
     {
@@ -986,7 +986,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetScheduleListResponse", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetScheduleListResponse
     {
@@ -1010,7 +1010,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSpecialDayGroupInfo", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetSpecialDayGroupInfoRequest
@@ -1031,7 +1031,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSpecialDayGroupInfoResponse", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetSpecialDayGroupInfoResponse
@@ -1052,7 +1052,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSpecialDayGroupInfoList", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetSpecialDayGroupInfoListRequest
     {
@@ -1075,7 +1075,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSpecialDayGroupInfoListResponse", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetSpecialDayGroupInfoListResponse
     {
@@ -1099,7 +1099,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSpecialDayGroups", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetSpecialDayGroupsRequest
@@ -1120,7 +1120,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSpecialDayGroupsResponse", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetSpecialDayGroupsResponse
@@ -1141,7 +1141,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSpecialDayGroupList", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetSpecialDayGroupListRequest
     {
@@ -1164,7 +1164,7 @@ namespace netOnvifCore.Schedule
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSpecialDayGroupListResponse", WrapperNamespace="http://www.onvif.org/ver10/schedule/wsdl", IsWrapped=true)]
     public partial class GetSpecialDayGroupListResponse
     {
@@ -1187,13 +1187,13 @@ namespace netOnvifCore.Schedule
         }
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     public interface SchedulePortChannel : netOnvifCore.Schedule.SchedulePort, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     public partial class SchedulePortClient : System.ServiceModel.ClientBase<netOnvifCore.Schedule.SchedulePort>, netOnvifCore.Schedule.SchedulePort
     {
         
@@ -1327,11 +1327,6 @@ namespace netOnvifCore.Schedule
         public virtual System.Threading.Tasks.Task OpenAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
-        }
-        
-        public virtual System.Threading.Tasks.Task CloseAsync()
-        {
-            return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginClose(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndClose));
         }
     }
 }

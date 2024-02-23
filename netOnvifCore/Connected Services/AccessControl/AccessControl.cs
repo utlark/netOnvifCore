@@ -11,7 +11,7 @@ namespace netOnvifCore.AccessControl
 {
     
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="http://www.onvif.org/ver10/accesscontrol/wsdl", ConfigurationName="netOnvifCore.AccessControl.PACSPort")]
     public interface PACSPort
     {
@@ -149,7 +149,7 @@ namespace netOnvifCore.AccessControl
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/accesscontrol/wsdl")]
     public partial class ServiceCapabilities
@@ -283,7 +283,7 @@ namespace netOnvifCore.AccessControl
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/accesscontrol/wsdl")]
     public partial class AccessPointState
@@ -323,7 +323,7 @@ namespace netOnvifCore.AccessControl
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/accesscontrol/wsdl")]
     public partial class AreaExtension
@@ -347,7 +347,7 @@ namespace netOnvifCore.AccessControl
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/accesscontrol/wsdl")]
     public partial class AccessPointExtension
@@ -371,7 +371,7 @@ namespace netOnvifCore.AccessControl
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/accesscontrol/wsdl")]
     public partial class SupportedSecurityLevelsExtension
@@ -395,7 +395,7 @@ namespace netOnvifCore.AccessControl
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/accesscontrol/wsdl")]
     public partial class AccessPointCapabilities
@@ -665,7 +665,7 @@ namespace netOnvifCore.AccessControl
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(AccessPointInfoBase))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(AccessPointInfo))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(AccessPoint))]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/pacs")]
     public partial class DataEntity
@@ -691,7 +691,7 @@ namespace netOnvifCore.AccessControl
     /// <remarks/>
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(AreaInfo))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Area))]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/accesscontrol/wsdl")]
     public partial class AreaInfoBase : DataEntity
@@ -732,7 +732,7 @@ namespace netOnvifCore.AccessControl
     
     /// <remarks/>
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Area))]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/accesscontrol/wsdl")]
     public partial class AreaInfo : AreaInfoBase
@@ -740,7 +740,7 @@ namespace netOnvifCore.AccessControl
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/accesscontrol/wsdl")]
     public partial class Area : AreaInfo
@@ -766,7 +766,7 @@ namespace netOnvifCore.AccessControl
     /// <remarks/>
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(AccessPointInfo))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(AccessPoint))]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/accesscontrol/wsdl")]
     public partial class AccessPointInfoBase : DataEntity
@@ -871,7 +871,7 @@ namespace netOnvifCore.AccessControl
     
     /// <remarks/>
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(AccessPoint))]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/accesscontrol/wsdl")]
     public partial class AccessPointInfo : AccessPointInfoBase
@@ -911,7 +911,7 @@ namespace netOnvifCore.AccessControl
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/accesscontrol/wsdl")]
     public partial class AccessPoint : AccessPointInfo
@@ -951,7 +951,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAccessPointInfo", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAccessPointInfoRequest
@@ -972,7 +972,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAccessPointInfoResponse", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAccessPointInfoResponse
@@ -993,7 +993,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAccessPointInfoList", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAccessPointInfoListRequest
     {
@@ -1016,7 +1016,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAccessPointInfoListResponse", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAccessPointInfoListResponse
     {
@@ -1040,7 +1040,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAccessPoints", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAccessPointsRequest
@@ -1061,7 +1061,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAccessPointsResponse", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAccessPointsResponse
@@ -1082,7 +1082,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAccessPointList", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAccessPointListRequest
     {
@@ -1105,7 +1105,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAccessPointListResponse", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAccessPointListResponse
     {
@@ -1129,7 +1129,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAreaInfo", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAreaInfoRequest
@@ -1150,7 +1150,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAreaInfoResponse", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAreaInfoResponse
@@ -1171,7 +1171,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAreaInfoList", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAreaInfoListRequest
     {
@@ -1194,7 +1194,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAreaInfoListResponse", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAreaInfoListResponse
     {
@@ -1218,7 +1218,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAreas", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAreasRequest
@@ -1239,7 +1239,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAreasResponse", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAreasResponse
@@ -1260,7 +1260,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAreaList", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAreaListRequest
     {
@@ -1283,7 +1283,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAreaListResponse", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class GetAreaListResponse
     {
@@ -1307,7 +1307,7 @@ namespace netOnvifCore.AccessControl
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/accesscontrol/wsdl")]
     public enum Decision
     {
@@ -1320,7 +1320,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Feedback", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class FeedbackRequest
     {
@@ -1357,7 +1357,7 @@ namespace netOnvifCore.AccessControl
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="FeedbackResponse", WrapperNamespace="http://www.onvif.org/ver10/accesscontrol/wsdl", IsWrapped=true)]
     public partial class FeedbackResponse
     {
@@ -1376,13 +1376,13 @@ namespace netOnvifCore.AccessControl
         }
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     public interface PACSPortChannel : netOnvifCore.AccessControl.PACSPort, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     public partial class PACSPortClient : System.ServiceModel.ClientBase<netOnvifCore.AccessControl.PACSPort>, netOnvifCore.AccessControl.PACSPort
     {
         
@@ -1546,11 +1546,6 @@ namespace netOnvifCore.AccessControl
         public virtual System.Threading.Tasks.Task OpenAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
-        }
-        
-        public virtual System.Threading.Tasks.Task CloseAsync()
-        {
-            return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginClose(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndClose));
         }
     }
 }

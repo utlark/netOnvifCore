@@ -4,7 +4,7 @@ using System.ServiceModel.Dispatcher;
 
 namespace netOnvifCore.Security;
 
-public class SoapSecurityHeaderInspector : IClientMessageInspector
+public class SoapSecurityHeaderInspector(string username, string password, TimeSpan timeShift) : IClientMessageInspector
 {
     public void AfterReceiveReply(ref Message reply, object correlationState)
     {
@@ -15,18 +15,7 @@ public class SoapSecurityHeaderInspector : IClientMessageInspector
 
     public object? BeforeSendRequest(ref Message request, IClientChannel channel)
     {
-        request.Headers.Add(new SoapSecurityHeader(_username, _password, _timeShift));
+        request.Headers.Add(new SoapSecurityHeader(username, password, timeShift));
         return null;
     }
-
-    public SoapSecurityHeaderInspector(string username, string password, TimeSpan timeShift)
-    {
-        _username  = username;
-        _password  = password;
-        _timeShift = timeShift;
-    }
-
-    private readonly string   _password;
-    private readonly TimeSpan _timeShift;
-    private readonly string   _username;
 }

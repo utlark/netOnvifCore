@@ -11,7 +11,7 @@ namespace netOnvifCore.AuthenticationBehavior
 {
     
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", ConfigurationName="netOnvifCore.AuthenticationBehavior.AuthenticationBehaviorPort")]
     public interface AuthenticationBehaviorPort
     {
@@ -116,7 +116,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class ServiceCapabilities
@@ -274,7 +274,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class SecurityLevelExtension
@@ -298,7 +298,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class RecognitionGroupExtension
@@ -322,7 +322,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class RecognitionMethodExtension
@@ -346,7 +346,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class RecognitionMethod
@@ -402,7 +402,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class RecognitionGroup
@@ -442,7 +442,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class AuthenticationProfileExtension
@@ -466,7 +466,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class AuthenticationPolicyExtension
@@ -490,7 +490,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class SecurityLevelConstraintExtension
@@ -514,7 +514,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class SecurityLevelConstraint
@@ -608,7 +608,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class AuthenticationPolicy
@@ -668,7 +668,7 @@ namespace netOnvifCore.AuthenticationBehavior
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(SecurityLevel))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(AuthenticationProfileInfo))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(AuthenticationProfile))]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/pacs")]
     public partial class DataEntity
@@ -693,7 +693,7 @@ namespace netOnvifCore.AuthenticationBehavior
     
     /// <remarks/>
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(SecurityLevel))]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class SecurityLevelInfo : DataEntity
@@ -749,7 +749,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class SecurityLevel : SecurityLevelInfo
@@ -790,7 +790,7 @@ namespace netOnvifCore.AuthenticationBehavior
     
     /// <remarks/>
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(AuthenticationProfile))]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class AuthenticationProfileInfo : DataEntity
@@ -830,7 +830,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl")]
     public partial class AuthenticationProfile : AuthenticationProfileInfo
@@ -886,7 +886,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAuthenticationProfileInfo", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetAuthenticationProfileInfoRequest
@@ -907,7 +907,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAuthenticationProfileInfoResponse", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetAuthenticationProfileInfoResponse
@@ -928,7 +928,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAuthenticationProfileInfoList", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetAuthenticationProfileInfoListRequest
     {
@@ -951,7 +951,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAuthenticationProfileInfoListResponse", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetAuthenticationProfileInfoListResponse
     {
@@ -975,7 +975,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAuthenticationProfiles", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetAuthenticationProfilesRequest
@@ -996,7 +996,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAuthenticationProfilesResponse", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetAuthenticationProfilesResponse
@@ -1017,7 +1017,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAuthenticationProfileList", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetAuthenticationProfileListRequest
     {
@@ -1040,7 +1040,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetAuthenticationProfileListResponse", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetAuthenticationProfileListResponse
     {
@@ -1064,7 +1064,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSecurityLevelInfo", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetSecurityLevelInfoRequest
@@ -1085,7 +1085,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSecurityLevelInfoResponse", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetSecurityLevelInfoResponse
@@ -1106,7 +1106,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSecurityLevelInfoList", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetSecurityLevelInfoListRequest
     {
@@ -1129,7 +1129,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSecurityLevelInfoListResponse", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetSecurityLevelInfoListResponse
     {
@@ -1153,7 +1153,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSecurityLevels", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetSecurityLevelsRequest
@@ -1174,7 +1174,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSecurityLevelsResponse", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetSecurityLevelsResponse
@@ -1195,7 +1195,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSecurityLevelList", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetSecurityLevelListRequest
     {
@@ -1218,7 +1218,7 @@ namespace netOnvifCore.AuthenticationBehavior
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetSecurityLevelListResponse", WrapperNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl", IsWrapped=true)]
     public partial class GetSecurityLevelListResponse
     {
@@ -1241,13 +1241,13 @@ namespace netOnvifCore.AuthenticationBehavior
         }
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     public interface AuthenticationBehaviorPortChannel : netOnvifCore.AuthenticationBehavior.AuthenticationBehaviorPort, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     public partial class AuthenticationBehaviorPortClient : System.ServiceModel.ClientBase<netOnvifCore.AuthenticationBehavior.AuthenticationBehaviorPort>, netOnvifCore.AuthenticationBehavior.AuthenticationBehaviorPort
     {
         
@@ -1376,11 +1376,6 @@ namespace netOnvifCore.AuthenticationBehavior
         public virtual System.Threading.Tasks.Task OpenAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
-        }
-        
-        public virtual System.Threading.Tasks.Task CloseAsync()
-        {
-            return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginClose(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndClose));
         }
     }
 }
