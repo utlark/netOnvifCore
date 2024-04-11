@@ -101,6 +101,8 @@ public static class OnvifClientFactory
     public static async Task<PTZClient> CreatePtzClientAsync(string deviceIp, string username, string password) =>
         await CreatePtzClientAsync(await CreateDeviceClientAsync(deviceIp, username, password));
 
+#region Private
+
     private static CustomBinding CreateBinding()
     {
         var binding = new CustomBinding();
@@ -125,4 +127,6 @@ public static class OnvifClientFactory
         var utc = (await device.GetSystemDateAndTimeAsync()).UTCDateTime;
         return new DateTime(utc.Date.Year, utc.Date.Month, utc.Date.Day, utc.Time.Hour, utc.Time.Minute, utc.Time.Second) - DateTime.UtcNow;
     }
+
+#endregion
 }

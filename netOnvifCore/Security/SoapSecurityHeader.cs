@@ -7,6 +7,9 @@ namespace netOnvifCore.Security;
 
 public class SoapSecurityHeader(string username, string password, TimeSpan timeShift) : MessageHeader, IDisposable
 {
+    public override string Name      => "Security";
+    public override string Namespace => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
+
     public void Dispose()
     {
         _numberGenerator.Dispose();
@@ -14,29 +17,7 @@ public class SoapSecurityHeader(string username, string password, TimeSpan timeS
         GC.SuppressFinalize(this);
     }
 
-    public override  string Name      => "Security";
-    public override  string Namespace => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
-    private readonly string _created = DateTime.UtcNow.Add(timeShift).ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
-
-    private readonly RandomNumberGenerator _numberGenerator = RandomNumberGenerator.Create();
-
-    private byte[]? _nonce;
-
-    private byte[] Nonce
-    {
-        get
-        {
-            if (_nonce != null)
-                return _nonce;
-
-            _nonce = new byte[0x10];
-            _numberGenerator.GetBytes(_nonce);
-            return _nonce;
-        }
-    }
-
-    private static string PasswordDigest(IEnumerable<byte> nonce, string created, string secret) =>
-        Convert.ToBase64String(SHA1.HashData(nonce.Concat(Encoding.UTF8.GetBytes(created + secret)).ToArray()));
+#region Protected
 
     protected override void OnWriteHeaderContents(XmlDictionaryWriter writer, MessageVersion messageVersion)
     {
@@ -70,4 +51,32 @@ public class SoapSecurityHeader(string username, string password, TimeSpan timeS
         writer.WriteAttributeString("s", "mustUnderstand", "http://www.w3.org/2003/05/soap-envelope", "1");
         writer.WriteXmlnsAttribute("", Namespace);
     }
+
+#endregion
+
+#region Private
+
+    private static string PasswordDigest(IEnumerable<byte> nonce, string created, string secret) =>
+        Convert.ToBase64String(SHA1.HashData(nonce.Concat(Encoding.UTF8.GetBytes(created + secret)).ToArray()));
+
+    private readonly string _created = DateTime.UtcNow.Add(timeShift).ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+
+    private readonly RandomNumberGenerator _numberGenerator = RandomNumberGenerator.Create();
+
+    private byte[]? _nonce;
+
+    private byte[] Nonce
+    {
+        get
+        {
+            if (_nonce != null)
+                return _nonce;
+
+            _nonce = new byte[0x10];
+            _numberGenerator.GetBytes(_nonce);
+            return _nonce;
+        }
+    }
+
+#endregion
 }
