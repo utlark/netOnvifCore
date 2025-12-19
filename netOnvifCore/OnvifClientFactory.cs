@@ -31,7 +31,7 @@ public static class OnvifClientFactory
 
     public static async Task<MediaClient> CreateMediaClientAsync(DeviceClient deviceClient)
     {
-        var capabilities = await deviceClient.GetCapabilitiesAsync(new[] { CapabilityCategory.All });
+        var capabilities = await deviceClient.GetCapabilitiesAsync([CapabilityCategory.All]);
         var media        = new MediaClient(CreateBinding(), new(new Uri(capabilities.Capabilities.Media.XAddr)));
 
         media.ChannelFactory.Endpoint.EndpointBehaviors.Clear();
@@ -46,7 +46,7 @@ public static class OnvifClientFactory
 
     public static async Task<Media2Client> CreateMedia2ClientAsync(DeviceClient deviceClient)
     {
-        var capabilities    = await deviceClient.GetCapabilitiesAsync(new[] { CapabilityCategory.All });
+        var capabilities    = await deviceClient.GetCapabilitiesAsync([CapabilityCategory.All]);
         var newDeviceClient = new Media2Client(CreateBinding(), new(new Uri(capabilities.Capabilities.Media.XAddr)));
 
         newDeviceClient.ChannelFactory.Endpoint.EndpointBehaviors.Clear();
@@ -61,7 +61,7 @@ public static class OnvifClientFactory
 
     public static async Task<ImagingPortClient> CreateImagingClientAsync(DeviceClient deviceClient)
     {
-        var capabilities    = await deviceClient.GetCapabilitiesAsync(new[] { CapabilityCategory.All });
+        var capabilities    = await deviceClient.GetCapabilitiesAsync([CapabilityCategory.All]);
         var newDeviceClient = new ImagingPortClient(CreateBinding(), new(new Uri(capabilities.Capabilities.Imaging.XAddr)));
 
         newDeviceClient.ChannelFactory.Endpoint.EndpointBehaviors.Clear();
@@ -76,7 +76,7 @@ public static class OnvifClientFactory
 
     public static async Task<PTZClient> CreatePtzClientAsync(DeviceClient deviceClient)
     {
-        var capabilities    = await deviceClient.GetCapabilitiesAsync(new[] { CapabilityCategory.All });
+        var capabilities    = await deviceClient.GetCapabilitiesAsync([CapabilityCategory.All]);
         var newDeviceClient = new PTZClient(CreateBinding(), new(new Uri(capabilities.Capabilities.PTZ.XAddr)));
 
         newDeviceClient.ChannelFactory.Endpoint.EndpointBehaviors.Clear();
@@ -122,7 +122,7 @@ public static class OnvifClientFactory
         return binding;
     }
 
-    private static async Task<TimeSpan> GetDeviceTimeShift(Device device)
+    private static async Task<TimeSpan> GetDeviceTimeShift(DeviceClient device)
     {
         var utc = (await device.GetSystemDateAndTimeAsync()).UTCDateTime;
         return new DateTime(utc.Date.Year, utc.Date.Month, utc.Date.Day, utc.Time.Hour, utc.Time.Minute, utc.Time.Second) - DateTime.UtcNow;

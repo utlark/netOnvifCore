@@ -63,18 +63,16 @@ public class SoapSecurityHeader(string username, string password, TimeSpan timeS
 
     private readonly RandomNumberGenerator _numberGenerator = RandomNumberGenerator.Create();
 
-    private byte[]? _nonce;
-
     private byte[] Nonce
     {
         get
         {
-            if (_nonce != null)
-                return _nonce;
+            if (field != null)
+                return field;
 
-            _nonce = new byte[0x10];
-            _numberGenerator.GetBytes(_nonce);
-            return _nonce;
+            field = new byte[0x10];
+            _numberGenerator.GetBytes(field);
+            return field;
         }
     }
 
