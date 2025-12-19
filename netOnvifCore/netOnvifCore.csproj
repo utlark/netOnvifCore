@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <TargetFramework>net10.0</TargetFramework>
-        <LangVersion>14</LangVersion>
-        <IsPackable>false</IsPackable>
         <Authors>NPO SAUT</Authors>
         <Company>NPO SAUT</Company>
-        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <IsPackable>false</IsPackable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <NeutralLanguage>en-US</NeutralLanguage>
+        <TargetFramework>net8.0</TargetFramework>
+        <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+        <LangVersion>14</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <DebugType>embedded</DebugType>
         <WarningLevel>8</WarningLevel>
+        <DebugType>embedded</DebugType>
         <DebugSymbols>true</DebugSymbols>
+
+        <TrimMode>partial</TrimMode>
+        <PublishRelease>true</PublishRelease>
+        <PublishTrimmed>true</PublishTrimmed>
+        <PublishSingleFile>true</PublishSingleFile>
+        <PublishReadyToRun>false</PublishReadyToRun>
+
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+        <NoWarn>1701;1702;IL2026</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="System.ServiceModel.Duplex" Version="6.0.0"/>
-        <PackageReference Include="System.ServiceModel.Http" Version="10.0.652802" />
-        <PackageReference Include="System.ServiceModel.NetTcp" Version="10.0.652802" />
+        <PackageReference Include="System.ServiceModel.Http" Version="8.1.2" />
+        <PackageReference Include="System.ServiceModel.NetTcp" Version="8.1.2" />
         <PackageReference Include="System.ServiceModel.Security" Version="6.0.0"/>
     </ItemGroup>
 </Project>
