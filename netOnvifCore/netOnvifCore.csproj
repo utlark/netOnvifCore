@@ -21,7 +21,7 @@
         <PublishRelease>true</PublishRelease>
         <PublishTrimmed>true</PublishTrimmed>
         <PublishSingleFile>true</PublishSingleFile>
-        <PublishReadyToRun>false</PublishReadyToRun>
+        <PublishReadyToRun>true</PublishReadyToRun>
 
         <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
         <NoWarn>1701;1702;IL2026</NoWarn>
