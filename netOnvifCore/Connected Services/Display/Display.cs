@@ -174,19 +174,11 @@ namespace netOnvifCore.Display
         
         private float bottomField;
         
-        private bool bottomFieldSpecified;
-        
         private float topField;
-        
-        private bool topFieldSpecified;
         
         private float rightField;
         
-        private bool rightFieldSpecified;
-        
         private float leftField;
-        
-        private bool leftFieldSpecified;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -199,20 +191,6 @@ namespace netOnvifCore.Display
             set
             {
                 this.bottomField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool bottomSpecified
-        {
-            get
-            {
-                return this.bottomFieldSpecified;
-            }
-            set
-            {
-                this.bottomFieldSpecified = value;
             }
         }
         
@@ -231,20 +209,6 @@ namespace netOnvifCore.Display
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool topSpecified
-        {
-            get
-            {
-                return this.topFieldSpecified;
-            }
-            set
-            {
-                this.topFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public float right
         {
@@ -259,20 +223,6 @@ namespace netOnvifCore.Display
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool rightSpecified
-        {
-            get
-            {
-                return this.rightFieldSpecified;
-            }
-            set
-            {
-                this.rightFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public float left
         {
@@ -283,20 +233,6 @@ namespace netOnvifCore.Display
             set
             {
                 this.leftField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool leftSpecified
-        {
-            get
-            {
-                return this.leftFieldSpecified;
-            }
-            set
-            {
-                this.leftFieldSpecified = value;
             }
         }
     }
@@ -3199,6 +3135,10 @@ namespace netOnvifCore.Display
         
         private bool positionField;
         
+        private bool fieldOfViewField;
+        
+        private bool fieldOfViewFieldSpecified;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public bool Status
@@ -3224,6 +3164,34 @@ namespace netOnvifCore.Display
             set
             {
                 this.positionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public bool FieldOfView
+        {
+            get
+            {
+                return this.fieldOfViewField;
+            }
+            set
+            {
+                this.fieldOfViewField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool FieldOfViewSpecified
+        {
+            get
+            {
+                return this.fieldOfViewFieldSpecified;
+            }
+            set
+            {
+                this.fieldOfViewFieldSpecified = value;
             }
         }
     }
@@ -3646,6 +3614,10 @@ namespace netOnvifCore.Display
         
         private bool guaranteedFrameRateFieldSpecified;
         
+        private bool signedField;
+        
+        private bool signedFieldSpecified;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string Encoding
@@ -3825,6 +3797,34 @@ namespace netOnvifCore.Display
             set
             {
                 this.guaranteedFrameRateFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool Signed
+        {
+            get
+            {
+                return this.signedField;
+            }
+            set
+            {
+                this.signedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool SignedSpecified
+        {
+            get
+            {
+                return this.signedFieldSpecified;
+            }
+            set
+            {
+                this.signedFieldSpecified = value;
             }
         }
     }

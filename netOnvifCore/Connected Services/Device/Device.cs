@@ -142,6 +142,22 @@ namespace netOnvifCore.DeviceManagement
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.DeviceManagement.GetEndpointReferenceResponse> GetEndpointReferenceAsync(netOnvifCore.DeviceManagement.GetEndpointReferenceRequest request);
         
+        // CODEGEN: Generating message contract since the operation has multiple return values.
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/device/wsdl/GetUserRoles", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        System.Threading.Tasks.Task<netOnvifCore.DeviceManagement.GetUserRolesResponse> GetUserRolesAsync(netOnvifCore.DeviceManagement.GetUserRolesRequest request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/device/wsdl/SetUserRole", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        System.Threading.Tasks.Task SetUserRoleAsync(netOnvifCore.DeviceManagement.UserRole UserRole);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/device/wsdl/DeleteUserRole", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        System.Threading.Tasks.Task DeleteUserRoleAsync(string UserRole);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/device/wsdl/GetRemoteUser", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
@@ -401,6 +417,11 @@ namespace netOnvifCore.DeviceManagement
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.DeviceManagement.StartFirmwareUpgradeResponse> StartFirmwareUpgradeAsync(netOnvifCore.DeviceManagement.StartFirmwareUpgradeRequest request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/device/wsdl/UpgradeFirmware", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        System.Threading.Tasks.Task<netOnvifCore.DeviceManagement.UpgradeFirmwareResponse> UpgradeFirmwareAsync(netOnvifCore.DeviceManagement.UpgradeFirmwareRequest request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/device/wsdl/StartSystemRestore", ReplyAction="*")]
@@ -4583,11 +4604,7 @@ namespace netOnvifCore.DeviceManagement
         
         private float xField;
         
-        private bool xFieldSpecified;
-        
         private float yField;
-        
-        private bool yFieldSpecified;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -4604,20 +4621,6 @@ namespace netOnvifCore.DeviceManagement
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool xSpecified
-        {
-            get
-            {
-                return this.xFieldSpecified;
-            }
-            set
-            {
-                this.xFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public float y
         {
@@ -4628,20 +4631,6 @@ namespace netOnvifCore.DeviceManagement
             set
             {
                 this.yField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool ySpecified
-        {
-            get
-            {
-                return this.yFieldSpecified;
-            }
-            set
-            {
-                this.yFieldSpecified = value;
             }
         }
     }
@@ -5980,19 +5969,11 @@ namespace netOnvifCore.DeviceManagement
         
         private float bottomField;
         
-        private bool bottomFieldSpecified;
-        
         private float topField;
-        
-        private bool topFieldSpecified;
         
         private float rightField;
         
-        private bool rightFieldSpecified;
-        
         private float leftField;
-        
-        private bool leftFieldSpecified;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -6005,20 +5986,6 @@ namespace netOnvifCore.DeviceManagement
             set
             {
                 this.bottomField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool bottomSpecified
-        {
-            get
-            {
-                return this.bottomFieldSpecified;
-            }
-            set
-            {
-                this.bottomFieldSpecified = value;
             }
         }
         
@@ -6037,20 +6004,6 @@ namespace netOnvifCore.DeviceManagement
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool topSpecified
-        {
-            get
-            {
-                return this.topFieldSpecified;
-            }
-            set
-            {
-                this.topFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public float right
         {
@@ -6065,20 +6018,6 @@ namespace netOnvifCore.DeviceManagement
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool rightSpecified
-        {
-            get
-            {
-                return this.rightFieldSpecified;
-            }
-            set
-            {
-                this.rightFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public float left
         {
@@ -6089,20 +6028,6 @@ namespace netOnvifCore.DeviceManagement
             set
             {
                 this.leftField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool leftSpecified
-        {
-            get
-            {
-                return this.leftFieldSpecified;
-            }
-            set
-            {
-                this.leftFieldSpecified = value;
             }
         }
     }
@@ -8793,6 +8718,10 @@ namespace netOnvifCore.DeviceManagement
         
         private UserCredentialExtension extensionField;
         
+        private string tokenField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string UserName
@@ -8832,6 +8761,34 @@ namespace netOnvifCore.DeviceManagement
             set
             {
                 this.extensionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string Token
+        {
+            get
+            {
+                return this.tokenField;
+            }
+            set
+            {
+                this.tokenField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=4)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
             }
         }
     }
@@ -8875,7 +8832,15 @@ namespace netOnvifCore.DeviceManagement
         
         private StorageConfigurationDataExtension extensionField;
         
+        private string certPathValidationPolicyIDField;
+        
+        private StorageConfigurationDataConfigurationRenewal configurationRenewalField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
         private string typeField;
+        
+        private string regionField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="anyURI", Order=0)]
@@ -8934,6 +8899,48 @@ namespace netOnvifCore.DeviceManagement
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public string CertPathValidationPolicyID
+        {
+            get
+            {
+                return this.certPathValidationPolicyIDField;
+            }
+            set
+            {
+                this.certPathValidationPolicyIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public StorageConfigurationDataConfigurationRenewal ConfigurationRenewal
+        {
+            get
+            {
+                return this.configurationRenewalField;
+            }
+            set
+            {
+                this.configurationRenewalField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=6)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+        
+        /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public string type
         {
@@ -8944,6 +8951,20 @@ namespace netOnvifCore.DeviceManagement
             set
             {
                 this.typeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string Region
+        {
+            get
+            {
+                return this.regionField;
+            }
+            set
+            {
+                this.regionField = value;
             }
         }
     }
@@ -8968,6 +8989,78 @@ namespace netOnvifCore.DeviceManagement
             set
             {
                 this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://www.onvif.org/ver10/device/wsdl")]
+    public partial class StorageConfigurationDataConfigurationRenewal
+    {
+        
+        private string renewalEndpointField;
+        
+        private string authorizationServerField;
+        
+        private string certPathValidationPolicyIDField;
+        
+        private string errorField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="anyURI", Order=0)]
+        public string RenewalEndpoint
+        {
+            get
+            {
+                return this.renewalEndpointField;
+            }
+            set
+            {
+                this.renewalEndpointField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public string AuthorizationServer
+        {
+            get
+            {
+                return this.authorizationServerField;
+            }
+            set
+            {
+                this.authorizationServerField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public string CertPathValidationPolicyID
+        {
+            get
+            {
+                return this.certPathValidationPolicyIDField;
+            }
+            set
+            {
+                this.certPathValidationPolicyIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string Error
+        {
+            get
+            {
+                return this.errorField;
+            }
+            set
+            {
+                this.errorField = value;
             }
         }
     }
@@ -13039,10 +13132,26 @@ namespace netOnvifCore.DeviceManagement
     public partial class UserExtension
     {
         
+        private string rolesField;
+        
         private System.Xml.XmlElement[] anyField;
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Roles
+        {
+            get
+            {
+                return this.rolesField;
+            }
+            set
+            {
+                this.rolesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=1)]
         public System.Xml.XmlElement[] Any
         {
             get
@@ -13218,6 +13327,46 @@ namespace netOnvifCore.DeviceManagement
             set
             {
                 this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class UserRole
+    {
+        
+        private string nameField;
+        
+        private string functionsField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Name
+        {
+            get
+            {
+                return this.nameField;
+            }
+            set
+            {
+                this.nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public string Functions
+        {
+            get
+            {
+                return this.functionsField;
+            }
+            set
+            {
+                this.functionsField = value;
             }
         }
     }
@@ -13847,6 +13996,10 @@ namespace netOnvifCore.DeviceManagement
         
         private bool firmwareUpgradeFieldSpecified;
         
+        private bool cloudFirmwareUpgradeField;
+        
+        private bool cloudFirmwareUpgradeFieldSpecified;
+        
         private bool httpFirmwareUpgradeField;
         
         private bool httpFirmwareUpgradeFieldSpecified;
@@ -13871,6 +14024,10 @@ namespace netOnvifCore.DeviceManagement
         
         private bool maxStorageConfigurationsFieldSpecified;
         
+        private bool storageConfigurationRenewalField;
+        
+        private bool storageConfigurationRenewalFieldSpecified;
+        
         private int geoLocationEntriesField;
         
         private bool geoLocationEntriesFieldSpecified;
@@ -13892,6 +14049,8 @@ namespace netOnvifCore.DeviceManagement
         private bool userConfigNotSupportedFieldSpecified;
         
         private string[] addonsField;
+        
+        private string hardwareTypeField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -14058,6 +14217,34 @@ namespace netOnvifCore.DeviceManagement
             set
             {
                 this.firmwareUpgradeFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool CloudFirmwareUpgrade
+        {
+            get
+            {
+                return this.cloudFirmwareUpgradeField;
+            }
+            set
+            {
+                this.cloudFirmwareUpgradeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool CloudFirmwareUpgradeSpecified
+        {
+            get
+            {
+                return this.cloudFirmwareUpgradeFieldSpecified;
+            }
+            set
+            {
+                this.cloudFirmwareUpgradeFieldSpecified = value;
             }
         }
         
@@ -14231,6 +14418,34 @@ namespace netOnvifCore.DeviceManagement
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool StorageConfigurationRenewal
+        {
+            get
+            {
+                return this.storageConfigurationRenewalField;
+            }
+            set
+            {
+                this.storageConfigurationRenewalField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool StorageConfigurationRenewalSpecified
+        {
+            get
+            {
+                return this.storageConfigurationRenewalFieldSpecified;
+            }
+            set
+            {
+                this.storageConfigurationRenewalFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
         public int GeoLocationEntries
         {
             get
@@ -14382,6 +14597,20 @@ namespace netOnvifCore.DeviceManagement
                 this.addonsField = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string HardwareType
+        {
+            get
+            {
+                return this.hardwareTypeField;
+            }
+            set
+            {
+                this.hardwareTypeField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -14447,6 +14676,10 @@ namespace netOnvifCore.DeviceManagement
         
         private bool rELTokenFieldSpecified;
         
+        private bool jsonWebTokenField;
+        
+        private bool jsonWebTokenFieldSpecified;
+        
         private int[] supportedEAPMethodsField;
         
         private int maxUsersField;
@@ -14468,6 +14701,10 @@ namespace netOnvifCore.DeviceManagement
         private bool maxPasswordHistoryFieldSpecified;
         
         private string[] hashingAlgorithmsField;
+        
+        private int maxUserRolesField;
+        
+        private bool maxUserRolesFieldSpecified;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute("TLS1.0")]
@@ -14863,6 +15100,34 @@ namespace netOnvifCore.DeviceManagement
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool JsonWebToken
+        {
+            get
+            {
+                return this.jsonWebTokenField;
+            }
+            set
+            {
+                this.jsonWebTokenField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool JsonWebTokenSpecified
+        {
+            get
+            {
+                return this.jsonWebTokenFieldSpecified;
+            }
+            set
+            {
+                this.jsonWebTokenFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
         public int[] SupportedEAPMethods
         {
             get
@@ -15012,6 +15277,34 @@ namespace netOnvifCore.DeviceManagement
             set
             {
                 this.hashingAlgorithmsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int MaxUserRoles
+        {
+            get
+            {
+                return this.maxUserRolesField;
+            }
+            set
+            {
+                this.maxUserRolesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MaxUserRolesSpecified
+        {
+            get
+            {
+                return this.maxUserRolesFieldSpecified;
+            }
+            set
+            {
+                this.maxUserRolesFieldSpecified = value;
             }
         }
     }
@@ -15800,6 +16093,45 @@ namespace netOnvifCore.DeviceManagement
         {
             this.GUID = GUID;
             this.Any = Any;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="GetUserRoles", WrapperNamespace="http://www.onvif.org/ver10/device/wsdl", IsWrapped=true)]
+    public partial class GetUserRolesRequest
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/device/wsdl", Order=0)]
+        public string UserRole;
+        
+        public GetUserRolesRequest()
+        {
+        }
+        
+        public GetUserRolesRequest(string UserRole)
+        {
+            this.UserRole = UserRole;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="GetUserRolesResponse", WrapperNamespace="http://www.onvif.org/ver10/device/wsdl", IsWrapped=true)]
+    public partial class GetUserRolesResponse
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/device/wsdl", Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute("UserRole")]
+        public netOnvifCore.DeviceManagement.UserRole[] UserRole;
+        
+        public GetUserRolesResponse()
+        {
+        }
+        
+        public GetUserRolesResponse(netOnvifCore.DeviceManagement.UserRole[] UserRole)
+        {
+            this.UserRole = UserRole;
         }
     }
     
@@ -16774,6 +17106,47 @@ namespace netOnvifCore.DeviceManagement
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="UpgradeFirmware", WrapperNamespace="http://www.onvif.org/ver10/device/wsdl", IsWrapped=true)]
+    public partial class UpgradeFirmwareRequest
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/device/wsdl", Order=0)]
+        public string Version;
+        
+        public UpgradeFirmwareRequest()
+        {
+        }
+        
+        public UpgradeFirmwareRequest(string Version)
+        {
+            this.Version = Version;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="UpgradeFirmwareResponse", WrapperNamespace="http://www.onvif.org/ver10/device/wsdl", IsWrapped=true)]
+    public partial class UpgradeFirmwareResponse
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/device/wsdl", Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="duration")]
+        public string ExpectedDownTime;
+        
+        public UpgradeFirmwareResponse()
+        {
+        }
+        
+        public UpgradeFirmwareResponse(string ExpectedDownTime)
+        {
+            this.ExpectedDownTime = ExpectedDownTime;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="StartSystemRestore", WrapperNamespace="http://www.onvif.org/ver10/device/wsdl", IsWrapped=true)]
     public partial class StartSystemRestoreRequest
     {
@@ -17604,6 +17977,21 @@ namespace netOnvifCore.DeviceManagement
             return base.Channel.GetEndpointReferenceAsync(request);
         }
         
+        public System.Threading.Tasks.Task<netOnvifCore.DeviceManagement.GetUserRolesResponse> GetUserRolesAsync(netOnvifCore.DeviceManagement.GetUserRolesRequest request)
+        {
+            return base.Channel.GetUserRolesAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task SetUserRoleAsync(netOnvifCore.DeviceManagement.UserRole UserRole)
+        {
+            return base.Channel.SetUserRoleAsync(UserRole);
+        }
+        
+        public System.Threading.Tasks.Task DeleteUserRoleAsync(string UserRole)
+        {
+            return base.Channel.DeleteUserRoleAsync(UserRole);
+        }
+        
         public System.Threading.Tasks.Task<netOnvifCore.DeviceManagement.RemoteUser> GetRemoteUserAsync()
         {
             return base.Channel.GetRemoteUserAsync();
@@ -17979,6 +18367,19 @@ namespace netOnvifCore.DeviceManagement
         public System.Threading.Tasks.Task<netOnvifCore.DeviceManagement.StartFirmwareUpgradeResponse> StartFirmwareUpgradeAsync(netOnvifCore.DeviceManagement.StartFirmwareUpgradeRequest request)
         {
             return base.Channel.StartFirmwareUpgradeAsync(request);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<netOnvifCore.DeviceManagement.UpgradeFirmwareResponse> netOnvifCore.DeviceManagement.Device.UpgradeFirmwareAsync(netOnvifCore.DeviceManagement.UpgradeFirmwareRequest request)
+        {
+            return base.Channel.UpgradeFirmwareAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<netOnvifCore.DeviceManagement.UpgradeFirmwareResponse> UpgradeFirmwareAsync(string Version)
+        {
+            netOnvifCore.DeviceManagement.UpgradeFirmwareRequest inValue = new netOnvifCore.DeviceManagement.UpgradeFirmwareRequest();
+            inValue.Version = Version;
+            return ((netOnvifCore.DeviceManagement.Device)(this)).UpgradeFirmwareAsync(inValue);
         }
         
         public System.Threading.Tasks.Task<netOnvifCore.DeviceManagement.StartSystemRestoreResponse> StartSystemRestoreAsync(netOnvifCore.DeviceManagement.StartSystemRestoreRequest request)

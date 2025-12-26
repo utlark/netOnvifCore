@@ -47,6 +47,14 @@ namespace netOnvifCore.Uplink
         
         private bool maxUplinksFieldSpecified;
         
+        private string[] protocolsField;
+        
+        private string[] authorizationModesField;
+        
+        private bool streamingOverUplinkField;
+        
+        private bool streamingOverUplinkFieldSpecified;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
         public System.Xml.XmlElement[] Any
@@ -88,6 +96,62 @@ namespace netOnvifCore.Uplink
                 this.maxUplinksFieldSpecified = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string[] Protocols
+        {
+            get
+            {
+                return this.protocolsField;
+            }
+            set
+            {
+                this.protocolsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string[] AuthorizationModes
+        {
+            get
+            {
+                return this.authorizationModesField;
+            }
+            set
+            {
+                this.authorizationModesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool StreamingOverUplink
+        {
+            get
+            {
+                return this.streamingOverUplinkField;
+            }
+            set
+            {
+                this.streamingOverUplinkField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool StreamingOverUplinkSpecified
+        {
+            get
+            {
+                return this.streamingOverUplinkFieldSpecified;
+            }
+            set
+            {
+                this.streamingOverUplinkFieldSpecified = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -106,6 +170,10 @@ namespace netOnvifCore.Uplink
         private string statusField;
         
         private string certPathValidationPolicyIDField;
+        
+        private string authorizationServerField;
+        
+        private string errorField;
         
         private System.Xml.XmlElement[] anyField;
         
@@ -180,7 +248,35 @@ namespace netOnvifCore.Uplink
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlAnyElementAttribute(Order=5)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public string AuthorizationServer
+        {
+            get
+            {
+                return this.authorizationServerField;
+            }
+            set
+            {
+                this.authorizationServerField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public string Error
+        {
+            get
+            {
+                return this.errorField;
+            }
+            set
+            {
+                this.errorField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=7)]
         public System.Xml.XmlElement[] Any
         {
             get

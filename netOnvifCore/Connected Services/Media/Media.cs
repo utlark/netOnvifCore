@@ -2539,6 +2539,182 @@ namespace netOnvifCore.Media
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class FrequencyDecibelPair
+    {
+        
+        private int centerFrequencyField;
+        
+        private float decibelField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public int CenterFrequency
+        {
+            get
+            {
+                return this.centerFrequencyField;
+            }
+            set
+            {
+                this.centerFrequencyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float Decibel
+        {
+            get
+            {
+                return this.decibelField;
+            }
+            set
+            {
+                this.decibelField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=2)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class EQPreset
+    {
+        
+        private string tokenField;
+        
+        private string nameField;
+        
+        private bool isDefaultField;
+        
+        private string scheduleTokenField;
+        
+        private bool isFrequencyDecibelEditableField;
+        
+        private FrequencyDecibelPair[] frequencyDecibelPairField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Token
+        {
+            get
+            {
+                return this.tokenField;
+            }
+            set
+            {
+                this.tokenField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public string Name
+        {
+            get
+            {
+                return this.nameField;
+            }
+            set
+            {
+                this.nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public bool isDefault
+        {
+            get
+            {
+                return this.isDefaultField;
+            }
+            set
+            {
+                this.isDefaultField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string ScheduleToken
+        {
+            get
+            {
+                return this.scheduleTokenField;
+            }
+            set
+            {
+                this.scheduleTokenField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public bool isFrequencyDecibelEditable
+        {
+            get
+            {
+                return this.isFrequencyDecibelEditableField;
+            }
+            set
+            {
+                this.isFrequencyDecibelEditableField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("FrequencyDecibelPair", Order=5)]
+        public FrequencyDecibelPair[] FrequencyDecibelPair
+        {
+            get
+            {
+                return this.frequencyDecibelPairField;
+            }
+            set
+            {
+                this.frequencyDecibelPairField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=6)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
     public partial class AudioOutputConfigurationOptions
     {
         
@@ -2547,6 +2723,12 @@ namespace netOnvifCore.Media
         private string[] sendPrimacyOptionsField;
         
         private IntRange outputLevelRangeField;
+        
+        private bool eQPresetScheduleSupportField;
+        
+        private bool eQPresetScheduleSupportFieldSpecified;
+        
+        private EQPreset[] eQPresetsField;
         
         private System.Xml.XmlElement[] anyField;
         
@@ -2593,7 +2775,49 @@ namespace netOnvifCore.Media
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlAnyElementAttribute(Order=3)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public bool EQPresetScheduleSupport
+        {
+            get
+            {
+                return this.eQPresetScheduleSupportField;
+            }
+            set
+            {
+                this.eQPresetScheduleSupportField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool EQPresetScheduleSupportSpecified
+        {
+            get
+            {
+                return this.eQPresetScheduleSupportFieldSpecified;
+            }
+            set
+            {
+                this.eQPresetScheduleSupportFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("EQPresets", Order=4)]
+        public EQPreset[] EQPresets
+        {
+            get
+            {
+                return this.eQPresetsField;
+            }
+            set
+            {
+                this.eQPresetsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=5)]
         public System.Xml.XmlElement[] Any
         {
             get
@@ -2718,6 +2942,10 @@ namespace netOnvifCore.Media
         
         private PTZStatusFilterOptionsExtension extensionField;
         
+        private bool fieldOfViewSupportedField;
+        
+        private bool fieldOfViewSupportedFieldSpecified;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public bool PanTiltStatusSupported
@@ -2827,6 +3055,34 @@ namespace netOnvifCore.Media
             set
             {
                 this.extensionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public bool FieldOfViewSupported
+        {
+            get
+            {
+                return this.fieldOfViewSupportedField;
+            }
+            set
+            {
+                this.fieldOfViewSupportedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool FieldOfViewSupportedSpecified
+        {
+            get
+            {
+                return this.fieldOfViewSupportedFieldSpecified;
+            }
+            set
+            {
+                this.fieldOfViewSupportedFieldSpecified = value;
             }
         }
     }
@@ -3842,6 +4098,10 @@ namespace netOnvifCore.Media
         
         private bool rebootFieldSpecified;
         
+        private bool mirrorField;
+        
+        private bool mirrorFieldSpecified;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("Mode", Order=0)]
         public RotateMode[] Mode
@@ -3910,6 +4170,34 @@ namespace netOnvifCore.Media
             set
             {
                 this.rebootFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool Mirror
+        {
+            get
+            {
+                return this.mirrorField;
+            }
+            set
+            {
+                this.mirrorField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MirrorSpecified
+        {
+            get
+            {
+                return this.mirrorFieldSpecified;
+            }
+            set
+            {
+                this.mirrorFieldSpecified = value;
             }
         }
     }
@@ -4319,6 +4607,7 @@ namespace netOnvifCore.Media
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(AnalyticsEngineInput))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(AnalyticsEngine))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(PTZConfiguration))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(MulticastAudioDecoderConfiguration))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(AudioDecoderConfiguration))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(AudioOutputConfiguration))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(VideoOutputConfiguration))]
@@ -6725,6 +7014,366 @@ namespace netOnvifCore.Media
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class MulticastAudioDecoderConfiguration : ConfigurationEntity
+    {
+        
+        private bool enableField;
+        
+        private string[] audioOutputTokenField;
+        
+        private string encodingField;
+        
+        private int bitrateField;
+        
+        private int samplingRateField;
+        
+        private MulticastReceiverConfiguration multicastField;
+        
+        private int rTPPayloadTypeField;
+        
+        private int priorityField;
+        
+        private string mediaFormatParametersField;
+        
+        private SRTPPreShared sRTPPreSharedParametersField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public bool Enable
+        {
+            get
+            {
+                return this.enableField;
+            }
+            set
+            {
+                this.enableField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("AudioOutputToken", Order=1)]
+        public string[] AudioOutputToken
+        {
+            get
+            {
+                return this.audioOutputTokenField;
+            }
+            set
+            {
+                this.audioOutputTokenField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public string Encoding
+        {
+            get
+            {
+                return this.encodingField;
+            }
+            set
+            {
+                this.encodingField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public int Bitrate
+        {
+            get
+            {
+                return this.bitrateField;
+            }
+            set
+            {
+                this.bitrateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public int SamplingRate
+        {
+            get
+            {
+                return this.samplingRateField;
+            }
+            set
+            {
+                this.samplingRateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public MulticastReceiverConfiguration Multicast
+        {
+            get
+            {
+                return this.multicastField;
+            }
+            set
+            {
+                this.multicastField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public int RTPPayloadType
+        {
+            get
+            {
+                return this.rTPPayloadTypeField;
+            }
+            set
+            {
+                this.rTPPayloadTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public int Priority
+        {
+            get
+            {
+                return this.priorityField;
+            }
+            set
+            {
+                this.priorityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        public string MediaFormatParameters
+        {
+            get
+            {
+                return this.mediaFormatParametersField;
+            }
+            set
+            {
+                this.mediaFormatParametersField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public SRTPPreShared SRTPPreSharedParameters
+        {
+            get
+            {
+                return this.sRTPPreSharedParametersField;
+            }
+            set
+            {
+                this.sRTPPreSharedParametersField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=10)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class MulticastReceiverConfiguration
+    {
+        
+        private IPAddress addressField;
+        
+        private int portField;
+        
+        private int tTLField;
+        
+        private string[] interfaceTokenField;
+        
+        private IPAddress sourceSpecificMulticastField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public IPAddress Address
+        {
+            get
+            {
+                return this.addressField;
+            }
+            set
+            {
+                this.addressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public int Port
+        {
+            get
+            {
+                return this.portField;
+            }
+            set
+            {
+                this.portField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public int TTL
+        {
+            get
+            {
+                return this.tTLField;
+            }
+            set
+            {
+                this.tTLField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("InterfaceToken", Order=3)]
+        public string[] InterfaceToken
+        {
+            get
+            {
+                return this.interfaceTokenField;
+            }
+            set
+            {
+                this.interfaceTokenField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public IPAddress SourceSpecificMulticast
+        {
+            get
+            {
+                return this.sourceSpecificMulticastField;
+            }
+            set
+            {
+                this.sourceSpecificMulticastField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=5)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class SRTPPreShared
+    {
+        
+        private string sRTPPSKField;
+        
+        private string secureStreamingProtocolAlgorithmField;
+        
+        private int rOCExtMapIDField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string SRTPPSK
+        {
+            get
+            {
+                return this.sRTPPSKField;
+            }
+            set
+            {
+                this.sRTPPSKField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public string SecureStreamingProtocolAlgorithm
+        {
+            get
+            {
+                return this.secureStreamingProtocolAlgorithmField;
+            }
+            set
+            {
+                this.secureStreamingProtocolAlgorithmField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public int ROCExtMapID
+        {
+            get
+            {
+                return this.rOCExtMapIDField;
+            }
+            set
+            {
+                this.rOCExtMapIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=3)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
     public partial class AudioDecoderConfiguration : ConfigurationEntity
     {
         
@@ -7028,6 +7677,10 @@ namespace netOnvifCore.Media
         
         private bool positionField;
         
+        private bool fieldOfViewField;
+        
+        private bool fieldOfViewFieldSpecified;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public bool Status
@@ -7053,6 +7706,34 @@ namespace netOnvifCore.Media
             set
             {
                 this.positionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public bool FieldOfView
+        {
+            get
+            {
+                return this.fieldOfViewField;
+            }
+            set
+            {
+                this.fieldOfViewField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool FieldOfViewSpecified
+        {
+            get
+            {
+                return this.fieldOfViewFieldSpecified;
+            }
+            set
+            {
+                this.fieldOfViewFieldSpecified = value;
             }
         }
     }
@@ -7449,11 +8130,19 @@ namespace netOnvifCore.Media
         
         private bool govLengthFieldSpecified;
         
+        private int anchorFrameDistanceField;
+        
+        private bool anchorFrameDistanceFieldSpecified;
+        
         private string profileField;
         
         private bool guaranteedFrameRateField;
         
         private bool guaranteedFrameRateFieldSpecified;
+        
+        private bool signedField;
+        
+        private bool signedFieldSpecified;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -7569,6 +8258,34 @@ namespace netOnvifCore.Media
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int AnchorFrameDistance
+        {
+            get
+            {
+                return this.anchorFrameDistanceField;
+            }
+            set
+            {
+                this.anchorFrameDistanceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool AnchorFrameDistanceSpecified
+        {
+            get
+            {
+                return this.anchorFrameDistanceFieldSpecified;
+            }
+            set
+            {
+                this.anchorFrameDistanceFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
         public string Profile
         {
             get
@@ -7606,6 +8323,34 @@ namespace netOnvifCore.Media
             set
             {
                 this.guaranteedFrameRateFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool Signed
+        {
+            get
+            {
+                return this.signedField;
+            }
+            set
+            {
+                this.signedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool SignedSpecified
+        {
+            get
+            {
+                return this.signedFieldSpecified;
+            }
+            set
+            {
+                this.signedFieldSpecified = value;
             }
         }
     }
@@ -7969,6 +8714,10 @@ namespace netOnvifCore.Media
         
         private RotateExtension extensionField;
         
+        private bool mirrorField;
+        
+        private bool mirrorFieldSpecified;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public RotateMode Mode
@@ -8022,6 +8771,34 @@ namespace netOnvifCore.Media
             set
             {
                 this.extensionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool Mirror
+        {
+            get
+            {
+                return this.mirrorField;
+            }
+            set
+            {
+                this.mirrorField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MirrorSpecified
+        {
+            get
+            {
+                return this.mirrorFieldSpecified;
+            }
+            set
+            {
+                this.mirrorFieldSpecified = value;
             }
         }
     }
@@ -8995,11 +9772,7 @@ namespace netOnvifCore.Media
         
         private float xField;
         
-        private bool xFieldSpecified;
-        
         private float yField;
-        
-        private bool yFieldSpecified;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -9016,20 +9789,6 @@ namespace netOnvifCore.Media
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool xSpecified
-        {
-            get
-            {
-                return this.xFieldSpecified;
-            }
-            set
-            {
-                this.xFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public float y
         {
@@ -9040,20 +9799,6 @@ namespace netOnvifCore.Media
             set
             {
                 this.yField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool ySpecified
-        {
-            get
-            {
-                return this.yFieldSpecified;
-            }
-            set
-            {
-                this.yFieldSpecified = value;
             }
         }
     }
@@ -10818,19 +11563,11 @@ namespace netOnvifCore.Media
         
         private float bottomField;
         
-        private bool bottomFieldSpecified;
-        
         private float topField;
-        
-        private bool topFieldSpecified;
         
         private float rightField;
         
-        private bool rightFieldSpecified;
-        
         private float leftField;
-        
-        private bool leftFieldSpecified;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -10843,20 +11580,6 @@ namespace netOnvifCore.Media
             set
             {
                 this.bottomField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool bottomSpecified
-        {
-            get
-            {
-                return this.bottomFieldSpecified;
-            }
-            set
-            {
-                this.bottomFieldSpecified = value;
             }
         }
         
@@ -10875,20 +11598,6 @@ namespace netOnvifCore.Media
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool topSpecified
-        {
-            get
-            {
-                return this.topFieldSpecified;
-            }
-            set
-            {
-                this.topFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public float right
         {
@@ -10903,20 +11612,6 @@ namespace netOnvifCore.Media
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool rightSpecified
-        {
-            get
-            {
-                return this.rightFieldSpecified;
-            }
-            set
-            {
-                this.rightFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public float left
         {
@@ -10927,20 +11622,6 @@ namespace netOnvifCore.Media
             set
             {
                 this.leftField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool leftSpecified
-        {
-            get
-            {
-                return this.leftFieldSpecified;
-            }
-            set
-            {
-                this.leftFieldSpecified = value;
             }
         }
     }

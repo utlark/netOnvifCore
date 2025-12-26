@@ -18,6 +18,7 @@ namespace netOnvifCore.Security
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetServiceCapabilities", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         [return: System.ServiceModel.MessageParameterAttribute(Name="Capabilities")]
         System.Threading.Tasks.Task<netOnvifCore.Security.Capabilities> GetServiceCapabilitiesAsync();
     }
@@ -34,6 +35,10 @@ namespace netOnvifCore.Security
         private TLSServerCapabilities tLSServerCapabilitiesField;
         
         private Dot1XCapabilities dot1XCapabilitiesField;
+        
+        private AuthorizationServerConfigurationCapabilities authorizationServerField;
+        
+        private MediaSigningCapabilities mediaSigningField;
         
         private System.Xml.XmlElement[] anyField;
         
@@ -80,7 +85,35 @@ namespace netOnvifCore.Security
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlAnyElementAttribute(Order=3)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public AuthorizationServerConfigurationCapabilities AuthorizationServer
+        {
+            get
+            {
+                return this.authorizationServerField;
+            }
+            set
+            {
+                this.authorizationServerField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public MediaSigningCapabilities MediaSigning
+        {
+            get
+            {
+                return this.mediaSigningField;
+            }
+            set
+            {
+                this.mediaSigningField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=5)]
         public System.Xml.XmlElement[] Any
         {
             get
@@ -111,19 +144,39 @@ namespace netOnvifCore.Security
         
         private string maximumNumberOfCertificationPathsField;
         
+        private bool setCertPathField;
+        
+        private bool setCertPathFieldSpecified;
+        
         private bool rSAKeyPairGenerationField;
         
         private bool rSAKeyPairGenerationFieldSpecified;
         
+        private bool eCCKeyPairGenerationField;
+        
+        private bool eCCKeyPairGenerationFieldSpecified;
+        
+        private string[] keyPairGenerationField;
+        
         private string[] rSAKeyLengthsField;
+        
+        private string[] ellipticCurvesField;
         
         private bool pKCS10ExternalCertificationWithRSAField;
         
         private bool pKCS10ExternalCertificationWithRSAFieldSpecified;
         
+        private bool pKCS10Field;
+        
+        private bool pKCS10FieldSpecified;
+        
         private bool selfSignedCertificateCreationWithRSAField;
         
         private bool selfSignedCertificateCreationWithRSAFieldSpecified;
+        
+        private bool selfSignedCertificateCreationField;
+        
+        private bool selfSignedCertificateCreationFieldSpecified;
         
         private int[] x509VersionsField;
         
@@ -133,9 +186,17 @@ namespace netOnvifCore.Security
         
         private bool pKCS8RSAKeyPairUploadFieldSpecified;
         
+        private bool pKCS8Field;
+        
+        private bool pKCS8FieldSpecified;
+        
         private bool pKCS12CertificateWithRSAPrivateKeyUploadField;
         
         private bool pKCS12CertificateWithRSAPrivateKeyUploadFieldSpecified;
+        
+        private bool pKCS12Field;
+        
+        private bool pKCS12FieldSpecified;
         
         private string[] passwordBasedEncryptionAlgorithmsField;
         
@@ -225,6 +286,34 @@ namespace netOnvifCore.Security
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool SetCertPath
+        {
+            get
+            {
+                return this.setCertPathField;
+            }
+            set
+            {
+                this.setCertPathField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool SetCertPathSpecified
+        {
+            get
+            {
+                return this.setCertPathFieldSpecified;
+            }
+            set
+            {
+                this.setCertPathFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
         public bool RSAKeyPairGeneration
         {
             get
@@ -252,6 +341,48 @@ namespace netOnvifCore.Security
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool ECCKeyPairGeneration
+        {
+            get
+            {
+                return this.eCCKeyPairGenerationField;
+            }
+            set
+            {
+                this.eCCKeyPairGenerationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool ECCKeyPairGenerationSpecified
+        {
+            get
+            {
+                return this.eCCKeyPairGenerationFieldSpecified;
+            }
+            set
+            {
+                this.eCCKeyPairGenerationFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string[] KeyPairGeneration
+        {
+            get
+            {
+                return this.keyPairGenerationField;
+            }
+            set
+            {
+                this.keyPairGenerationField = value;
+            }
+        }
+        
+        /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute(DataType="nonNegativeInteger")]
         public string[] RSAKeyLengths
         {
@@ -262,6 +393,20 @@ namespace netOnvifCore.Security
             set
             {
                 this.rSAKeyLengthsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string[] EllipticCurves
+        {
+            get
+            {
+                return this.ellipticCurvesField;
+            }
+            set
+            {
+                this.ellipticCurvesField = value;
             }
         }
         
@@ -295,6 +440,34 @@ namespace netOnvifCore.Security
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool PKCS10
+        {
+            get
+            {
+                return this.pKCS10Field;
+            }
+            set
+            {
+                this.pKCS10Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool PKCS10Specified
+        {
+            get
+            {
+                return this.pKCS10FieldSpecified;
+            }
+            set
+            {
+                this.pKCS10FieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
         public bool SelfSignedCertificateCreationWithRSA
         {
             get
@@ -318,6 +491,34 @@ namespace netOnvifCore.Security
             set
             {
                 this.selfSignedCertificateCreationWithRSAFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool SelfSignedCertificateCreation
+        {
+            get
+            {
+                return this.selfSignedCertificateCreationField;
+            }
+            set
+            {
+                this.selfSignedCertificateCreationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool SelfSignedCertificateCreationSpecified
+        {
+            get
+            {
+                return this.selfSignedCertificateCreationFieldSpecified;
+            }
+            set
+            {
+                this.selfSignedCertificateCreationFieldSpecified = value;
             }
         }
         
@@ -379,6 +580,34 @@ namespace netOnvifCore.Security
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool PKCS8
+        {
+            get
+            {
+                return this.pKCS8Field;
+            }
+            set
+            {
+                this.pKCS8Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool PKCS8Specified
+        {
+            get
+            {
+                return this.pKCS8FieldSpecified;
+            }
+            set
+            {
+                this.pKCS8FieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
         public bool PKCS12CertificateWithRSAPrivateKeyUpload
         {
             get
@@ -402,6 +631,34 @@ namespace netOnvifCore.Security
             set
             {
                 this.pKCS12CertificateWithRSAPrivateKeyUploadFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool PKCS12
+        {
+            get
+            {
+                return this.pKCS12Field;
+            }
+            set
+            {
+                this.pKCS12Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool PKCS12Specified
+        {
+            get
+            {
+                return this.pKCS12FieldSpecified;
+            }
+            set
+            {
+                this.pKCS12FieldSpecified = value;
             }
         }
         
@@ -601,6 +858,6157 @@ namespace netOnvifCore.Security
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class OSDConfigurationExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class OSDImgConfigurationExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class OSDImgConfiguration
+    {
+        
+        private string imgPathField;
+        
+        private OSDImgConfigurationExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="anyURI", Order=0)]
+        public string ImgPath
+        {
+            get
+            {
+                return this.imgPathField;
+            }
+            set
+            {
+                this.imgPathField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public OSDImgConfigurationExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class OSDTextConfigurationExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Color
+    {
+        
+        private float xField;
+        
+        private float yField;
+        
+        private float zField;
+        
+        private string colorspaceField;
+        
+        private float likelihoodField;
+        
+        private bool likelihoodFieldSpecified;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public float X
+        {
+            get
+            {
+                return this.xField;
+            }
+            set
+            {
+                this.xField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public float Y
+        {
+            get
+            {
+                return this.yField;
+            }
+            set
+            {
+                this.yField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public float Z
+        {
+            get
+            {
+                return this.zField;
+            }
+            set
+            {
+                this.zField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute(DataType="anyURI")]
+        public string Colorspace
+        {
+            get
+            {
+                return this.colorspaceField;
+            }
+            set
+            {
+                this.colorspaceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public float Likelihood
+        {
+            get
+            {
+                return this.likelihoodField;
+            }
+            set
+            {
+                this.likelihoodField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool LikelihoodSpecified
+        {
+            get
+            {
+                return this.likelihoodFieldSpecified;
+            }
+            set
+            {
+                this.likelihoodFieldSpecified = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class OSDColor
+    {
+        
+        private Color colorField;
+        
+        private int transparentField;
+        
+        private bool transparentFieldSpecified;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public Color Color
+        {
+            get
+            {
+                return this.colorField;
+            }
+            set
+            {
+                this.colorField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int Transparent
+        {
+            get
+            {
+                return this.transparentField;
+            }
+            set
+            {
+                this.transparentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool TransparentSpecified
+        {
+            get
+            {
+                return this.transparentFieldSpecified;
+            }
+            set
+            {
+                this.transparentFieldSpecified = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class OSDTextConfiguration
+    {
+        
+        private string typeField;
+        
+        private string dateFormatField;
+        
+        private string timeFormatField;
+        
+        private int fontSizeField;
+        
+        private bool fontSizeFieldSpecified;
+        
+        private OSDColor fontColorField;
+        
+        private OSDColor backgroundColorField;
+        
+        private string plainTextField;
+        
+        private OSDTextConfigurationExtension extensionField;
+        
+        private bool isPersistentTextField;
+        
+        private bool isPersistentTextFieldSpecified;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Type
+        {
+            get
+            {
+                return this.typeField;
+            }
+            set
+            {
+                this.typeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public string DateFormat
+        {
+            get
+            {
+                return this.dateFormatField;
+            }
+            set
+            {
+                this.dateFormatField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public string TimeFormat
+        {
+            get
+            {
+                return this.timeFormatField;
+            }
+            set
+            {
+                this.timeFormatField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public int FontSize
+        {
+            get
+            {
+                return this.fontSizeField;
+            }
+            set
+            {
+                this.fontSizeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool FontSizeSpecified
+        {
+            get
+            {
+                return this.fontSizeFieldSpecified;
+            }
+            set
+            {
+                this.fontSizeFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public OSDColor FontColor
+        {
+            get
+            {
+                return this.fontColorField;
+            }
+            set
+            {
+                this.fontColorField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public OSDColor BackgroundColor
+        {
+            get
+            {
+                return this.backgroundColorField;
+            }
+            set
+            {
+                this.backgroundColorField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public string PlainText
+        {
+            get
+            {
+                return this.plainTextField;
+            }
+            set
+            {
+                this.plainTextField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public OSDTextConfigurationExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool IsPersistentText
+        {
+            get
+            {
+                return this.isPersistentTextField;
+            }
+            set
+            {
+                this.isPersistentTextField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool IsPersistentTextSpecified
+        {
+            get
+            {
+                return this.isPersistentTextFieldSpecified;
+            }
+            set
+            {
+                this.isPersistentTextFieldSpecified = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class OSDPosConfigurationExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Vector
+    {
+        
+        private float xField;
+        
+        private float yField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public float x
+        {
+            get
+            {
+                return this.xField;
+            }
+            set
+            {
+                this.xField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public float y
+        {
+            get
+            {
+                return this.yField;
+            }
+            set
+            {
+                this.yField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class OSDPosConfiguration
+    {
+        
+        private string typeField;
+        
+        private Vector posField;
+        
+        private OSDPosConfigurationExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Type
+        {
+            get
+            {
+                return this.typeField;
+            }
+            set
+            {
+                this.typeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public Vector Pos
+        {
+            get
+            {
+                return this.posField;
+            }
+            set
+            {
+                this.posField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public OSDPosConfigurationExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class OSDReference
+    {
+        
+        private string valueField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string Value
+        {
+            get
+            {
+                return this.valueField;
+            }
+            set
+            {
+                this.valueField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class PTZNodeExtension2
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Namespace="http://www.onvif.org/ver10/schema", Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class PTZPresetTourSupportedExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class PTZPresetTourSupported
+    {
+        
+        private int maximumNumberOfPresetToursField;
+        
+        private PTZPresetTourOperation[] pTZPresetTourOperationField;
+        
+        private PTZPresetTourSupportedExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public int MaximumNumberOfPresetTours
+        {
+            get
+            {
+                return this.maximumNumberOfPresetToursField;
+            }
+            set
+            {
+                this.maximumNumberOfPresetToursField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("PTZPresetTourOperation", Order=1)]
+        public PTZPresetTourOperation[] PTZPresetTourOperation
+        {
+            get
+            {
+                return this.pTZPresetTourOperationField;
+            }
+            set
+            {
+                this.pTZPresetTourOperationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public PTZPresetTourSupportedExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum PTZPresetTourOperation
+    {
+        
+        /// <remarks/>
+        Start,
+        
+        /// <remarks/>
+        Stop,
+        
+        /// <remarks/>
+        Pause,
+        
+        /// <remarks/>
+        Extended,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class PTZNodeExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        private PTZPresetTourSupported supportedPresetTourField;
+        
+        private PTZNodeExtension2 extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public PTZPresetTourSupported SupportedPresetTour
+        {
+            get
+            {
+                return this.supportedPresetTourField;
+            }
+            set
+            {
+                this.supportedPresetTourField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public PTZNodeExtension2 Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class PTZSpacesExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Space1DDescription
+    {
+        
+        private string uRIField;
+        
+        private FloatRange xRangeField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="anyURI", Order=0)]
+        public string URI
+        {
+            get
+            {
+                return this.uRIField;
+            }
+            set
+            {
+                this.uRIField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public FloatRange XRange
+        {
+            get
+            {
+                return this.xRangeField;
+            }
+            set
+            {
+                this.xRangeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class FloatRange
+    {
+        
+        private float minField;
+        
+        private float maxField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public float Min
+        {
+            get
+            {
+                return this.minField;
+            }
+            set
+            {
+                this.minField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float Max
+        {
+            get
+            {
+                return this.maxField;
+            }
+            set
+            {
+                this.maxField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Space2DDescription
+    {
+        
+        private string uRIField;
+        
+        private FloatRange xRangeField;
+        
+        private FloatRange yRangeField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="anyURI", Order=0)]
+        public string URI
+        {
+            get
+            {
+                return this.uRIField;
+            }
+            set
+            {
+                this.uRIField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public FloatRange XRange
+        {
+            get
+            {
+                return this.xRangeField;
+            }
+            set
+            {
+                this.xRangeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public FloatRange YRange
+        {
+            get
+            {
+                return this.yRangeField;
+            }
+            set
+            {
+                this.yRangeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class PTZSpaces
+    {
+        
+        private Space2DDescription[] absolutePanTiltPositionSpaceField;
+        
+        private Space1DDescription[] absoluteZoomPositionSpaceField;
+        
+        private Space2DDescription[] relativePanTiltTranslationSpaceField;
+        
+        private Space1DDescription[] relativeZoomTranslationSpaceField;
+        
+        private Space2DDescription[] continuousPanTiltVelocitySpaceField;
+        
+        private Space1DDescription[] continuousZoomVelocitySpaceField;
+        
+        private Space1DDescription[] panTiltSpeedSpaceField;
+        
+        private Space1DDescription[] zoomSpeedSpaceField;
+        
+        private PTZSpacesExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("AbsolutePanTiltPositionSpace", Order=0)]
+        public Space2DDescription[] AbsolutePanTiltPositionSpace
+        {
+            get
+            {
+                return this.absolutePanTiltPositionSpaceField;
+            }
+            set
+            {
+                this.absolutePanTiltPositionSpaceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("AbsoluteZoomPositionSpace", Order=1)]
+        public Space1DDescription[] AbsoluteZoomPositionSpace
+        {
+            get
+            {
+                return this.absoluteZoomPositionSpaceField;
+            }
+            set
+            {
+                this.absoluteZoomPositionSpaceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("RelativePanTiltTranslationSpace", Order=2)]
+        public Space2DDescription[] RelativePanTiltTranslationSpace
+        {
+            get
+            {
+                return this.relativePanTiltTranslationSpaceField;
+            }
+            set
+            {
+                this.relativePanTiltTranslationSpaceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("RelativeZoomTranslationSpace", Order=3)]
+        public Space1DDescription[] RelativeZoomTranslationSpace
+        {
+            get
+            {
+                return this.relativeZoomTranslationSpaceField;
+            }
+            set
+            {
+                this.relativeZoomTranslationSpaceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ContinuousPanTiltVelocitySpace", Order=4)]
+        public Space2DDescription[] ContinuousPanTiltVelocitySpace
+        {
+            get
+            {
+                return this.continuousPanTiltVelocitySpaceField;
+            }
+            set
+            {
+                this.continuousPanTiltVelocitySpaceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ContinuousZoomVelocitySpace", Order=5)]
+        public Space1DDescription[] ContinuousZoomVelocitySpace
+        {
+            get
+            {
+                return this.continuousZoomVelocitySpaceField;
+            }
+            set
+            {
+                this.continuousZoomVelocitySpaceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("PanTiltSpeedSpace", Order=6)]
+        public Space1DDescription[] PanTiltSpeedSpace
+        {
+            get
+            {
+                return this.panTiltSpeedSpaceField;
+            }
+            set
+            {
+                this.panTiltSpeedSpaceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ZoomSpeedSpace", Order=7)]
+        public Space1DDescription[] ZoomSpeedSpace
+        {
+            get
+            {
+                return this.zoomSpeedSpaceField;
+            }
+            set
+            {
+                this.zoomSpeedSpaceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        public PTZSpacesExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class RelayOutputSettings
+    {
+        
+        private RelayMode modeField;
+        
+        private string delayTimeField;
+        
+        private RelayIdleState idleStateField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public RelayMode Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="duration", Order=1)]
+        public string DelayTime
+        {
+            get
+            {
+                return this.delayTimeField;
+            }
+            set
+            {
+                this.delayTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public RelayIdleState IdleState
+        {
+            get
+            {
+                return this.idleStateField;
+            }
+            set
+            {
+                this.idleStateField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum RelayMode
+    {
+        
+        /// <remarks/>
+        Monostable,
+        
+        /// <remarks/>
+        Bistable,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum RelayIdleState
+    {
+        
+        /// <remarks/>
+        closed,
+        
+        /// <remarks/>
+        open,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class NetworkInterfaceExtension2
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Namespace="http://www.onvif.org/ver10/schema", Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Dot11SecurityConfigurationExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Dot11PSKSetExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Dot11PSKSet
+    {
+        
+        private byte[] keyField;
+        
+        private string passphraseField;
+        
+        private Dot11PSKSetExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="hexBinary", Order=0)]
+        public byte[] Key
+        {
+            get
+            {
+                return this.keyField;
+            }
+            set
+            {
+                this.keyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public string Passphrase
+        {
+            get
+            {
+                return this.passphraseField;
+            }
+            set
+            {
+                this.passphraseField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public Dot11PSKSetExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Dot11SecurityConfiguration
+    {
+        
+        private Dot11SecurityMode modeField;
+        
+        private Dot11Cipher algorithmField;
+        
+        private bool algorithmFieldSpecified;
+        
+        private Dot11PSKSet pSKField;
+        
+        private string dot1XField;
+        
+        private Dot11SecurityConfigurationExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public Dot11SecurityMode Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public Dot11Cipher Algorithm
+        {
+            get
+            {
+                return this.algorithmField;
+            }
+            set
+            {
+                this.algorithmField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool AlgorithmSpecified
+        {
+            get
+            {
+                return this.algorithmFieldSpecified;
+            }
+            set
+            {
+                this.algorithmFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public Dot11PSKSet PSK
+        {
+            get
+            {
+                return this.pSKField;
+            }
+            set
+            {
+                this.pSKField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string Dot1X
+        {
+            get
+            {
+                return this.dot1XField;
+            }
+            set
+            {
+                this.dot1XField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public Dot11SecurityConfigurationExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum Dot11SecurityMode
+    {
+        
+        /// <remarks/>
+        None,
+        
+        /// <remarks/>
+        WEP,
+        
+        /// <remarks/>
+        PSK,
+        
+        /// <remarks/>
+        Dot1X,
+        
+        /// <remarks/>
+        Extended,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum Dot11Cipher
+    {
+        
+        /// <remarks/>
+        CCMP,
+        
+        /// <remarks/>
+        TKIP,
+        
+        /// <remarks/>
+        Any,
+        
+        /// <remarks/>
+        Extended,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Dot11Configuration
+    {
+        
+        private byte[] sSIDField;
+        
+        private Dot11StationMode modeField;
+        
+        private string aliasField;
+        
+        private string priorityField;
+        
+        private Dot11SecurityConfiguration securityField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="hexBinary", Order=0)]
+        public byte[] SSID
+        {
+            get
+            {
+                return this.sSIDField;
+            }
+            set
+            {
+                this.sSIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public Dot11StationMode Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public string Alias
+        {
+            get
+            {
+                return this.aliasField;
+            }
+            set
+            {
+                this.aliasField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="integer", Order=3)]
+        public string Priority
+        {
+            get
+            {
+                return this.priorityField;
+            }
+            set
+            {
+                this.priorityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public Dot11SecurityConfiguration Security
+        {
+            get
+            {
+                return this.securityField;
+            }
+            set
+            {
+                this.securityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=5)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum Dot11StationMode
+    {
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnumAttribute("Ad-hoc")]
+        Adhoc,
+        
+        /// <remarks/>
+        Infrastructure,
+        
+        /// <remarks/>
+        Extended,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Dot3Configuration
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class NetworkInterfaceExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        private int interfaceTypeField;
+        
+        private Dot3Configuration[] dot3Field;
+        
+        private Dot11Configuration[] dot11Field;
+        
+        private NetworkInterfaceExtension2 extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public int InterfaceType
+        {
+            get
+            {
+                return this.interfaceTypeField;
+            }
+            set
+            {
+                this.interfaceTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Dot3", Order=2)]
+        public Dot3Configuration[] Dot3
+        {
+            get
+            {
+                return this.dot3Field;
+            }
+            set
+            {
+                this.dot3Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Dot11", Order=3)]
+        public Dot11Configuration[] Dot11
+        {
+            get
+            {
+                return this.dot11Field;
+            }
+            set
+            {
+                this.dot11Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public NetworkInterfaceExtension2 Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class IPv6ConfigurationExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class PrefixedIPv6Address
+    {
+        
+        private string addressField;
+        
+        private int prefixLengthField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="token", Order=0)]
+        public string Address
+        {
+            get
+            {
+                return this.addressField;
+            }
+            set
+            {
+                this.addressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public int PrefixLength
+        {
+            get
+            {
+                return this.prefixLengthField;
+            }
+            set
+            {
+                this.prefixLengthField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class IPv6Configuration
+    {
+        
+        private bool acceptRouterAdvertField;
+        
+        private bool acceptRouterAdvertFieldSpecified;
+        
+        private IPv6DHCPConfiguration dHCPField;
+        
+        private PrefixedIPv6Address[] manualField;
+        
+        private PrefixedIPv6Address[] linkLocalField;
+        
+        private PrefixedIPv6Address[] fromDHCPField;
+        
+        private PrefixedIPv6Address[] fromRAField;
+        
+        private IPv6ConfigurationExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public bool AcceptRouterAdvert
+        {
+            get
+            {
+                return this.acceptRouterAdvertField;
+            }
+            set
+            {
+                this.acceptRouterAdvertField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool AcceptRouterAdvertSpecified
+        {
+            get
+            {
+                return this.acceptRouterAdvertFieldSpecified;
+            }
+            set
+            {
+                this.acceptRouterAdvertFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public IPv6DHCPConfiguration DHCP
+        {
+            get
+            {
+                return this.dHCPField;
+            }
+            set
+            {
+                this.dHCPField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Manual", Order=2)]
+        public PrefixedIPv6Address[] Manual
+        {
+            get
+            {
+                return this.manualField;
+            }
+            set
+            {
+                this.manualField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("LinkLocal", Order=3)]
+        public PrefixedIPv6Address[] LinkLocal
+        {
+            get
+            {
+                return this.linkLocalField;
+            }
+            set
+            {
+                this.linkLocalField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("FromDHCP", Order=4)]
+        public PrefixedIPv6Address[] FromDHCP
+        {
+            get
+            {
+                return this.fromDHCPField;
+            }
+            set
+            {
+                this.fromDHCPField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("FromRA", Order=5)]
+        public PrefixedIPv6Address[] FromRA
+        {
+            get
+            {
+                return this.fromRAField;
+            }
+            set
+            {
+                this.fromRAField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public IPv6ConfigurationExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum IPv6DHCPConfiguration
+    {
+        
+        /// <remarks/>
+        Auto,
+        
+        /// <remarks/>
+        Stateful,
+        
+        /// <remarks/>
+        Stateless,
+        
+        /// <remarks/>
+        Off,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class IPv6NetworkInterface
+    {
+        
+        private bool enabledField;
+        
+        private IPv6Configuration configField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public bool Enabled
+        {
+            get
+            {
+                return this.enabledField;
+            }
+            set
+            {
+                this.enabledField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public IPv6Configuration Config
+        {
+            get
+            {
+                return this.configField;
+            }
+            set
+            {
+                this.configField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class PrefixedIPv4Address
+    {
+        
+        private string addressField;
+        
+        private int prefixLengthField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="token", Order=0)]
+        public string Address
+        {
+            get
+            {
+                return this.addressField;
+            }
+            set
+            {
+                this.addressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public int PrefixLength
+        {
+            get
+            {
+                return this.prefixLengthField;
+            }
+            set
+            {
+                this.prefixLengthField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class IPv4Configuration
+    {
+        
+        private PrefixedIPv4Address[] manualField;
+        
+        private PrefixedIPv4Address linkLocalField;
+        
+        private PrefixedIPv4Address fromDHCPField;
+        
+        private bool dHCPField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Manual", Order=0)]
+        public PrefixedIPv4Address[] Manual
+        {
+            get
+            {
+                return this.manualField;
+            }
+            set
+            {
+                this.manualField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public PrefixedIPv4Address LinkLocal
+        {
+            get
+            {
+                return this.linkLocalField;
+            }
+            set
+            {
+                this.linkLocalField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public PrefixedIPv4Address FromDHCP
+        {
+            get
+            {
+                return this.fromDHCPField;
+            }
+            set
+            {
+                this.fromDHCPField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public bool DHCP
+        {
+            get
+            {
+                return this.dHCPField;
+            }
+            set
+            {
+                this.dHCPField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=4)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class IPv4NetworkInterface
+    {
+        
+        private bool enabledField;
+        
+        private IPv4Configuration configField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public bool Enabled
+        {
+            get
+            {
+                return this.enabledField;
+            }
+            set
+            {
+                this.enabledField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public IPv4Configuration Config
+        {
+            get
+            {
+                return this.configField;
+            }
+            set
+            {
+                this.configField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class NetworkInterfaceConnectionSetting
+    {
+        
+        private bool autoNegotiationField;
+        
+        private int speedField;
+        
+        private Duplex duplexField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public bool AutoNegotiation
+        {
+            get
+            {
+                return this.autoNegotiationField;
+            }
+            set
+            {
+                this.autoNegotiationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public int Speed
+        {
+            get
+            {
+                return this.speedField;
+            }
+            set
+            {
+                this.speedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public Duplex Duplex
+        {
+            get
+            {
+                return this.duplexField;
+            }
+            set
+            {
+                this.duplexField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum Duplex
+    {
+        
+        /// <remarks/>
+        Full,
+        
+        /// <remarks/>
+        Half,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class NetworkInterfaceLink
+    {
+        
+        private NetworkInterfaceConnectionSetting adminSettingsField;
+        
+        private NetworkInterfaceConnectionSetting operSettingsField;
+        
+        private int interfaceTypeField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public NetworkInterfaceConnectionSetting AdminSettings
+        {
+            get
+            {
+                return this.adminSettingsField;
+            }
+            set
+            {
+                this.adminSettingsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public NetworkInterfaceConnectionSetting OperSettings
+        {
+            get
+            {
+                return this.operSettingsField;
+            }
+            set
+            {
+                this.operSettingsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public int InterfaceType
+        {
+            get
+            {
+                return this.interfaceTypeField;
+            }
+            set
+            {
+                this.interfaceTypeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class NetworkInterfaceInfo
+    {
+        
+        private string nameField;
+        
+        private string hwAddressField;
+        
+        private int mTUField;
+        
+        private bool mTUFieldSpecified;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Name
+        {
+            get
+            {
+                return this.nameField;
+            }
+            set
+            {
+                this.nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="token", Order=1)]
+        public string HwAddress
+        {
+            get
+            {
+                return this.hwAddressField;
+            }
+            set
+            {
+                this.hwAddressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public int MTU
+        {
+            get
+            {
+                return this.mTUField;
+            }
+            set
+            {
+                this.mTUField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MTUSpecified
+        {
+            get
+            {
+                return this.mTUFieldSpecified;
+            }
+            set
+            {
+                this.mTUFieldSpecified = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class VideoOutputExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Namespace="http://www.onvif.org/ver10/schema", Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class LayoutExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class PaneLayout
+    {
+        
+        private string paneField;
+        
+        private Rectangle areaField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Pane
+        {
+            get
+            {
+                return this.paneField;
+            }
+            set
+            {
+                this.paneField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public Rectangle Area
+        {
+            get
+            {
+                return this.areaField;
+            }
+            set
+            {
+                this.areaField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=2)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Rectangle
+    {
+        
+        private float bottomField;
+        
+        private float topField;
+        
+        private float rightField;
+        
+        private float leftField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public float bottom
+        {
+            get
+            {
+                return this.bottomField;
+            }
+            set
+            {
+                this.bottomField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public float top
+        {
+            get
+            {
+                return this.topField;
+            }
+            set
+            {
+                this.topField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public float right
+        {
+            get
+            {
+                return this.rightField;
+            }
+            set
+            {
+                this.rightField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public float left
+        {
+            get
+            {
+                return this.leftField;
+            }
+            set
+            {
+                this.leftField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Layout
+    {
+        
+        private PaneLayout[] paneLayoutField;
+        
+        private LayoutExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("PaneLayout", Order=0)]
+        public PaneLayout[] PaneLayout
+        {
+            get
+            {
+                return this.paneLayoutField;
+            }
+            set
+            {
+                this.paneLayoutField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public LayoutExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class VideoSourceExtension2
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Namespace="http://www.onvif.org/ver10/schema", Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class ImagingSettingsExtension204
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Namespace="http://www.onvif.org/ver10/schema", Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class NoiseReduction
+    {
+        
+        private float levelField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public float Level
+        {
+            get
+            {
+                return this.levelField;
+            }
+            set
+            {
+                this.levelField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=1)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class DefoggingExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Defogging
+    {
+        
+        private string modeField;
+        
+        private float levelField;
+        
+        private bool levelFieldSpecified;
+        
+        private DefoggingExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float Level
+        {
+            get
+            {
+                return this.levelField;
+            }
+            set
+            {
+                this.levelField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool LevelSpecified
+        {
+            get
+            {
+                return this.levelFieldSpecified;
+            }
+            set
+            {
+                this.levelFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public DefoggingExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class ToneCompensationExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Namespace="http://www.onvif.org/ver10/schema", Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class ToneCompensation
+    {
+        
+        private string modeField;
+        
+        private float levelField;
+        
+        private bool levelFieldSpecified;
+        
+        private ToneCompensationExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float Level
+        {
+            get
+            {
+                return this.levelField;
+            }
+            set
+            {
+                this.levelField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool LevelSpecified
+        {
+            get
+            {
+                return this.levelFieldSpecified;
+            }
+            set
+            {
+                this.levelFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public ToneCompensationExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class ImagingSettingsExtension203
+    {
+        
+        private ToneCompensation toneCompensationField;
+        
+        private Defogging defoggingField;
+        
+        private NoiseReduction noiseReductionField;
+        
+        private ImagingSettingsExtension204 extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public ToneCompensation ToneCompensation
+        {
+            get
+            {
+                return this.toneCompensationField;
+            }
+            set
+            {
+                this.toneCompensationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public Defogging Defogging
+        {
+            get
+            {
+                return this.defoggingField;
+            }
+            set
+            {
+                this.defoggingField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public NoiseReduction NoiseReduction
+        {
+            get
+            {
+                return this.noiseReductionField;
+            }
+            set
+            {
+                this.noiseReductionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public ImagingSettingsExtension204 Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class IrCutFilterAutoAdjustmentExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Namespace="http://www.onvif.org/ver10/schema", Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class IrCutFilterAutoAdjustment
+    {
+        
+        private string boundaryTypeField;
+        
+        private float boundaryOffsetField;
+        
+        private bool boundaryOffsetFieldSpecified;
+        
+        private string responseTimeField;
+        
+        private IrCutFilterAutoAdjustmentExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string BoundaryType
+        {
+            get
+            {
+                return this.boundaryTypeField;
+            }
+            set
+            {
+                this.boundaryTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float BoundaryOffset
+        {
+            get
+            {
+                return this.boundaryOffsetField;
+            }
+            set
+            {
+                this.boundaryOffsetField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool BoundaryOffsetSpecified
+        {
+            get
+            {
+                return this.boundaryOffsetFieldSpecified;
+            }
+            set
+            {
+                this.boundaryOffsetFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="duration", Order=2)]
+        public string ResponseTime
+        {
+            get
+            {
+                return this.responseTimeField;
+            }
+            set
+            {
+                this.responseTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public IrCutFilterAutoAdjustmentExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class ImagingSettingsExtension202
+    {
+        
+        private IrCutFilterAutoAdjustment[] irCutFilterAutoAdjustmentField;
+        
+        private ImagingSettingsExtension203 extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("IrCutFilterAutoAdjustment", Order=0)]
+        public IrCutFilterAutoAdjustment[] IrCutFilterAutoAdjustment
+        {
+            get
+            {
+                return this.irCutFilterAutoAdjustmentField;
+            }
+            set
+            {
+                this.irCutFilterAutoAdjustmentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public ImagingSettingsExtension203 Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class ImageStabilizationExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class ImageStabilization
+    {
+        
+        private ImageStabilizationMode modeField;
+        
+        private float levelField;
+        
+        private bool levelFieldSpecified;
+        
+        private ImageStabilizationExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public ImageStabilizationMode Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float Level
+        {
+            get
+            {
+                return this.levelField;
+            }
+            set
+            {
+                this.levelField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool LevelSpecified
+        {
+            get
+            {
+                return this.levelFieldSpecified;
+            }
+            set
+            {
+                this.levelFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public ImageStabilizationExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum ImageStabilizationMode
+    {
+        
+        /// <remarks/>
+        OFF,
+        
+        /// <remarks/>
+        ON,
+        
+        /// <remarks/>
+        AUTO,
+        
+        /// <remarks/>
+        Extended,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class ImagingSettingsExtension20
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        private ImageStabilization imageStabilizationField;
+        
+        private ImagingSettingsExtension202 extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public ImageStabilization ImageStabilization
+        {
+            get
+            {
+                return this.imageStabilizationField;
+            }
+            set
+            {
+                this.imageStabilizationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public ImagingSettingsExtension202 Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class WhiteBalance20Extension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class WhiteBalance20
+    {
+        
+        private WhiteBalanceMode modeField;
+        
+        private float crGainField;
+        
+        private bool crGainFieldSpecified;
+        
+        private float cbGainField;
+        
+        private bool cbGainFieldSpecified;
+        
+        private WhiteBalance20Extension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public WhiteBalanceMode Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float CrGain
+        {
+            get
+            {
+                return this.crGainField;
+            }
+            set
+            {
+                this.crGainField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool CrGainSpecified
+        {
+            get
+            {
+                return this.crGainFieldSpecified;
+            }
+            set
+            {
+                this.crGainFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public float CbGain
+        {
+            get
+            {
+                return this.cbGainField;
+            }
+            set
+            {
+                this.cbGainField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool CbGainSpecified
+        {
+            get
+            {
+                return this.cbGainFieldSpecified;
+            }
+            set
+            {
+                this.cbGainFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public WhiteBalance20Extension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum WhiteBalanceMode
+    {
+        
+        /// <remarks/>
+        AUTO,
+        
+        /// <remarks/>
+        MANUAL,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class WideDynamicRange20
+    {
+        
+        private WideDynamicMode modeField;
+        
+        private float levelField;
+        
+        private bool levelFieldSpecified;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public WideDynamicMode Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float Level
+        {
+            get
+            {
+                return this.levelField;
+            }
+            set
+            {
+                this.levelField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool LevelSpecified
+        {
+            get
+            {
+                return this.levelFieldSpecified;
+            }
+            set
+            {
+                this.levelFieldSpecified = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum WideDynamicMode
+    {
+        
+        /// <remarks/>
+        OFF,
+        
+        /// <remarks/>
+        ON,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class FocusConfiguration20Extension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class FocusConfiguration20
+    {
+        
+        private AutoFocusMode autoFocusModeField;
+        
+        private float defaultSpeedField;
+        
+        private bool defaultSpeedFieldSpecified;
+        
+        private float nearLimitField;
+        
+        private bool nearLimitFieldSpecified;
+        
+        private float farLimitField;
+        
+        private bool farLimitFieldSpecified;
+        
+        private FocusConfiguration20Extension extensionField;
+        
+        private string[] aFModeField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public AutoFocusMode AutoFocusMode
+        {
+            get
+            {
+                return this.autoFocusModeField;
+            }
+            set
+            {
+                this.autoFocusModeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float DefaultSpeed
+        {
+            get
+            {
+                return this.defaultSpeedField;
+            }
+            set
+            {
+                this.defaultSpeedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool DefaultSpeedSpecified
+        {
+            get
+            {
+                return this.defaultSpeedFieldSpecified;
+            }
+            set
+            {
+                this.defaultSpeedFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public float NearLimit
+        {
+            get
+            {
+                return this.nearLimitField;
+            }
+            set
+            {
+                this.nearLimitField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool NearLimitSpecified
+        {
+            get
+            {
+                return this.nearLimitFieldSpecified;
+            }
+            set
+            {
+                this.nearLimitFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public float FarLimit
+        {
+            get
+            {
+                return this.farLimitField;
+            }
+            set
+            {
+                this.farLimitField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool FarLimitSpecified
+        {
+            get
+            {
+                return this.farLimitFieldSpecified;
+            }
+            set
+            {
+                this.farLimitFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public FocusConfiguration20Extension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string[] AFMode
+        {
+            get
+            {
+                return this.aFModeField;
+            }
+            set
+            {
+                this.aFModeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum AutoFocusMode
+    {
+        
+        /// <remarks/>
+        AUTO,
+        
+        /// <remarks/>
+        MANUAL,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Exposure20
+    {
+        
+        private ExposureMode modeField;
+        
+        private ExposurePriority priorityField;
+        
+        private bool priorityFieldSpecified;
+        
+        private Rectangle windowField;
+        
+        private float minExposureTimeField;
+        
+        private bool minExposureTimeFieldSpecified;
+        
+        private float maxExposureTimeField;
+        
+        private bool maxExposureTimeFieldSpecified;
+        
+        private float minGainField;
+        
+        private bool minGainFieldSpecified;
+        
+        private float maxGainField;
+        
+        private bool maxGainFieldSpecified;
+        
+        private float minIrisField;
+        
+        private bool minIrisFieldSpecified;
+        
+        private float maxIrisField;
+        
+        private bool maxIrisFieldSpecified;
+        
+        private float exposureTimeField;
+        
+        private bool exposureTimeFieldSpecified;
+        
+        private float gainField;
+        
+        private bool gainFieldSpecified;
+        
+        private float irisField;
+        
+        private bool irisFieldSpecified;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public ExposureMode Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public ExposurePriority Priority
+        {
+            get
+            {
+                return this.priorityField;
+            }
+            set
+            {
+                this.priorityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool PrioritySpecified
+        {
+            get
+            {
+                return this.priorityFieldSpecified;
+            }
+            set
+            {
+                this.priorityFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public Rectangle Window
+        {
+            get
+            {
+                return this.windowField;
+            }
+            set
+            {
+                this.windowField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public float MinExposureTime
+        {
+            get
+            {
+                return this.minExposureTimeField;
+            }
+            set
+            {
+                this.minExposureTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MinExposureTimeSpecified
+        {
+            get
+            {
+                return this.minExposureTimeFieldSpecified;
+            }
+            set
+            {
+                this.minExposureTimeFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public float MaxExposureTime
+        {
+            get
+            {
+                return this.maxExposureTimeField;
+            }
+            set
+            {
+                this.maxExposureTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MaxExposureTimeSpecified
+        {
+            get
+            {
+                return this.maxExposureTimeFieldSpecified;
+            }
+            set
+            {
+                this.maxExposureTimeFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public float MinGain
+        {
+            get
+            {
+                return this.minGainField;
+            }
+            set
+            {
+                this.minGainField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MinGainSpecified
+        {
+            get
+            {
+                return this.minGainFieldSpecified;
+            }
+            set
+            {
+                this.minGainFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public float MaxGain
+        {
+            get
+            {
+                return this.maxGainField;
+            }
+            set
+            {
+                this.maxGainField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MaxGainSpecified
+        {
+            get
+            {
+                return this.maxGainFieldSpecified;
+            }
+            set
+            {
+                this.maxGainFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public float MinIris
+        {
+            get
+            {
+                return this.minIrisField;
+            }
+            set
+            {
+                this.minIrisField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MinIrisSpecified
+        {
+            get
+            {
+                return this.minIrisFieldSpecified;
+            }
+            set
+            {
+                this.minIrisFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        public float MaxIris
+        {
+            get
+            {
+                return this.maxIrisField;
+            }
+            set
+            {
+                this.maxIrisField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MaxIrisSpecified
+        {
+            get
+            {
+                return this.maxIrisFieldSpecified;
+            }
+            set
+            {
+                this.maxIrisFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public float ExposureTime
+        {
+            get
+            {
+                return this.exposureTimeField;
+            }
+            set
+            {
+                this.exposureTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool ExposureTimeSpecified
+        {
+            get
+            {
+                return this.exposureTimeFieldSpecified;
+            }
+            set
+            {
+                this.exposureTimeFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public float Gain
+        {
+            get
+            {
+                return this.gainField;
+            }
+            set
+            {
+                this.gainField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool GainSpecified
+        {
+            get
+            {
+                return this.gainFieldSpecified;
+            }
+            set
+            {
+                this.gainFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        public float Iris
+        {
+            get
+            {
+                return this.irisField;
+            }
+            set
+            {
+                this.irisField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool IrisSpecified
+        {
+            get
+            {
+                return this.irisFieldSpecified;
+            }
+            set
+            {
+                this.irisFieldSpecified = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum ExposureMode
+    {
+        
+        /// <remarks/>
+        AUTO,
+        
+        /// <remarks/>
+        MANUAL,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum ExposurePriority
+    {
+        
+        /// <remarks/>
+        LowNoise,
+        
+        /// <remarks/>
+        FrameRate,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class BacklightCompensation20
+    {
+        
+        private BacklightCompensationMode modeField;
+        
+        private float levelField;
+        
+        private bool levelFieldSpecified;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public BacklightCompensationMode Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float Level
+        {
+            get
+            {
+                return this.levelField;
+            }
+            set
+            {
+                this.levelField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool LevelSpecified
+        {
+            get
+            {
+                return this.levelFieldSpecified;
+            }
+            set
+            {
+                this.levelFieldSpecified = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum BacklightCompensationMode
+    {
+        
+        /// <remarks/>
+        OFF,
+        
+        /// <remarks/>
+        ON,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class ImagingSettings20
+    {
+        
+        private BacklightCompensation20 backlightCompensationField;
+        
+        private float brightnessField;
+        
+        private bool brightnessFieldSpecified;
+        
+        private float colorSaturationField;
+        
+        private bool colorSaturationFieldSpecified;
+        
+        private float contrastField;
+        
+        private bool contrastFieldSpecified;
+        
+        private Exposure20 exposureField;
+        
+        private FocusConfiguration20 focusField;
+        
+        private IrCutFilterMode irCutFilterField;
+        
+        private bool irCutFilterFieldSpecified;
+        
+        private float sharpnessField;
+        
+        private bool sharpnessFieldSpecified;
+        
+        private WideDynamicRange20 wideDynamicRangeField;
+        
+        private WhiteBalance20 whiteBalanceField;
+        
+        private ImagingSettingsExtension20 extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public BacklightCompensation20 BacklightCompensation
+        {
+            get
+            {
+                return this.backlightCompensationField;
+            }
+            set
+            {
+                this.backlightCompensationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float Brightness
+        {
+            get
+            {
+                return this.brightnessField;
+            }
+            set
+            {
+                this.brightnessField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool BrightnessSpecified
+        {
+            get
+            {
+                return this.brightnessFieldSpecified;
+            }
+            set
+            {
+                this.brightnessFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public float ColorSaturation
+        {
+            get
+            {
+                return this.colorSaturationField;
+            }
+            set
+            {
+                this.colorSaturationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool ColorSaturationSpecified
+        {
+            get
+            {
+                return this.colorSaturationFieldSpecified;
+            }
+            set
+            {
+                this.colorSaturationFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public float Contrast
+        {
+            get
+            {
+                return this.contrastField;
+            }
+            set
+            {
+                this.contrastField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool ContrastSpecified
+        {
+            get
+            {
+                return this.contrastFieldSpecified;
+            }
+            set
+            {
+                this.contrastFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public Exposure20 Exposure
+        {
+            get
+            {
+                return this.exposureField;
+            }
+            set
+            {
+                this.exposureField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public FocusConfiguration20 Focus
+        {
+            get
+            {
+                return this.focusField;
+            }
+            set
+            {
+                this.focusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public IrCutFilterMode IrCutFilter
+        {
+            get
+            {
+                return this.irCutFilterField;
+            }
+            set
+            {
+                this.irCutFilterField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool IrCutFilterSpecified
+        {
+            get
+            {
+                return this.irCutFilterFieldSpecified;
+            }
+            set
+            {
+                this.irCutFilterFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public float Sharpness
+        {
+            get
+            {
+                return this.sharpnessField;
+            }
+            set
+            {
+                this.sharpnessField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool SharpnessSpecified
+        {
+            get
+            {
+                return this.sharpnessFieldSpecified;
+            }
+            set
+            {
+                this.sharpnessFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        public WideDynamicRange20 WideDynamicRange
+        {
+            get
+            {
+                return this.wideDynamicRangeField;
+            }
+            set
+            {
+                this.wideDynamicRangeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public WhiteBalance20 WhiteBalance
+        {
+            get
+            {
+                return this.whiteBalanceField;
+            }
+            set
+            {
+                this.whiteBalanceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public ImagingSettingsExtension20 Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum IrCutFilterMode
+    {
+        
+        /// <remarks/>
+        ON,
+        
+        /// <remarks/>
+        OFF,
+        
+        /// <remarks/>
+        AUTO,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class VideoSourceExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        private ImagingSettings20 imagingField;
+        
+        private VideoSourceExtension2 extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public ImagingSettings20 Imaging
+        {
+            get
+            {
+                return this.imagingField;
+            }
+            set
+            {
+                this.imagingField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public VideoSourceExtension2 Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class ImagingSettingsExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class WhiteBalance
+    {
+        
+        private WhiteBalanceMode modeField;
+        
+        private float crGainField;
+        
+        private float cbGainField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public WhiteBalanceMode Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float CrGain
+        {
+            get
+            {
+                return this.crGainField;
+            }
+            set
+            {
+                this.crGainField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public float CbGain
+        {
+            get
+            {
+                return this.cbGainField;
+            }
+            set
+            {
+                this.cbGainField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=3)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class WideDynamicRange
+    {
+        
+        private WideDynamicMode modeField;
+        
+        private float levelField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public WideDynamicMode Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float Level
+        {
+            get
+            {
+                return this.levelField;
+            }
+            set
+            {
+                this.levelField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class FocusConfiguration
+    {
+        
+        private AutoFocusMode autoFocusModeField;
+        
+        private float defaultSpeedField;
+        
+        private float nearLimitField;
+        
+        private float farLimitField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public AutoFocusMode AutoFocusMode
+        {
+            get
+            {
+                return this.autoFocusModeField;
+            }
+            set
+            {
+                this.autoFocusModeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float DefaultSpeed
+        {
+            get
+            {
+                return this.defaultSpeedField;
+            }
+            set
+            {
+                this.defaultSpeedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public float NearLimit
+        {
+            get
+            {
+                return this.nearLimitField;
+            }
+            set
+            {
+                this.nearLimitField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public float FarLimit
+        {
+            get
+            {
+                return this.farLimitField;
+            }
+            set
+            {
+                this.farLimitField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=4)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class Exposure
+    {
+        
+        private ExposureMode modeField;
+        
+        private ExposurePriority priorityField;
+        
+        private Rectangle windowField;
+        
+        private float minExposureTimeField;
+        
+        private float maxExposureTimeField;
+        
+        private float minGainField;
+        
+        private float maxGainField;
+        
+        private float minIrisField;
+        
+        private float maxIrisField;
+        
+        private float exposureTimeField;
+        
+        private float gainField;
+        
+        private float irisField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public ExposureMode Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public ExposurePriority Priority
+        {
+            get
+            {
+                return this.priorityField;
+            }
+            set
+            {
+                this.priorityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public Rectangle Window
+        {
+            get
+            {
+                return this.windowField;
+            }
+            set
+            {
+                this.windowField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public float MinExposureTime
+        {
+            get
+            {
+                return this.minExposureTimeField;
+            }
+            set
+            {
+                this.minExposureTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public float MaxExposureTime
+        {
+            get
+            {
+                return this.maxExposureTimeField;
+            }
+            set
+            {
+                this.maxExposureTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public float MinGain
+        {
+            get
+            {
+                return this.minGainField;
+            }
+            set
+            {
+                this.minGainField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public float MaxGain
+        {
+            get
+            {
+                return this.maxGainField;
+            }
+            set
+            {
+                this.maxGainField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public float MinIris
+        {
+            get
+            {
+                return this.minIrisField;
+            }
+            set
+            {
+                this.minIrisField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        public float MaxIris
+        {
+            get
+            {
+                return this.maxIrisField;
+            }
+            set
+            {
+                this.maxIrisField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public float ExposureTime
+        {
+            get
+            {
+                return this.exposureTimeField;
+            }
+            set
+            {
+                this.exposureTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public float Gain
+        {
+            get
+            {
+                return this.gainField;
+            }
+            set
+            {
+                this.gainField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        public float Iris
+        {
+            get
+            {
+                return this.irisField;
+            }
+            set
+            {
+                this.irisField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class BacklightCompensation
+    {
+        
+        private BacklightCompensationMode modeField;
+        
+        private float levelField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public BacklightCompensationMode Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float Level
+        {
+            get
+            {
+                return this.levelField;
+            }
+            set
+            {
+                this.levelField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class ImagingSettings
+    {
+        
+        private BacklightCompensation backlightCompensationField;
+        
+        private float brightnessField;
+        
+        private bool brightnessFieldSpecified;
+        
+        private float colorSaturationField;
+        
+        private bool colorSaturationFieldSpecified;
+        
+        private float contrastField;
+        
+        private bool contrastFieldSpecified;
+        
+        private Exposure exposureField;
+        
+        private FocusConfiguration focusField;
+        
+        private IrCutFilterMode irCutFilterField;
+        
+        private bool irCutFilterFieldSpecified;
+        
+        private float sharpnessField;
+        
+        private bool sharpnessFieldSpecified;
+        
+        private WideDynamicRange wideDynamicRangeField;
+        
+        private WhiteBalance whiteBalanceField;
+        
+        private ImagingSettingsExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public BacklightCompensation BacklightCompensation
+        {
+            get
+            {
+                return this.backlightCompensationField;
+            }
+            set
+            {
+                this.backlightCompensationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public float Brightness
+        {
+            get
+            {
+                return this.brightnessField;
+            }
+            set
+            {
+                this.brightnessField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool BrightnessSpecified
+        {
+            get
+            {
+                return this.brightnessFieldSpecified;
+            }
+            set
+            {
+                this.brightnessFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public float ColorSaturation
+        {
+            get
+            {
+                return this.colorSaturationField;
+            }
+            set
+            {
+                this.colorSaturationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool ColorSaturationSpecified
+        {
+            get
+            {
+                return this.colorSaturationFieldSpecified;
+            }
+            set
+            {
+                this.colorSaturationFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public float Contrast
+        {
+            get
+            {
+                return this.contrastField;
+            }
+            set
+            {
+                this.contrastField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool ContrastSpecified
+        {
+            get
+            {
+                return this.contrastFieldSpecified;
+            }
+            set
+            {
+                this.contrastFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public Exposure Exposure
+        {
+            get
+            {
+                return this.exposureField;
+            }
+            set
+            {
+                this.exposureField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public FocusConfiguration Focus
+        {
+            get
+            {
+                return this.focusField;
+            }
+            set
+            {
+                this.focusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public IrCutFilterMode IrCutFilter
+        {
+            get
+            {
+                return this.irCutFilterField;
+            }
+            set
+            {
+                this.irCutFilterField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool IrCutFilterSpecified
+        {
+            get
+            {
+                return this.irCutFilterFieldSpecified;
+            }
+            set
+            {
+                this.irCutFilterFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public float Sharpness
+        {
+            get
+            {
+                return this.sharpnessField;
+            }
+            set
+            {
+                this.sharpnessField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool SharpnessSpecified
+        {
+            get
+            {
+                return this.sharpnessFieldSpecified;
+            }
+            set
+            {
+                this.sharpnessFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        public WideDynamicRange WideDynamicRange
+        {
+            get
+            {
+                return this.wideDynamicRangeField;
+            }
+            set
+            {
+                this.wideDynamicRangeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public WhiteBalance WhiteBalance
+        {
+            get
+            {
+                return this.whiteBalanceField;
+            }
+            set
+            {
+                this.whiteBalanceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public ImagingSettingsExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class VideoResolution
+    {
+        
+        private int widthField;
+        
+        private int heightField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public int Width
+        {
+            get
+            {
+                return this.widthField;
+            }
+            set
+            {
+                this.widthField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public int Height
+        {
+            get
+            {
+                return this.heightField;
+            }
+            set
+            {
+                this.heightField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl")]
+    public partial class AuthorizationServerConfigurationData
+    {
+        
+        private string serverUriField;
+        
+        private string clientIDField;
+        
+        private string clientSecretField;
+        
+        private string scopeField;
+        
+        private string keyIDField;
+        
+        private string certificateIDField;
+        
+        private string certPathValidationPolicyIDField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        private string typeField;
+        
+        private string clientAuthField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="anyURI", Order=0)]
+        public string ServerUri
+        {
+            get
+            {
+                return this.serverUriField;
+            }
+            set
+            {
+                this.serverUriField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public string ClientID
+        {
+            get
+            {
+                return this.clientIDField;
+            }
+            set
+            {
+                this.clientIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public string ClientSecret
+        {
+            get
+            {
+                return this.clientSecretField;
+            }
+            set
+            {
+                this.clientSecretField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string Scope
+        {
+            get
+            {
+                return this.scopeField;
+            }
+            set
+            {
+                this.scopeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="NCName", Order=4)]
+        public string KeyID
+        {
+            get
+            {
+                return this.keyIDField;
+            }
+            set
+            {
+                this.keyIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="NCName", Order=5)]
+        public string CertificateID
+        {
+            get
+            {
+                return this.certificateIDField;
+            }
+            set
+            {
+                this.certificateIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="NCName", Order=6)]
+        public string CertPathValidationPolicyID
+        {
+            get
+            {
+                return this.certPathValidationPolicyIDField;
+            }
+            set
+            {
+                this.certPathValidationPolicyIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=7)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string Type
+        {
+            get
+            {
+                return this.typeField;
+            }
+            set
+            {
+                this.typeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string ClientAuth
+        {
+            get
+            {
+                return this.clientAuthField;
+            }
+            set
+            {
+                this.clientAuthField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(OSDConfiguration))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(PTZNode))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(DigitalInput))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(RelayOutput))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(NetworkInterface))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(AudioOutput))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(VideoOutput))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(AudioSource))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(VideoSource))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(AuthorizationServerConfiguration))]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class DeviceEntity
+    {
+        
+        private string tokenField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string token
+        {
+            get
+            {
+                return this.tokenField;
+            }
+            set
+            {
+                this.tokenField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class OSDConfiguration : DeviceEntity
+    {
+        
+        private OSDReference videoSourceConfigurationTokenField;
+        
+        private OSDType typeField;
+        
+        private OSDPosConfiguration positionField;
+        
+        private OSDTextConfiguration textStringField;
+        
+        private OSDImgConfiguration imageField;
+        
+        private OSDConfigurationExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public OSDReference VideoSourceConfigurationToken
+        {
+            get
+            {
+                return this.videoSourceConfigurationTokenField;
+            }
+            set
+            {
+                this.videoSourceConfigurationTokenField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public OSDType Type
+        {
+            get
+            {
+                return this.typeField;
+            }
+            set
+            {
+                this.typeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public OSDPosConfiguration Position
+        {
+            get
+            {
+                return this.positionField;
+            }
+            set
+            {
+                this.positionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public OSDTextConfiguration TextString
+        {
+            get
+            {
+                return this.textStringField;
+            }
+            set
+            {
+                this.textStringField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public OSDImgConfiguration Image
+        {
+            get
+            {
+                return this.imageField;
+            }
+            set
+            {
+                this.imageField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public OSDConfigurationExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum OSDType
+    {
+        
+        /// <remarks/>
+        Text,
+        
+        /// <remarks/>
+        Image,
+        
+        /// <remarks/>
+        Extended,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class PTZNode : DeviceEntity
+    {
+        
+        private string nameField;
+        
+        private PTZSpaces supportedPTZSpacesField;
+        
+        private int maximumNumberOfPresetsField;
+        
+        private bool homeSupportedField;
+        
+        private string[] auxiliaryCommandsField;
+        
+        private PTZNodeExtension extensionField;
+        
+        private bool fixedHomePositionField;
+        
+        private bool fixedHomePositionFieldSpecified;
+        
+        private bool geoMoveField;
+        
+        private bool geoMoveFieldSpecified;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Name
+        {
+            get
+            {
+                return this.nameField;
+            }
+            set
+            {
+                this.nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public PTZSpaces SupportedPTZSpaces
+        {
+            get
+            {
+                return this.supportedPTZSpacesField;
+            }
+            set
+            {
+                this.supportedPTZSpacesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public int MaximumNumberOfPresets
+        {
+            get
+            {
+                return this.maximumNumberOfPresetsField;
+            }
+            set
+            {
+                this.maximumNumberOfPresetsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public bool HomeSupported
+        {
+            get
+            {
+                return this.homeSupportedField;
+            }
+            set
+            {
+                this.homeSupportedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("AuxiliaryCommands", Order=4)]
+        public string[] AuxiliaryCommands
+        {
+            get
+            {
+                return this.auxiliaryCommandsField;
+            }
+            set
+            {
+                this.auxiliaryCommandsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public PTZNodeExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool FixedHomePosition
+        {
+            get
+            {
+                return this.fixedHomePositionField;
+            }
+            set
+            {
+                this.fixedHomePositionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool FixedHomePositionSpecified
+        {
+            get
+            {
+                return this.fixedHomePositionFieldSpecified;
+            }
+            set
+            {
+                this.fixedHomePositionFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool GeoMove
+        {
+            get
+            {
+                return this.geoMoveField;
+            }
+            set
+            {
+                this.geoMoveField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool GeoMoveSpecified
+        {
+            get
+            {
+                return this.geoMoveFieldSpecified;
+            }
+            set
+            {
+                this.geoMoveFieldSpecified = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class DigitalInput : DeviceEntity
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        private DigitalIdleState idleStateField;
+        
+        private bool idleStateFieldSpecified;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public DigitalIdleState IdleState
+        {
+            get
+            {
+                return this.idleStateField;
+            }
+            set
+            {
+                this.idleStateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool IdleStateSpecified
+        {
+            get
+            {
+                return this.idleStateFieldSpecified;
+            }
+            set
+            {
+                this.idleStateFieldSpecified = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public enum DigitalIdleState
+    {
+        
+        /// <remarks/>
+        closed,
+        
+        /// <remarks/>
+        open,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class RelayOutput : DeviceEntity
+    {
+        
+        private RelayOutputSettings propertiesField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public RelayOutputSettings Properties
+        {
+            get
+            {
+                return this.propertiesField;
+            }
+            set
+            {
+                this.propertiesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=1)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class NetworkInterface : DeviceEntity
+    {
+        
+        private bool enabledField;
+        
+        private NetworkInterfaceInfo infoField;
+        
+        private NetworkInterfaceLink linkField;
+        
+        private IPv4NetworkInterface iPv4Field;
+        
+        private IPv6NetworkInterface iPv6Field;
+        
+        private NetworkInterfaceExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public bool Enabled
+        {
+            get
+            {
+                return this.enabledField;
+            }
+            set
+            {
+                this.enabledField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public NetworkInterfaceInfo Info
+        {
+            get
+            {
+                return this.infoField;
+            }
+            set
+            {
+                this.infoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public NetworkInterfaceLink Link
+        {
+            get
+            {
+                return this.linkField;
+            }
+            set
+            {
+                this.linkField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public IPv4NetworkInterface IPv4
+        {
+            get
+            {
+                return this.iPv4Field;
+            }
+            set
+            {
+                this.iPv4Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public IPv6NetworkInterface IPv6
+        {
+            get
+            {
+                return this.iPv6Field;
+            }
+            set
+            {
+                this.iPv6Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public NetworkInterfaceExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class AudioOutput : DeviceEntity
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class VideoOutput : DeviceEntity
+    {
+        
+        private Layout layoutField;
+        
+        private VideoResolution resolutionField;
+        
+        private float refreshRateField;
+        
+        private bool refreshRateFieldSpecified;
+        
+        private float aspectRatioField;
+        
+        private bool aspectRatioFieldSpecified;
+        
+        private VideoOutputExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public Layout Layout
+        {
+            get
+            {
+                return this.layoutField;
+            }
+            set
+            {
+                this.layoutField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public VideoResolution Resolution
+        {
+            get
+            {
+                return this.resolutionField;
+            }
+            set
+            {
+                this.resolutionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public float RefreshRate
+        {
+            get
+            {
+                return this.refreshRateField;
+            }
+            set
+            {
+                this.refreshRateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool RefreshRateSpecified
+        {
+            get
+            {
+                return this.refreshRateFieldSpecified;
+            }
+            set
+            {
+                this.refreshRateFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public float AspectRatio
+        {
+            get
+            {
+                return this.aspectRatioField;
+            }
+            set
+            {
+                this.aspectRatioField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool AspectRatioSpecified
+        {
+            get
+            {
+                return this.aspectRatioFieldSpecified;
+            }
+            set
+            {
+                this.aspectRatioFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public VideoOutputExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class AudioSource : DeviceEntity
+    {
+        
+        private int channelsField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public int Channels
+        {
+            get
+            {
+                return this.channelsField;
+            }
+            set
+            {
+                this.channelsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=1)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class VideoSource : DeviceEntity
+    {
+        
+        private float framerateField;
+        
+        private VideoResolution resolutionField;
+        
+        private ImagingSettings imagingField;
+        
+        private VideoSourceExtension extensionField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public float Framerate
+        {
+            get
+            {
+                return this.framerateField;
+            }
+            set
+            {
+                this.framerateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public VideoResolution Resolution
+        {
+            get
+            {
+                return this.resolutionField;
+            }
+            set
+            {
+                this.resolutionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public ImagingSettings Imaging
+        {
+            get
+            {
+                return this.imagingField;
+            }
+            set
+            {
+                this.imagingField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public VideoSourceExtension Extension
+        {
+            get
+            {
+                return this.extensionField;
+            }
+            set
+            {
+                this.extensionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl")]
+    public partial class AuthorizationServerConfiguration : DeviceEntity
+    {
+        
+        private AuthorizationServerConfigurationData dataField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public AuthorizationServerConfigurationData Data
+        {
+            get
+            {
+                return this.dataField;
+            }
+            set
+            {
+                this.dataField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=1)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl")]
     public partial class Dot1XStageExtension
     {
@@ -640,6 +7048,8 @@ namespace netOnvifCore.Security
         private Dot1XStageExtension extensionField;
         
         private string methodField;
+        
+        private string certPathValidationPolicyIDField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -722,6 +7132,20 @@ namespace netOnvifCore.Security
             set
             {
                 this.methodField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute(DataType="NCName")]
+        public string CertPathValidationPolicyID
+        {
+            get
+            {
+                return this.certPathValidationPolicyIDField;
+            }
+            set
+            {
+                this.certPathValidationPolicyIDField = value;
             }
         }
     }
@@ -1285,6 +7709,10 @@ namespace netOnvifCore.Security
         
         private byte[] certificateContentField;
         
+        private bool hasPrivateKeyField;
+        
+        private bool hasPrivateKeyFieldSpecified;
+        
         private System.Xml.XmlElement[] anyField;
         
         /// <remarks/>
@@ -1344,7 +7772,35 @@ namespace netOnvifCore.Security
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlAnyElementAttribute(Order=4)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public bool HasPrivateKey
+        {
+            get
+            {
+                return this.hasPrivateKeyField;
+            }
+            set
+            {
+                this.hasPrivateKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool HasPrivateKeySpecified
+        {
+            get
+            {
+                return this.hasPrivateKeyFieldSpecified;
+            }
+            set
+            {
+                this.hasPrivateKeyFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=5)]
         public System.Xml.XmlElement[] Any
         {
             get
@@ -2130,6 +8586,310 @@ namespace netOnvifCore.Security
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl")]
+    public partial class CustomClaim
+    {
+        
+        private string nameField;
+        
+        private string supportedValuesField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Name
+        {
+            get
+            {
+                return this.nameField;
+            }
+            set
+            {
+                this.nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public string SupportedValues
+        {
+            get
+            {
+                return this.supportedValuesField;
+            }
+            set
+            {
+                this.supportedValuesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=2)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl")]
+    public partial class JWTConfiguration
+    {
+        
+        private string audiencesField;
+        
+        private string[] trustedIssuersField;
+        
+        private string[] keyIDField;
+        
+        private string validationPolicyField;
+        
+        private CustomClaim[] customClaimsField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Audiences
+        {
+            get
+            {
+                return this.audiencesField;
+            }
+            set
+            {
+                this.audiencesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("TrustedIssuers", DataType="anyURI", Order=1)]
+        public string[] TrustedIssuers
+        {
+            get
+            {
+                return this.trustedIssuersField;
+            }
+            set
+            {
+                this.trustedIssuersField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("KeyID", DataType="NCName", Order=2)]
+        public string[] KeyID
+        {
+            get
+            {
+                return this.keyIDField;
+            }
+            set
+            {
+                this.keyIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="NCName", Order=3)]
+        public string ValidationPolicy
+        {
+            get
+            {
+                return this.validationPolicyField;
+            }
+            set
+            {
+                this.validationPolicyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomClaims", Order=4)]
+        public CustomClaim[] CustomClaims
+        {
+            get
+            {
+                return this.customClaimsField;
+            }
+            set
+            {
+                this.customClaimsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=5)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl")]
+    public partial class MediaSigningCapabilities
+    {
+        
+        private bool mediaSigningSupportedField;
+        
+        private bool mediaSigningSupportedFieldSpecified;
+        
+        private bool userMediaSigningKeySupportedField;
+        
+        private bool userMediaSigningKeySupportedFieldSpecified;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool MediaSigningSupported
+        {
+            get
+            {
+                return this.mediaSigningSupportedField;
+            }
+            set
+            {
+                this.mediaSigningSupportedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MediaSigningSupportedSpecified
+        {
+            get
+            {
+                return this.mediaSigningSupportedFieldSpecified;
+            }
+            set
+            {
+                this.mediaSigningSupportedFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool UserMediaSigningKeySupported
+        {
+            get
+            {
+                return this.userMediaSigningKeySupportedField;
+            }
+            set
+            {
+                this.userMediaSigningKeySupportedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool UserMediaSigningKeySupportedSpecified
+        {
+            get
+            {
+                return this.userMediaSigningKeySupportedFieldSpecified;
+            }
+            set
+            {
+                this.userMediaSigningKeySupportedFieldSpecified = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl")]
+    public partial class AuthorizationServerConfigurationCapabilities
+    {
+        
+        private int maxConfigurationsField;
+        
+        private bool maxConfigurationsFieldSpecified;
+        
+        private string[] configurationTypesSupportedField;
+        
+        private string[] clientAuthenticationMethodsSupportedField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int MaxConfigurations
+        {
+            get
+            {
+                return this.maxConfigurationsField;
+            }
+            set
+            {
+                this.maxConfigurationsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MaxConfigurationsSpecified
+        {
+            get
+            {
+                return this.maxConfigurationsFieldSpecified;
+            }
+            set
+            {
+                this.maxConfigurationsFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string[] ConfigurationTypesSupported
+        {
+            get
+            {
+                return this.configurationTypesSupportedField;
+            }
+            set
+            {
+                this.configurationTypesSupportedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string[] ClientAuthenticationMethodsSupported
+        {
+            get
+            {
+                return this.clientAuthenticationMethodsSupportedField;
+            }
+            set
+            {
+                this.clientAuthenticationMethodsSupportedField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl")]
     public partial class Dot1XCapabilities
     {
         
@@ -2401,6 +9161,54 @@ namespace netOnvifCore.Security
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", ConfigurationName="netOnvifCore.Security.JWT")]
+    public interface JWT
+    {
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetJWTConfiguration", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        [return: System.ServiceModel.MessageParameterAttribute(Name="Configuration")]
+        System.Threading.Tasks.Task<netOnvifCore.Security.JWTConfiguration> GetJWTConfigurationAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/SetJWTConfiguration", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        System.Threading.Tasks.Task SetJWTConfigurationAsync(netOnvifCore.Security.JWTConfiguration Configuration);
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    public interface JWTChannel : netOnvifCore.Security.JWT, System.ServiceModel.IClientChannel
+    {
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    public partial class JWTClient : System.ServiceModel.ClientBase<netOnvifCore.Security.JWT>, netOnvifCore.Security.JWT
+    {
+        
+        public JWTClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(binding, remoteAddress)
+        {
+        }
+        
+        public System.Threading.Tasks.Task<netOnvifCore.Security.JWTConfiguration> GetJWTConfigurationAsync()
+        {
+            return base.Channel.GetJWTConfigurationAsync();
+        }
+        
+        public System.Threading.Tasks.Task SetJWTConfigurationAsync(netOnvifCore.Security.JWTConfiguration Configuration)
+        {
+            return base.Channel.SetJWTConfigurationAsync(Configuration);
+        }
+        
+        public virtual System.Threading.Tasks.Task OpenAsync()
+        {
+            return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", ConfigurationName="netOnvifCore.Security.Keystore")]
     public interface Keystore
     {
@@ -2408,118 +9216,162 @@ namespace netOnvifCore.Security
         // CODEGEN: Generating message contract since the operation has multiple return values.
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/CreateRSAKeyPair", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.CreateRSAKeyPairResponse> CreateRSAKeyPairAsync(netOnvifCore.Security.CreateRSAKeyPairRequest request);
+        
+        // CODEGEN: Generating message contract since the operation has multiple return values.
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/CreateECCKeyPair", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        System.Threading.Tasks.Task<netOnvifCore.Security.CreateECCKeyPairResponse> CreateECCKeyPairAsync(netOnvifCore.Security.CreateECCKeyPairRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/UploadKeyPairInPKCS8", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.UploadKeyPairInPKCS8Response> UploadKeyPairInPKCS8Async(netOnvifCore.Security.UploadKeyPairInPKCS8Request request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/UploadCertificateWithPrivateKeyI" +
             "nPKCS12", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.UploadCertificateWithPrivateKeyInPKCS12Response> UploadCertificateWithPrivateKeyInPKCS12Async(netOnvifCore.Security.UploadCertificateWithPrivateKeyInPKCS12Request request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetKeyStatus", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetKeyStatusResponse> GetKeyStatusAsync(netOnvifCore.Security.GetKeyStatusRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetPrivateKeyStatus", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetPrivateKeyStatusResponse> GetPrivateKeyStatusAsync(netOnvifCore.Security.GetPrivateKeyStatusRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetAllKeys", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetAllKeysResponse> GetAllKeysAsync(netOnvifCore.Security.GetAllKeysRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/DeleteKey", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.DeleteKeyResponse> DeleteKeyAsync(netOnvifCore.Security.DeleteKeyRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/CreatePKCS10CSR", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.CreatePKCS10CSRResponse> CreatePKCS10CSRAsync(netOnvifCore.Security.CreatePKCS10CSRRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/CreateSelfSignedCertificate", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.CreateSelfSignedCertificateResponse> CreateSelfSignedCertificateAsync(netOnvifCore.Security.CreateSelfSignedCertificateRequest request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/UploadCertificate", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.UploadCertificateResponse> UploadCertificateAsync(netOnvifCore.Security.UploadCertificateRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetCertificate", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetCertificateResponse> GetCertificateAsync(netOnvifCore.Security.GetCertificateRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetAllCertificates", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetAllCertificatesResponse> GetAllCertificatesAsync(netOnvifCore.Security.GetAllCertificatesRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/DeleteCertificate", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.DeleteCertificateResponse> DeleteCertificateAsync(netOnvifCore.Security.DeleteCertificateRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/CreateCertificationPath", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.CreateCertificationPathResponse> CreateCertificationPathAsync(netOnvifCore.Security.CreateCertificationPathRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetCertificationPath", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetCertificationPathResponse> GetCertificationPathAsync(netOnvifCore.Security.GetCertificationPathRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetAllCertificationPaths", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetAllCertificationPathsResponse> GetAllCertificationPathsAsync(netOnvifCore.Security.GetAllCertificationPathsRequest request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/SetCertificationPath", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        System.Threading.Tasks.Task<netOnvifCore.Security.SetCertificationPathResponse> SetCertificationPathAsync(netOnvifCore.Security.SetCertificationPathRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/DeleteCertificationPath", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.DeleteCertificationPathResponse> DeleteCertificationPathAsync(netOnvifCore.Security.DeleteCertificationPathRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/UploadPassphrase", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.UploadPassphraseResponse> UploadPassphraseAsync(netOnvifCore.Security.UploadPassphraseRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetAllPassphrases", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetAllPassphrasesResponse> GetAllPassphrasesAsync(netOnvifCore.Security.GetAllPassphrasesRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/DeletePassphrase", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.DeletePassphraseResponse> DeletePassphraseAsync(netOnvifCore.Security.DeletePassphraseRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/UploadCRL", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.UploadCRLResponse> UploadCRLAsync(netOnvifCore.Security.UploadCRLRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetCRL", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetCRLResponse> GetCRLAsync(netOnvifCore.Security.GetCRLRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetAllCRLs", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetAllCRLsResponse> GetAllCRLsAsync(netOnvifCore.Security.GetAllCRLsRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/DeleteCRL", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.DeleteCRLResponse> DeleteCRLAsync(netOnvifCore.Security.DeleteCRLRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/CreateCertPathValidationPolicy", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.CreateCertPathValidationPolicyResponse> CreateCertPathValidationPolicyAsync(netOnvifCore.Security.CreateCertPathValidationPolicyRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetCertPathValidationPolicy", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetCertPathValidationPolicyResponse> GetCertPathValidationPolicyAsync(netOnvifCore.Security.GetCertPathValidationPolicyRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetAllCertPathValidationPolicies" +
             "", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetAllCertPathValidationPoliciesResponse> GetAllCertPathValidationPoliciesAsync(netOnvifCore.Security.GetAllCertPathValidationPoliciesRequest request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/SetCertPathValidationPolicy", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        System.Threading.Tasks.Task<netOnvifCore.Security.SetCertPathValidationPolicyResponse> SetCertPathValidationPolicyAsync(netOnvifCore.Security.SetCertPathValidationPolicyRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/DeleteCertPathValidationPolicy", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.DeleteCertPathValidationPolicyResponse> DeleteCertPathValidationPolicyAsync(netOnvifCore.Security.DeleteCertPathValidationPolicyRequest request);
     }
     
@@ -2567,7 +9419,55 @@ namespace netOnvifCore.Security
         
         public CreateRSAKeyPairResponse(string KeyID, string EstimatedCreationTime)
         {
-            this.KeyID                 = KeyID;
+            this.KeyID = KeyID;
+            this.EstimatedCreationTime = EstimatedCreationTime;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="CreateECCKeyPair", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
+    public partial class CreateECCKeyPairRequest
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", Order=0)]
+        public string EllipticCurve;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", Order=1)]
+        public string Alias;
+        
+        public CreateECCKeyPairRequest()
+        {
+        }
+        
+        public CreateECCKeyPairRequest(string EllipticCurve, string Alias)
+        {
+            this.EllipticCurve = EllipticCurve;
+            this.Alias = Alias;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="CreateECCKeyPairResponse", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
+    public partial class CreateECCKeyPairResponse
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="NCName")]
+        public string KeyID;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="duration")]
+        public string EstimatedCreationTime;
+        
+        public CreateECCKeyPairResponse()
+        {
+        }
+        
+        public CreateECCKeyPairResponse(string KeyID, string EstimatedCreationTime)
+        {
+            this.KeyID = KeyID;
             this.EstimatedCreationTime = EstimatedCreationTime;
         }
     }
@@ -2599,10 +9499,10 @@ namespace netOnvifCore.Security
         
         public UploadKeyPairInPKCS8Request(byte[] KeyPair, string Alias, string EncryptionPassphraseID, string EncryptionPassphrase)
         {
-            this.KeyPair                = KeyPair;
-            this.Alias                  = Alias;
+            this.KeyPair = KeyPair;
+            this.Alias = Alias;
             this.EncryptionPassphraseID = EncryptionPassphraseID;
-            this.EncryptionPassphrase   = EncryptionPassphrase;
+            this.EncryptionPassphrase = EncryptionPassphrase;
         }
     }
     
@@ -3261,6 +10161,43 @@ namespace netOnvifCore.Security
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="SetCertificationPath", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
+    public partial class SetCertificationPathRequest
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="NCName")]
+        public string CertificationPathID;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", Order=1)]
+        public netOnvifCore.Security.CertificationPath CertificationPath;
+        
+        public SetCertificationPathRequest()
+        {
+        }
+        
+        public SetCertificationPathRequest(string CertificationPathID, netOnvifCore.Security.CertificationPath CertificationPath)
+        {
+            this.CertificationPathID = CertificationPathID;
+            this.CertificationPath = CertificationPath;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="SetCertificationPathResponse", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
+    public partial class SetCertificationPathResponse
+    {
+        
+        public SetCertificationPathResponse()
+        {
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteCertificationPath", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
     public partial class DeleteCertificationPathRequest
     {
@@ -3738,6 +10675,43 @@ namespace netOnvifCore.Security
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="SetCertPathValidationPolicy", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
+    public partial class SetCertPathValidationPolicyRequest
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="NCName")]
+        public string CertPathValidationPolicyID;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", Order=1)]
+        public netOnvifCore.Security.CertPathValidationPolicy CertPathValidationPolicy;
+        
+        public SetCertPathValidationPolicyRequest()
+        {
+        }
+        
+        public SetCertPathValidationPolicyRequest(string CertPathValidationPolicyID, netOnvifCore.Security.CertPathValidationPolicy CertPathValidationPolicy)
+        {
+            this.CertPathValidationPolicyID = CertPathValidationPolicyID;
+            this.CertPathValidationPolicy = CertPathValidationPolicy;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="SetCertPathValidationPolicyResponse", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
+    public partial class SetCertPathValidationPolicyResponse
+    {
+        
+        public SetCertPathValidationPolicyResponse()
+        {
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteCertPathValidationPolicy", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
     public partial class DeleteCertPathValidationPolicyRequest
     {
@@ -3786,6 +10760,11 @@ namespace netOnvifCore.Security
         public System.Threading.Tasks.Task<netOnvifCore.Security.CreateRSAKeyPairResponse> CreateRSAKeyPairAsync(netOnvifCore.Security.CreateRSAKeyPairRequest request)
         {
             return base.Channel.CreateRSAKeyPairAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<netOnvifCore.Security.CreateECCKeyPairResponse> CreateECCKeyPairAsync(netOnvifCore.Security.CreateECCKeyPairRequest request)
+        {
+            return base.Channel.CreateECCKeyPairAsync(request);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -3979,6 +10958,20 @@ namespace netOnvifCore.Security
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<netOnvifCore.Security.SetCertificationPathResponse> netOnvifCore.Security.Keystore.SetCertificationPathAsync(netOnvifCore.Security.SetCertificationPathRequest request)
+        {
+            return base.Channel.SetCertificationPathAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<netOnvifCore.Security.SetCertificationPathResponse> SetCertificationPathAsync(string CertificationPathID, netOnvifCore.Security.CertificationPath CertificationPath)
+        {
+            netOnvifCore.Security.SetCertificationPathRequest inValue = new netOnvifCore.Security.SetCertificationPathRequest();
+            inValue.CertificationPathID = CertificationPathID;
+            inValue.CertificationPath = CertificationPath;
+            return ((netOnvifCore.Security.Keystore)(this)).SetCertificationPathAsync(inValue);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<netOnvifCore.Security.DeleteCertificationPathResponse> netOnvifCore.Security.Keystore.DeleteCertificationPathAsync(netOnvifCore.Security.DeleteCertificationPathRequest request)
         {
             return base.Channel.DeleteCertificationPathAsync(request);
@@ -4125,6 +11118,20 @@ namespace netOnvifCore.Security
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<netOnvifCore.Security.SetCertPathValidationPolicyResponse> netOnvifCore.Security.Keystore.SetCertPathValidationPolicyAsync(netOnvifCore.Security.SetCertPathValidationPolicyRequest request)
+        {
+            return base.Channel.SetCertPathValidationPolicyAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<netOnvifCore.Security.SetCertPathValidationPolicyResponse> SetCertPathValidationPolicyAsync(string CertPathValidationPolicyID, netOnvifCore.Security.CertPathValidationPolicy CertPathValidationPolicy)
+        {
+            netOnvifCore.Security.SetCertPathValidationPolicyRequest inValue = new netOnvifCore.Security.SetCertPathValidationPolicyRequest();
+            inValue.CertPathValidationPolicyID = CertPathValidationPolicyID;
+            inValue.CertPathValidationPolicy = CertPathValidationPolicy;
+            return ((netOnvifCore.Security.Keystore)(this)).SetCertPathValidationPolicyAsync(inValue);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<netOnvifCore.Security.DeleteCertPathValidationPolicyResponse> netOnvifCore.Security.Keystore.DeleteCertPathValidationPolicyAsync(netOnvifCore.Security.DeleteCertPathValidationPolicyRequest request)
         {
             return base.Channel.DeleteCertPathValidationPolicyAsync(request);
@@ -4150,67 +11157,81 @@ namespace netOnvifCore.Security
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/AddServerCertificateAssignment", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.AddServerCertificateAssignmentResponse> AddServerCertificateAssignmentAsync(netOnvifCore.Security.AddServerCertificateAssignmentRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/RemoveServerCertificateAssignmen" +
             "t", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.RemoveServerCertificateAssignmentResponse> RemoveServerCertificateAssignmentAsync(netOnvifCore.Security.RemoveServerCertificateAssignmentRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/ReplaceServerCertificateAssignme" +
             "nt", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.ReplaceServerCertificateAssignmentResponse> ReplaceServerCertificateAssignmentAsync(netOnvifCore.Security.ReplaceServerCertificateAssignmentRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/SetEnabledTLSVersions", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task SetEnabledTLSVersionsAsync(string Versions);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetEnabledTLSVersions", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         [return: System.ServiceModel.MessageParameterAttribute(Name="Versions")]
         System.Threading.Tasks.Task<string> GetEnabledTLSVersionsAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetAssignedServerCertificates", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetAssignedServerCertificatesResponse> GetAssignedServerCertificatesAsync(netOnvifCore.Security.GetAssignedServerCertificatesRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/SetClientAuthenticationRequired", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task SetClientAuthenticationRequiredAsync(bool clientAuthenticationRequired);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetClientAuthenticationRequired", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         [return: System.ServiceModel.MessageParameterAttribute(Name="clientAuthenticationRequired")]
         System.Threading.Tasks.Task<bool> GetClientAuthenticationRequiredAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/SetCnMapsToUser", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task SetCnMapsToUserAsync(bool cnMapsToUser);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetCnMapsToUser", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         [return: System.ServiceModel.MessageParameterAttribute(Name="cnMapsToUser")]
         System.Threading.Tasks.Task<bool> GetCnMapsToUserAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/AddCertPathValidationPolicyAssig" +
             "nment", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.AddCertPathValidationPolicyAssignmentResponse> AddCertPathValidationPolicyAssignmentAsync(netOnvifCore.Security.AddCertPathValidationPolicyAssignmentRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/RemoveCertPathValidationPolicyAs" +
             "signment", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.RemoveCertPathValidationPolicyAssignmentResponse> RemoveCertPathValidationPolicyAssignmentAsync(netOnvifCore.Security.RemoveCertPathValidationPolicyAssignmentRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/ReplaceCertPathValidationPolicyA" +
             "ssignment", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.ReplaceCertPathValidationPolicyAssignmentResponse> ReplaceCertPathValidationPolicyAssignmentAsync(netOnvifCore.Security.ReplaceCertPathValidationPolicyAssignmentRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetAssignedCertPathValidationPol" +
             "icies", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetAssignedCertPathValidationPoliciesResponse> GetAssignedCertPathValidationPoliciesAsync(netOnvifCore.Security.GetAssignedCertPathValidationPoliciesRequest request);
     }
     
@@ -4650,33 +11671,40 @@ namespace netOnvifCore.Security
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/AddDot1XConfiguration", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.AddDot1XConfigurationResponse> AddDot1XConfigurationAsync(netOnvifCore.Security.AddDot1XConfigurationRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetAllDot1XConfigurations", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetAllDot1XConfigurationsResponse> GetAllDot1XConfigurationsAsync(netOnvifCore.Security.GetAllDot1XConfigurationsRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetDot1XConfiguration", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetDot1XConfigurationResponse> GetDot1XConfigurationAsync(netOnvifCore.Security.GetDot1XConfigurationRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/DeleteDot1XConfiguration", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.DeleteDot1XConfigurationResponse> DeleteDot1XConfigurationAsync(netOnvifCore.Security.DeleteDot1XConfigurationRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/SetNetworkInterfaceDot1XConfigur" +
             "ation", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.SetNetworkInterfaceDot1XConfigurationResponse> SetNetworkInterfaceDot1XConfigurationAsync(netOnvifCore.Security.SetNetworkInterfaceDot1XConfigurationRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetNetworkInterfaceDot1XConfigur" +
             "ation", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         System.Threading.Tasks.Task<netOnvifCore.Security.GetNetworkInterfaceDot1XConfigurationResponse> GetNetworkInterfaceDot1XConfigurationAsync(netOnvifCore.Security.GetNetworkInterfaceDot1XConfigurationRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/DeleteNetworkInterfaceDot1XConfi" +
             "guration", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
         [return: System.ServiceModel.MessageParameterAttribute(Name="RebootNeeded")]
         System.Threading.Tasks.Task<bool> DeleteNetworkInterfaceDot1XConfigurationAsync(string token);
     }
@@ -5011,6 +12039,309 @@ namespace netOnvifCore.Security
         public System.Threading.Tasks.Task<bool> DeleteNetworkInterfaceDot1XConfigurationAsync(string token)
         {
             return base.Channel.DeleteNetworkInterfaceDot1XConfigurationAsync(token);
+        }
+        
+        public virtual System.Threading.Tasks.Task OpenAsync()
+        {
+            return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", ConfigurationName="netOnvifCore.Security.MediaSigning")]
+    public interface MediaSigning
+    {
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/AddMediaSigningCertificateAssign" +
+            "ment", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        System.Threading.Tasks.Task<netOnvifCore.Security.AddMediaSigningCertificateAssignmentResponse> AddMediaSigningCertificateAssignmentAsync(netOnvifCore.Security.AddMediaSigningCertificateAssignmentRequest request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/RemoveMediaSigningCertificateAss" +
+            "ignment", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        System.Threading.Tasks.Task<netOnvifCore.Security.RemoveMediaSigningCertificateAssignmentResponse> RemoveMediaSigningCertificateAssignmentAsync(netOnvifCore.Security.RemoveMediaSigningCertificateAssignmentRequest request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetAssignedMediaSigningCertifica" +
+            "tes", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        System.Threading.Tasks.Task<netOnvifCore.Security.GetAssignedMediaSigningCertificatesResponse> GetAssignedMediaSigningCertificatesAsync(netOnvifCore.Security.GetAssignedMediaSigningCertificatesRequest request);
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="AddMediaSigningCertificateAssignment", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
+    public partial class AddMediaSigningCertificateAssignmentRequest
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="NCName")]
+        public string CertificationPathID;
+        
+        public AddMediaSigningCertificateAssignmentRequest()
+        {
+        }
+        
+        public AddMediaSigningCertificateAssignmentRequest(string CertificationPathID)
+        {
+            this.CertificationPathID = CertificationPathID;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="AddMediaSigningCertificateAssignmentResponse", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
+    public partial class AddMediaSigningCertificateAssignmentResponse
+    {
+        
+        public AddMediaSigningCertificateAssignmentResponse()
+        {
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="RemoveMediaSigningCertificateAssignment", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
+    public partial class RemoveMediaSigningCertificateAssignmentRequest
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="NCName")]
+        public string CertificationPathID;
+        
+        public RemoveMediaSigningCertificateAssignmentRequest()
+        {
+        }
+        
+        public RemoveMediaSigningCertificateAssignmentRequest(string CertificationPathID)
+        {
+            this.CertificationPathID = CertificationPathID;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="RemoveMediaSigningCertificateAssignmentResponse", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
+    public partial class RemoveMediaSigningCertificateAssignmentResponse
+    {
+        
+        public RemoveMediaSigningCertificateAssignmentResponse()
+        {
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="GetAssignedMediaSigningCertificates", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
+    public partial class GetAssignedMediaSigningCertificatesRequest
+    {
+        
+        public GetAssignedMediaSigningCertificatesRequest()
+        {
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="GetAssignedMediaSigningCertificatesResponse", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
+    public partial class GetAssignedMediaSigningCertificatesResponse
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute("CertificationPathID", DataType="NCName")]
+        public string[] CertificationPathID;
+        
+        public GetAssignedMediaSigningCertificatesResponse()
+        {
+        }
+        
+        public GetAssignedMediaSigningCertificatesResponse(string[] CertificationPathID)
+        {
+            this.CertificationPathID = CertificationPathID;
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    public interface MediaSigningChannel : netOnvifCore.Security.MediaSigning, System.ServiceModel.IClientChannel
+    {
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    public partial class MediaSigningClient : System.ServiceModel.ClientBase<netOnvifCore.Security.MediaSigning>, netOnvifCore.Security.MediaSigning
+    {
+        
+        public MediaSigningClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(binding, remoteAddress)
+        {
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<netOnvifCore.Security.AddMediaSigningCertificateAssignmentResponse> netOnvifCore.Security.MediaSigning.AddMediaSigningCertificateAssignmentAsync(netOnvifCore.Security.AddMediaSigningCertificateAssignmentRequest request)
+        {
+            return base.Channel.AddMediaSigningCertificateAssignmentAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<netOnvifCore.Security.AddMediaSigningCertificateAssignmentResponse> AddMediaSigningCertificateAssignmentAsync(string CertificationPathID)
+        {
+            netOnvifCore.Security.AddMediaSigningCertificateAssignmentRequest inValue = new netOnvifCore.Security.AddMediaSigningCertificateAssignmentRequest();
+            inValue.CertificationPathID = CertificationPathID;
+            return ((netOnvifCore.Security.MediaSigning)(this)).AddMediaSigningCertificateAssignmentAsync(inValue);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<netOnvifCore.Security.RemoveMediaSigningCertificateAssignmentResponse> netOnvifCore.Security.MediaSigning.RemoveMediaSigningCertificateAssignmentAsync(netOnvifCore.Security.RemoveMediaSigningCertificateAssignmentRequest request)
+        {
+            return base.Channel.RemoveMediaSigningCertificateAssignmentAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<netOnvifCore.Security.RemoveMediaSigningCertificateAssignmentResponse> RemoveMediaSigningCertificateAssignmentAsync(string CertificationPathID)
+        {
+            netOnvifCore.Security.RemoveMediaSigningCertificateAssignmentRequest inValue = new netOnvifCore.Security.RemoveMediaSigningCertificateAssignmentRequest();
+            inValue.CertificationPathID = CertificationPathID;
+            return ((netOnvifCore.Security.MediaSigning)(this)).RemoveMediaSigningCertificateAssignmentAsync(inValue);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<netOnvifCore.Security.GetAssignedMediaSigningCertificatesResponse> netOnvifCore.Security.MediaSigning.GetAssignedMediaSigningCertificatesAsync(netOnvifCore.Security.GetAssignedMediaSigningCertificatesRequest request)
+        {
+            return base.Channel.GetAssignedMediaSigningCertificatesAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<netOnvifCore.Security.GetAssignedMediaSigningCertificatesResponse> GetAssignedMediaSigningCertificatesAsync()
+        {
+            netOnvifCore.Security.GetAssignedMediaSigningCertificatesRequest inValue = new netOnvifCore.Security.GetAssignedMediaSigningCertificatesRequest();
+            return ((netOnvifCore.Security.MediaSigning)(this)).GetAssignedMediaSigningCertificatesAsync(inValue);
+        }
+        
+        public virtual System.Threading.Tasks.Task OpenAsync()
+        {
+            return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", ConfigurationName="netOnvifCore.Security.AuthorizationServer")]
+    public interface AuthorizationServer
+    {
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetAuthorizationServerConfigurat" +
+            "ions", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        System.Threading.Tasks.Task<netOnvifCore.Security.GetAuthorizationServerConfigurationsResponse> GetAuthorizationServerConfigurationsAsync(netOnvifCore.Security.GetAuthorizationServerConfigurationsRequest request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/CreateAuthorizationServerConfigu" +
+            "ration", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        [return: System.ServiceModel.MessageParameterAttribute(Name="Token")]
+        System.Threading.Tasks.Task<string> CreateAuthorizationServerConfigurationAsync(netOnvifCore.Security.AuthorizationServerConfigurationData Configuration);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/SetAuthorizationServerConfigurat" +
+            "ion", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        System.Threading.Tasks.Task SetAuthorizationServerConfigurationAsync(netOnvifCore.Security.AuthorizationServerConfiguration Configuration);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/advancedsecurity/wsdl/DeleteAuthorizationServerConfigu" +
+            "ration", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(DeviceEntity))]
+        System.Threading.Tasks.Task DeleteAuthorizationServerConfigurationAsync(string Token);
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="GetAuthorizationServerConfigurations", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
+    public partial class GetAuthorizationServerConfigurationsRequest
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", Order=0)]
+        public string Token;
+        
+        public GetAuthorizationServerConfigurationsRequest()
+        {
+        }
+        
+        public GetAuthorizationServerConfigurationsRequest(string Token)
+        {
+            this.Token = Token;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="GetAuthorizationServerConfigurationsResponse", WrapperNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", IsWrapped=true)]
+    public partial class GetAuthorizationServerConfigurationsResponse
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/advancedsecurity/wsdl", Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute("Configuration")]
+        public netOnvifCore.Security.AuthorizationServerConfiguration[] Configuration;
+        
+        public GetAuthorizationServerConfigurationsResponse()
+        {
+        }
+        
+        public GetAuthorizationServerConfigurationsResponse(netOnvifCore.Security.AuthorizationServerConfiguration[] Configuration)
+        {
+            this.Configuration = Configuration;
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    public interface AuthorizationServerChannel : netOnvifCore.Security.AuthorizationServer, System.ServiceModel.IClientChannel
+    {
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    public partial class AuthorizationServerClient : System.ServiceModel.ClientBase<netOnvifCore.Security.AuthorizationServer>, netOnvifCore.Security.AuthorizationServer
+    {
+        
+        public AuthorizationServerClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(binding, remoteAddress)
+        {
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<netOnvifCore.Security.GetAuthorizationServerConfigurationsResponse> netOnvifCore.Security.AuthorizationServer.GetAuthorizationServerConfigurationsAsync(netOnvifCore.Security.GetAuthorizationServerConfigurationsRequest request)
+        {
+            return base.Channel.GetAuthorizationServerConfigurationsAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<netOnvifCore.Security.GetAuthorizationServerConfigurationsResponse> GetAuthorizationServerConfigurationsAsync(string Token)
+        {
+            netOnvifCore.Security.GetAuthorizationServerConfigurationsRequest inValue = new netOnvifCore.Security.GetAuthorizationServerConfigurationsRequest();
+            inValue.Token = Token;
+            return ((netOnvifCore.Security.AuthorizationServer)(this)).GetAuthorizationServerConfigurationsAsync(inValue);
+        }
+        
+        public System.Threading.Tasks.Task<string> CreateAuthorizationServerConfigurationAsync(netOnvifCore.Security.AuthorizationServerConfigurationData Configuration)
+        {
+            return base.Channel.CreateAuthorizationServerConfigurationAsync(Configuration);
+        }
+        
+        public System.Threading.Tasks.Task SetAuthorizationServerConfigurationAsync(netOnvifCore.Security.AuthorizationServerConfiguration Configuration)
+        {
+            return base.Channel.SetAuthorizationServerConfigurationAsync(Configuration);
+        }
+        
+        public System.Threading.Tasks.Task DeleteAuthorizationServerConfigurationAsync(string Token)
+        {
+            return base.Channel.DeleteAuthorizationServerConfigurationAsync(Token);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

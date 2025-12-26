@@ -112,6 +112,10 @@ namespace netOnvifCore.Recording
         [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/recording/wsdl/GetExportRecordedDataState", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<netOnvifCore.Recording.GetExportRecordedDataStateResponse> GetExportRecordedDataStateAsync(netOnvifCore.Recording.GetExportRecordedDataStateRequest request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.onvif.org/ver10/recording/wsdl/OverrideSegmentDuration", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        System.Threading.Tasks.Task<netOnvifCore.Recording.OverrideSegmentDurationResponse> OverrideSegmentDurationAsync(netOnvifCore.Recording.OverrideSegmentDurationRequest request);
     }
     
     /// <remarks/>
@@ -166,6 +170,22 @@ namespace netOnvifCore.Recording
         private string beforeEventLimitField;
         
         private string afterEventLimitField;
+        
+        private string[] supportedTargetFormatsField;
+        
+        private int encryptionEntryLimitField;
+        
+        private bool encryptionEntryLimitFieldSpecified;
+        
+        private string[] supportedEncryptionModesField;
+        
+        private bool overrideSegmentDurationField;
+        
+        private bool overrideSegmentDurationFieldSpecified;
+        
+        private bool asymmetricEncryptionSupportedField;
+        
+        private bool asymmetricEncryptionSupportedFieldSpecified;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
@@ -486,6 +506,118 @@ namespace netOnvifCore.Recording
             set
             {
                 this.afterEventLimitField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string[] SupportedTargetFormats
+        {
+            get
+            {
+                return this.supportedTargetFormatsField;
+            }
+            set
+            {
+                this.supportedTargetFormatsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int EncryptionEntryLimit
+        {
+            get
+            {
+                return this.encryptionEntryLimitField;
+            }
+            set
+            {
+                this.encryptionEntryLimitField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool EncryptionEntryLimitSpecified
+        {
+            get
+            {
+                return this.encryptionEntryLimitFieldSpecified;
+            }
+            set
+            {
+                this.encryptionEntryLimitFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string[] SupportedEncryptionModes
+        {
+            get
+            {
+                return this.supportedEncryptionModesField;
+            }
+            set
+            {
+                this.supportedEncryptionModesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool OverrideSegmentDuration
+        {
+            get
+            {
+                return this.overrideSegmentDurationField;
+            }
+            set
+            {
+                this.overrideSegmentDurationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool OverrideSegmentDurationSpecified
+        {
+            get
+            {
+                return this.overrideSegmentDurationFieldSpecified;
+            }
+            set
+            {
+                this.overrideSegmentDurationFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool AsymmetricEncryptionSupported
+        {
+            get
+            {
+                return this.asymmetricEncryptionSupportedField;
+            }
+            set
+            {
+                this.asymmetricEncryptionSupportedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool AsymmetricEncryptionSupportedSpecified
+        {
+            get
+            {
+                return this.asymmetricEncryptionSupportedFieldSpecified;
+            }
+            set
+            {
+                this.asymmetricEncryptionSupportedFieldSpecified = value;
             }
         }
     }
@@ -2128,6 +2260,8 @@ namespace netOnvifCore.Recording
         
         private string maximumRetentionTimeField;
         
+        private RecordingTargetConfiguration targetField;
+        
         private System.Xml.XmlElement[] anyField;
         
         /// <remarks/>
@@ -2173,7 +2307,21 @@ namespace netOnvifCore.Recording
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlAnyElementAttribute(Order=3)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public RecordingTargetConfiguration Target
+        {
+            get
+            {
+                return this.targetField;
+            }
+            set
+            {
+                this.targetField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=4)]
         public System.Xml.XmlElement[] Any
         {
             get
@@ -2287,6 +2435,358 @@ namespace netOnvifCore.Recording
             set
             {
                 this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class RecordingTargetConfiguration
+    {
+        
+        private string storageField;
+        
+        private string formatField;
+        
+        private string prefixField;
+        
+        private string postfixField;
+        
+        private string spanDurationField;
+        
+        private string segmentDurationField;
+        
+        private RecordingEncryption[] encryptionField;
+        
+        private RecordingTargetConfigurationSegmentDurationOverride segmentDurationOverrideField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Storage
+        {
+            get
+            {
+                return this.storageField;
+            }
+            set
+            {
+                this.storageField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public string Format
+        {
+            get
+            {
+                return this.formatField;
+            }
+            set
+            {
+                this.formatField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public string Prefix
+        {
+            get
+            {
+                return this.prefixField;
+            }
+            set
+            {
+                this.prefixField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string Postfix
+        {
+            get
+            {
+                return this.postfixField;
+            }
+            set
+            {
+                this.postfixField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="duration", Order=4)]
+        public string SpanDuration
+        {
+            get
+            {
+                return this.spanDurationField;
+            }
+            set
+            {
+                this.spanDurationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="duration", Order=5)]
+        public string SegmentDuration
+        {
+            get
+            {
+                return this.segmentDurationField;
+            }
+            set
+            {
+                this.segmentDurationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Encryption", Order=6)]
+        public RecordingEncryption[] Encryption
+        {
+            get
+            {
+                return this.encryptionField;
+            }
+            set
+            {
+                this.encryptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public RecordingTargetConfigurationSegmentDurationOverride SegmentDurationOverride
+        {
+            get
+            {
+                return this.segmentDurationOverrideField;
+            }
+            set
+            {
+                this.segmentDurationOverrideField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=8)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class RecordingEncryption
+    {
+        
+        private string kIDField;
+        
+        private byte[] keyField;
+        
+        private string[] trackField;
+        
+        private AsymmetricEncryption asymmetricEncryptionField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        private string modeField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string KID
+        {
+            get
+            {
+                return this.kIDField;
+            }
+            set
+            {
+                this.kIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="hexBinary", Order=1)]
+        public byte[] Key
+        {
+            get
+            {
+                return this.keyField;
+            }
+            set
+            {
+                this.keyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Track", Order=2)]
+        public string[] Track
+        {
+            get
+            {
+                return this.trackField;
+            }
+            set
+            {
+                this.trackField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public AsymmetricEncryption AsymmetricEncryption
+        {
+            get
+            {
+                return this.asymmetricEncryptionField;
+            }
+            set
+            {
+                this.asymmetricEncryptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=4)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string Mode
+        {
+            get
+            {
+                return this.modeField;
+            }
+            set
+            {
+                this.modeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class AsymmetricEncryption
+    {
+        
+        private string[] certificateIDField;
+        
+        private string keyRotationDurationField;
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CertificateID", Order=0)]
+        public string[] CertificateID
+        {
+            get
+            {
+                return this.certificateIDField;
+            }
+            set
+            {
+                this.certificateIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="duration", Order=1)]
+        public string KeyRotationDuration
+        {
+            get
+            {
+                return this.keyRotationDurationField;
+            }
+            set
+            {
+                this.keyRotationDurationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=2)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://www.onvif.org/ver10/schema")]
+    public partial class RecordingTargetConfigurationSegmentDurationOverride
+    {
+        
+        private string durationField;
+        
+        private string expirationField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="duration", Order=0)]
+        public string Duration
+        {
+            get
+            {
+                return this.durationField;
+            }
+            set
+            {
+                this.durationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="duration", Order=1)]
+        public string Expiration
+        {
+            get
+            {
+                return this.expirationField;
+            }
+            set
+            {
+                this.expirationField = value;
             }
         }
     }
@@ -2441,6 +2941,30 @@ namespace netOnvifCore.Recording
         }
     }
     
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://www.onvif.org/ver10/recording/wsdl")]
+    public partial class ExportRecordedDataResponseExtension
+    {
+        
+        private System.Xml.XmlElement[] anyField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAnyElementAttribute(Order=0)]
+        public System.Xml.XmlElement[] Any
+        {
+            get
+            {
+                return this.anyField;
+            }
+            set
+            {
+                this.anyField = value;
+            }
+        }
+    }
+    
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ExportRecordedData", WrapperNamespace="http://www.onvif.org/ver10/recording/wsdl", IsWrapped=true)]
@@ -2490,13 +3014,13 @@ namespace netOnvifCore.Recording
         public string[] FileNames;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/recording/wsdl", Order=2)]
-        public System.Xml.XmlElement Extension;
+        public netOnvifCore.Recording.ExportRecordedDataResponseExtension Extension;
         
         public ExportRecordedDataResponse()
         {
         }
         
-        public ExportRecordedDataResponse(string OperationToken, string[] FileNames, System.Xml.XmlElement Extension)
+        public ExportRecordedDataResponse(string OperationToken, string[] FileNames, netOnvifCore.Recording.ExportRecordedDataResponseExtension Extension)
         {
             this.OperationToken = OperationToken;
             this.FileNames = FileNames;
@@ -2595,6 +3119,48 @@ namespace netOnvifCore.Recording
             this.Progress = Progress;
             this.FileProgressStatus = FileProgressStatus;
             this.Any = Any;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="OverrideSegmentDuration", WrapperNamespace="http://www.onvif.org/ver10/recording/wsdl", IsWrapped=true)]
+    public partial class OverrideSegmentDurationRequest
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/recording/wsdl", Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="duration")]
+        public string TargetSegmentDuration;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/recording/wsdl", Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="duration")]
+        public string Expiration;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.onvif.org/ver10/recording/wsdl", Order=2)]
+        public string RecordingConfiguration;
+        
+        public OverrideSegmentDurationRequest()
+        {
+        }
+        
+        public OverrideSegmentDurationRequest(string TargetSegmentDuration, string Expiration, string RecordingConfiguration)
+        {
+            this.TargetSegmentDuration = TargetSegmentDuration;
+            this.Expiration = Expiration;
+            this.RecordingConfiguration = RecordingConfiguration;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="OverrideSegmentDurationResponse", WrapperNamespace="http://www.onvif.org/ver10/recording/wsdl", IsWrapped=true)]
+    public partial class OverrideSegmentDurationResponse
+    {
+        
+        public OverrideSegmentDurationResponse()
+        {
         }
     }
     
@@ -2730,6 +3296,21 @@ namespace netOnvifCore.Recording
         public System.Threading.Tasks.Task<netOnvifCore.Recording.GetExportRecordedDataStateResponse> GetExportRecordedDataStateAsync(netOnvifCore.Recording.GetExportRecordedDataStateRequest request)
         {
             return base.Channel.GetExportRecordedDataStateAsync(request);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<netOnvifCore.Recording.OverrideSegmentDurationResponse> netOnvifCore.Recording.RecordingPort.OverrideSegmentDurationAsync(netOnvifCore.Recording.OverrideSegmentDurationRequest request)
+        {
+            return base.Channel.OverrideSegmentDurationAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<netOnvifCore.Recording.OverrideSegmentDurationResponse> OverrideSegmentDurationAsync(string TargetSegmentDuration, string Expiration, string RecordingConfiguration)
+        {
+            netOnvifCore.Recording.OverrideSegmentDurationRequest inValue = new netOnvifCore.Recording.OverrideSegmentDurationRequest();
+            inValue.TargetSegmentDuration = TargetSegmentDuration;
+            inValue.Expiration = Expiration;
+            inValue.RecordingConfiguration = RecordingConfiguration;
+            return ((netOnvifCore.Recording.RecordingPort)(this)).OverrideSegmentDurationAsync(inValue);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

@@ -2530,10 +2530,6 @@ namespace netOnvifCore.Event
         
         private bool wSSubscriptionPolicySupportFieldSpecified;
         
-        private bool wSPullPointSupportField;
-        
-        private bool wSPullPointSupportFieldSpecified;
-        
         private bool wSPausableSubscriptionManagerInterfaceSupportField;
         
         private bool wSPausableSubscriptionManagerInterfaceSupportFieldSpecified;
@@ -2599,34 +2595,6 @@ namespace netOnvifCore.Event
             set
             {
                 this.wSSubscriptionPolicySupportFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public bool WSPullPointSupport
-        {
-            get
-            {
-                return this.wSPullPointSupportField;
-            }
-            set
-            {
-                this.wSPullPointSupportField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool WSPullPointSupportSpecified
-        {
-            get
-            {
-                return this.wSPullPointSupportFieldSpecified;
-            }
-            set
-            {
-                this.wSPullPointSupportFieldSpecified = value;
             }
         }
         
@@ -2987,7 +2955,7 @@ namespace netOnvifCore.Event
     public partial class TopicType : ExtensibleDocumented
     {
         
-        private QueryExpressionType messagePatternField;
+        private QueryExpressionType1 messagePatternField;
         
         private TopicType[] topicField;
         
@@ -3006,7 +2974,7 @@ namespace netOnvifCore.Event
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public QueryExpressionType MessagePattern
+        public QueryExpressionType1 MessagePattern
         {
             get
             {
@@ -3093,8 +3061,8 @@ namespace netOnvifCore.Event
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://docs.oasis-open.org/wsn/t-1")]
-    public partial class QueryExpressionType
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="QueryExpressionType", Namespace="http://docs.oasis-open.org/wsn/t-1")]
+    public partial class QueryExpressionType1
     {
         
         private System.Xml.XmlNode[] anyField;

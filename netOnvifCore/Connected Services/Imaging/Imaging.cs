@@ -3173,19 +3173,11 @@ namespace netOnvifCore.Imaging
         
         private float bottomField;
         
-        private bool bottomFieldSpecified;
-        
         private float topField;
-        
-        private bool topFieldSpecified;
         
         private float rightField;
         
-        private bool rightFieldSpecified;
-        
         private float leftField;
-        
-        private bool leftFieldSpecified;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -3198,20 +3190,6 @@ namespace netOnvifCore.Imaging
             set
             {
                 this.bottomField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool bottomSpecified
-        {
-            get
-            {
-                return this.bottomFieldSpecified;
-            }
-            set
-            {
-                this.bottomFieldSpecified = value;
             }
         }
         
@@ -3230,20 +3208,6 @@ namespace netOnvifCore.Imaging
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool topSpecified
-        {
-            get
-            {
-                return this.topFieldSpecified;
-            }
-            set
-            {
-                this.topFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public float right
         {
@@ -3258,20 +3222,6 @@ namespace netOnvifCore.Imaging
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool rightSpecified
-        {
-            get
-            {
-                return this.rightFieldSpecified;
-            }
-            set
-            {
-                this.rightFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public float left
         {
@@ -3282,20 +3232,6 @@ namespace netOnvifCore.Imaging
             set
             {
                 this.leftField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool leftSpecified
-        {
-            get
-            {
-                return this.leftFieldSpecified;
-            }
-            set
-            {
-                this.leftFieldSpecified = value;
             }
         }
     }
