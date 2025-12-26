@@ -1,19 +1,37 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <Authors>NPO SAUT</Authors>
+        <Company>NPO SAUT</Company>
+        <IsPackable>false</IsPackable>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>disable</ImplicitUsings>
-        <Nullable>disable</Nullable>
-        <LangVersion>12</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <NeutralLanguage>en-US</NeutralLanguage>
+        <TargetFramework>net10.0</TargetFramework>
+        <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+        <LangVersion>14</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <WarningLevel>8</WarningLevel>
+        <DebugType>embedded</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+
+        <TrimMode>partial</TrimMode>
+        <PublishRelease>true</PublishRelease>
+        <PublishTrimmed>true</PublishTrimmed>
+        <PublishSingleFile>true</PublishSingleFile>
+        <PublishReadyToRun>true</PublishReadyToRun>
+
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+        <NoWarn>1701;1702;IL2026</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\netOnvifCore\netOnvifCore.csproj" />
+        <ProjectReference Include="..\netOnvifCore\netOnvifCore.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="OnvifDiscovery" Version="1.2.2" />
+        <PackageReference Include="OnvifDiscovery" Version="2.1.1"/>
     </ItemGroup>
-
 </Project>

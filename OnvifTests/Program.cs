@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json;
-using System.Threading.Tasks;
 using System.Xml;
 using netOnvifCore;
 using netOnvifCore.AccessControl;
@@ -70,44 +65,9 @@ namespace OnvifTests;
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public static class Program
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Local")]
-    public enum CameraManufacturers
-    {
-        NovaCam,
-        Ltv,
-        Infinity,
-        MicroDigital,
-        UniView
-    }
-
-    [SuppressMessage("ReSharper", "UnusedMember.Local")]
-    public enum InfinityRotateModes
-    {
-        Normal = 0,
-        Flip = 180,
-        Mirror = 89,
-        Both = 269
-    }
-
     private const string BasePath = "OnvifData/";
+
     private const string MethodsPath = $"{BasePath}/Methods";
-
-    private static string _devicePath;
-    private static string _mediaPath;
-    private static string _media2Path;
-    private static string _imagingPath;
-    private static string _ptzPath;
-
-    private static CameraManufacturers _cameraManufacturer;
-
-    private static readonly List<(string Ip, (string Login, string Password) User)> AvailableCameras = new()
-    {
-        new ValueTuple<string, (string Login, string Password)>("20.0.1.10", new ValueTuple<string, string>("root", "root")),
-        new ValueTuple<string, (string Login, string Password)>("20.0.1.11", new ValueTuple<string, string>("admin", "admin")),
-        new ValueTuple<string, (string Login, string Password)>("20.0.1.13", new ValueTuple<string, string>("admin", "123456")),
-        new ValueTuple<string, (string Login, string Password)>("10.15.51.120", new ValueTuple<string, string>("admin", "admin")),
-        new ValueTuple<string, (string Login, string Password)>("10.15.51.126", new ValueTuple<string, string>("admin", "123456-Saut"))
-    };
 
     public static async Task Main()
     {
@@ -120,7 +80,6 @@ public static class Program
 
         foreach (var camera in AvailableCameras)
         {
-            //var camera = AvailableCameras[0];
             Console.WriteLine($"Address: {camera.Ip}");
 
             var device = OnvifClientFactory.CreateDeviceClientAsync(camera.Ip, camera.User.Login, camera.User.Password).Result;
@@ -157,6 +116,44 @@ public static class Program
         }
     }
 
+    [SuppressMessage("ReSharper", "UnusedMember.Local")]
+    public enum CameraManufacturers
+    {
+        NovaCam,
+        Ltv,
+        Infinity,
+        MicroDigital,
+        UniView
+    }
+
+    [SuppressMessage("ReSharper", "UnusedMember.Local")]
+    public enum InfinityRotateModes
+    {
+        Normal = 0,
+        Flip = 180,
+        Mirror = 89,
+        Both = 269
+    }
+
+    #region Private
+
+    private static string _devicePath = null!;
+    private static string _mediaPath = null!;
+    private static string _media2Path = null!;
+    private static string _imagingPath = null!;
+    private static string _ptzPath = null!;
+
+    private static CameraManufacturers _cameraManufacturer;
+
+    private static readonly List<(string Ip, (string Login, string Password) User)> AvailableCameras =
+    [
+        new ValueTuple<string, (string Login, string Password)>("20.0.1.10", new ValueTuple<string, string>("root", "root")),
+        new ValueTuple<string, (string Login, string Password)>("20.0.1.11", new ValueTuple<string, string>("admin", "admin")),
+        new ValueTuple<string, (string Login, string Password)>("20.0.1.13", new ValueTuple<string, string>("admin", "123456")),
+        new ValueTuple<string, (string Login, string Password)>("10.15.51.120", new ValueTuple<string, string>("admin", "admin")),
+        new ValueTuple<string, (string Login, string Password)>("10.15.51.126", new ValueTuple<string, string>("admin", "123456-Saut"))
+    ];
+
     private static async Task ExecuteAndIgnoreExceptions(Func<Task> taskAction)
     {
         try
@@ -165,7 +162,7 @@ public static class Program
         }
         catch
         {
-            // Проигнорировать исключение и продолжить выполнение кода
+            // ignored
         }
     }
 
@@ -194,7 +191,7 @@ public static class Program
         var extensionElement = doc.CreateElement("tt:Extension", "http://www.onvif.org/ver10/schema");
         extensionElement.AppendChild(rotateElement);
 
-        configuration.Any = new[] { extensionElement };
+        configuration.Any = [extensionElement];
 
         await media.SetVideoSourceConfigurationAsync(configuration, true);
     }
@@ -420,7 +417,7 @@ public static class Program
             }
         });
 
-        var capabilities = device.GetCapabilitiesAsync(new[] { CapabilityCategory.All }).Result;
+        var capabilities = device.GetCapabilitiesAsync([CapabilityCategory.All]).Result;
         await Serialize(capabilities, $"{_devicePath}", "capabilities");
 
         await ExecuteAndIgnoreExceptions(async () =>
@@ -461,7 +458,7 @@ public static class Program
 
         await ExecuteAndIgnoreExceptions(async () =>
         {
-            var dot11Capabilities = device.GetDot11CapabilitiesAsync(new XmlElement[] { }).Result;
+            var dot11Capabilities = device.GetDot11CapabilitiesAsync([]).Result;
             await Serialize(dot11Capabilities, $"{_devicePath}", "dot11Capabilities");
         });
 
@@ -1081,93 +1078,101 @@ public static class Program
         await ExecuteAndIgnoreExceptions(async () =>
         {
             var audioDecoderConfigurations = JsonSerializer.Deserialize<GetAudioDecoderConfigurationsResponse>(jsonText);
-            foreach (var conf in audioDecoderConfigurations.Configurations)
-            {
-                var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioDecoderConfigurations/{conf.Name}/audioDecoderConfiguration.json");
-                var audioDecoderConfiguration = JsonSerializer.Deserialize<AudioDecoderConfiguration>(text);
+            if (audioDecoderConfigurations != null)
+                foreach (var conf in audioDecoderConfigurations.Configurations)
+                {
+                    var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioDecoderConfigurations/{conf.Name}/audioDecoderConfiguration.json");
+                    var audioDecoderConfiguration = JsonSerializer.Deserialize<AudioDecoderConfiguration>(text);
 
-                await media.SetAudioDecoderConfigurationAsync(audioDecoderConfiguration, true);
-            }
+                    await media.SetAudioDecoderConfigurationAsync(audioDecoderConfiguration, true);
+                }
         });
 
         jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioEncoderConfigurations.json");
         var audioEncoderConfigurations = JsonSerializer.Deserialize<GetAudioEncoderConfigurationsResponse>(jsonText);
-        foreach (var conf in audioEncoderConfigurations.Configurations)
-        {
-            var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioEncoderConfigurations/{conf.Name}/audioEncoderConfiguration.json");
-            var audioEncoderConfiguration = JsonSerializer.Deserialize<AudioEncoderConfiguration>(text);
+        if (audioEncoderConfigurations != null)
+            foreach (var conf in audioEncoderConfigurations.Configurations)
+            {
+                var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioEncoderConfigurations/{conf.Name}/audioEncoderConfiguration.json");
+                var audioEncoderConfiguration = JsonSerializer.Deserialize<AudioEncoderConfiguration>(text);
 
-            await media.SetAudioEncoderConfigurationAsync(audioEncoderConfiguration, true);
-        }
+                await media.SetAudioEncoderConfigurationAsync(audioEncoderConfiguration, true);
+            }
 
         jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioOutputConfigurations.json");
         var audioOutputConfigurations = JsonSerializer.Deserialize<GetAudioOutputConfigurationsResponse>(jsonText);
-        foreach (var conf in audioOutputConfigurations.Configurations)
-        {
-            var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioOutputConfigurations/{conf.Name}/audioOutputConfiguration.json");
-            var audioOutputConfiguration = JsonSerializer.Deserialize<AudioOutputConfiguration>(text);
+        if (audioOutputConfigurations != null)
+            foreach (var conf in audioOutputConfigurations.Configurations)
+            {
+                var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioOutputConfigurations/{conf.Name}/audioOutputConfiguration.json");
+                var audioOutputConfiguration = JsonSerializer.Deserialize<AudioOutputConfiguration>(text);
 
-            await media.SetAudioOutputConfigurationAsync(audioOutputConfiguration, true);
-        }
+                await media.SetAudioOutputConfigurationAsync(audioOutputConfiguration, true);
+            }
 
         jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioSourceConfigurations.json");
         var audioSourceConfigurations = JsonSerializer.Deserialize<GetAudioSourceConfigurationsResponse>(jsonText);
-        foreach (var conf in audioSourceConfigurations.Configurations)
-        {
-            var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioSourceConfigurations/{conf.Name}/audioSourceConfiguration.json");
-            var audioSourceConfiguration = JsonSerializer.Deserialize<AudioSourceConfiguration>(text);
+        if (audioSourceConfigurations != null)
+            foreach (var conf in audioSourceConfigurations.Configurations)
+            {
+                var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/audioSourceConfigurations/{conf.Name}/audioSourceConfiguration.json");
+                var audioSourceConfiguration = JsonSerializer.Deserialize<AudioSourceConfiguration>(text);
 
-            await media.SetAudioSourceConfigurationAsync(audioSourceConfiguration, true);
-        }
+                await media.SetAudioSourceConfigurationAsync(audioSourceConfiguration, true);
+            }
 
         jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/metadataConfigurations.json");
         var metadataConfigurations = JsonSerializer.Deserialize<GetMetadataConfigurationsResponse>(jsonText);
-        foreach (var conf in metadataConfigurations.Configurations)
-        {
-            var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/metadataConfigurations/{conf.Name}/metadataConfiguration.json");
-            var metadataConfiguration = JsonSerializer.Deserialize<MetadataConfiguration>(text);
+        if (metadataConfigurations != null)
+            foreach (var conf in metadataConfigurations.Configurations)
+            {
+                var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/metadataConfigurations/{conf.Name}/metadataConfiguration.json");
+                var metadataConfiguration = JsonSerializer.Deserialize<MetadataConfiguration>(text);
 
-            await media.SetMetadataConfigurationAsync(metadataConfiguration, true);
-        }
+                await media.SetMetadataConfigurationAsync(metadataConfiguration, true);
+            }
 
         jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoAnalyticsConfigurations.json");
         var videoAnalyticsConfigurations = JsonSerializer.Deserialize<GetVideoAnalyticsConfigurationsResponse>(jsonText);
-        foreach (var conf in videoAnalyticsConfigurations.Configurations)
-        {
-            var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoAnalyticsConfigurations/{conf.Name}/videoAnalyticsConfiguration.json");
-            var videoAnalyticsConfiguration = JsonSerializer.Deserialize<VideoAnalyticsConfiguration>(text);
+        if (videoAnalyticsConfigurations != null)
+            foreach (var conf in videoAnalyticsConfigurations.Configurations)
+            {
+                var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoAnalyticsConfigurations/{conf.Name}/videoAnalyticsConfiguration.json");
+                var videoAnalyticsConfiguration = JsonSerializer.Deserialize<VideoAnalyticsConfiguration>(text);
 
-            await media.SetVideoAnalyticsConfigurationAsync(videoAnalyticsConfiguration, true);
-        }
+                await media.SetVideoAnalyticsConfigurationAsync(videoAnalyticsConfiguration, true);
+            }
 
         jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoEncoderConfigurations.json");
         var videoEncoderConfigurations = JsonSerializer.Deserialize<GetVideoEncoderConfigurationsResponse>(jsonText);
-        foreach (var conf in videoEncoderConfigurations.Configurations)
-        {
-            var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoEncoderConfigurations/{conf.Name}/videoEncoderConfiguration.json");
-            var videoEncoderConfiguration = JsonSerializer.Deserialize<VideoEncoderConfiguration>(text);
+        if (videoEncoderConfigurations != null)
+            foreach (var conf in videoEncoderConfigurations.Configurations)
+            {
+                var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoEncoderConfigurations/{conf.Name}/videoEncoderConfiguration.json");
+                var videoEncoderConfiguration = JsonSerializer.Deserialize<VideoEncoderConfiguration>(text);
 
-            await media.SetVideoEncoderConfigurationAsync(videoEncoderConfiguration, true);
-        }
+                await media.SetVideoEncoderConfigurationAsync(videoEncoderConfiguration, true);
+            }
 
         jsonText = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoSourceConfigurations.json");
         var videoSourceConfigurations = JsonSerializer.Deserialize<GetVideoSourceConfigurationsResponse>(jsonText);
-        foreach (var conf in videoSourceConfigurations.Configurations)
-        {
-            var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoSourceConfigurations/{conf.Name}/videoSourceConfiguration.json");
-            var videoSourceConfiguration = JsonSerializer.Deserialize<VideoSourceConfiguration>(text);
-            videoSourceConfiguration.Any = null;
+        if (videoSourceConfigurations != null)
+            foreach (var conf in videoSourceConfigurations.Configurations)
+            {
+                var text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoSourceConfigurations/{conf.Name}/videoSourceConfiguration.json");
+                var videoSourceConfiguration = JsonSerializer.Deserialize<VideoSourceConfiguration>(text);
+                videoSourceConfiguration?.Any = null;
 
-            await media.SetVideoSourceConfigurationAsync(videoSourceConfiguration, true);
+                await media.SetVideoSourceConfigurationAsync(videoSourceConfiguration, true);
 
-            text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoSourceConfigurations/{conf.Name}/oSDs.json");
-            var osDConfiguration = JsonSerializer.Deserialize<OSDConfiguration>(text);
+                text = await File.ReadAllTextAsync($"{BasePath}/CamerasSettings/NovaCam-default/Media/Get/videoSourceConfigurations/{conf.Name}/oSDs.json");
+                var osDConfiguration = JsonSerializer.Deserialize<OSDConfiguration>(text);
 
-            await media.SetOSDAsync(new SetOSDRequest(osDConfiguration, null));
-        }
+                await media.SetOSDAsync(new SetOSDRequest(osDConfiguration, null));
+            }
 
-        //await media.SetVideoSourceModeAsync("", "");
-        //await media.SetSynchronizationPointAsync("");
+        // await media.SetVideoSourceModeAsync("", "");
+        // await media.SetSynchronizationPointAsync("");
     }
 
     private static async Task AllImagingClientSetMethods(MediaClient media, ImagingPortClient imaging)
@@ -1179,4 +1184,6 @@ public static class Program
             await imaging.SetImagingSettingsAsync(conf.token, imagingSettings, true);
         }
     }
+
+    #endregion
 }
