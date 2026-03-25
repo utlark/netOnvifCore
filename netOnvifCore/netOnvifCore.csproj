@@ -8,6 +8,7 @@
         <NeutralLanguage>en-US</NeutralLanguage>
         <TargetFramework>net8.0</TargetFramework>
         <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+        <IsTrimmable>false</IsTrimmable>
         <LangVersion>14</LangVersion>
     </PropertyGroup>
 
@@ -23,7 +24,9 @@
         <PublishReadyToRun>true</PublishReadyToRun>
 
         <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
-        <NoWarn>1701;1702;IL2026</NoWarn>
+        <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+        <NoWarn>1701;1702;IL2104;IL2026;CS8981</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
