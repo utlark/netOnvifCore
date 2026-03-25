@@ -7,7 +7,8 @@ namespace netOnvifCore.Security;
 
 public class SoapSecurityHeader(string username, string password, TimeSpan timeShift) : MessageHeader, IDisposable
 {
-    public override string Name      => "Security";
+    public override string Name => "Security";
+
     public override string Namespace => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
 
     public void Dispose()

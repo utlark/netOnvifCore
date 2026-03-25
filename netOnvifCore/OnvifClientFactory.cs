@@ -105,7 +105,13 @@ public static class OnvifClientFactory
 
     private static CustomBinding CreateBinding()
     {
-        var binding = new CustomBinding();
+        var binding = new CustomBinding
+        {
+            SendTimeout    = TimeSpan.FromMilliseconds(2_500),
+            OpenTimeout    = TimeSpan.FromMilliseconds(2_500),
+            ReceiveTimeout = TimeSpan.FromMilliseconds(2_500),
+            CloseTimeout   = TimeSpan.FromMilliseconds(2_500)
+        };
 
         binding.Elements.Add(new TextMessageEncodingBindingElement
         {
