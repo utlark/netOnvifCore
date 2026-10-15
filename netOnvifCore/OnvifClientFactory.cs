@@ -14,10 +14,19 @@ public static class OnvifClientFactory
 {
     public static async Task<DeviceClient> CreateDeviceClientAsync(string deviceIp, string username, string password)
     {
-        var binding   = CreateBinding();
-        var endpoint  = new EndpointAddress(new Uri($"http://{deviceIp}/onvif/device_service"));
-        var device    = new DeviceClient(binding, endpoint);
-        var timeShift = await GetDeviceTimeShift(device);
+        var binding  = CreateBinding();
+        var endpoint = new EndpointAddress(new Uri($"http://{deviceIp}/onvif/device_service"));
+        var device   = new DeviceClient(binding, endpoint);
+
+        TimeSpan timeShift;
+        try
+        {
+            timeShift = await GetDeviceTimeShift(device);
+        }
+        finally
+        {
+            (device as IDisposable).Dispose();
+        }
 
         device = new(binding, endpoint);
         device.ChannelFactory.Endpoint.EndpointBehaviors.Clear();
