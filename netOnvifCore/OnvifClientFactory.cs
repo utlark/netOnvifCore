@@ -38,6 +38,41 @@ public static class OnvifClientFactory
         return device;
     }
 
+    public static async Task<(DeviceClient? Device, GetDeviceInformationResponse? Info, Exception? Failure)> ProbeDeviceAsync(string deviceIp, string username, string password)
+    {
+        var binding  = CreateBinding();
+        var endpoint = new EndpointAddress(new Uri($"http://{deviceIp}/onvif/device_service"));
+
+        TimeSpan timeShift;
+        var      probe = new DeviceClient(binding, endpoint);
+        try
+        {
+            timeShift = await GetDeviceTimeShift(probe);
+        }
+        catch (Exception exception)
+        {
+            return (null, null, exception);
+        }
+        finally
+        {
+            (probe as IDisposable).Dispose();
+        }
+
+        var device = new DeviceClient(binding, endpoint);
+        device.ChannelFactory.Endpoint.EndpointBehaviors.Clear();
+        device.ChannelFactory.Endpoint.EndpointBehaviors.Add(new SoapSecurityHeaderBehavior(username, password, timeShift));
+
+        try
+        {
+            return (device, await device.GetDeviceInformationAsync(new()), null);
+        }
+        catch (Exception exception)
+        {
+            (device as IDisposable).Dispose();
+            return (null, null, exception);
+        }
+    }
+
     public static async Task<MediaClient> CreateMediaClientAsync(DeviceClient deviceClient)
     {
         var capabilities = await deviceClient.GetCapabilitiesAsync([CapabilityCategory.All]);
