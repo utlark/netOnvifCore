@@ -32,6 +32,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="OnvifDiscovery" Version="2.1.1"/>
+        <PackageReference Include="OnvifDiscovery" Version="3.0.0"/>
+        <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.2"/>
+        <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.5"/>
     </ItemGroup>
 </Project>
